@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import gsap from "gsap";
+import { useDictionary } from "@/components/LocaleProvider";
+import { useWaitlistCount } from "@/components/WaitlistCountProvider";
 import { joinWaitlist } from "@/lib/waitlist";
 import ClickSpark from "./reactbits/ClickSpark";
 import StarBorder from "./reactbits/StarBorder";
@@ -10,6 +12,7 @@ import "./WaitlistModal.css";
 type WaitlistModalProps = {
   open: boolean;
   onClose: () => void;
+  onSuccess?: () => void;
 };
 
 type FormStatus = "idle" | "submitting" | "success" | "error";
@@ -20,15 +23,17 @@ const HERO_EASE = "cubic-bezier(0.22, 1, 0.36, 1)";
 const montserrat = "var(--font-montserrat), Montserrat, sans-serif";
 const outfit = "var(--font-outfit), Outfit, sans-serif";
 
-export function WaitlistModal({ open, onClose }: WaitlistModalProps) {
+export function WaitlistModal({ open, onClose, onSuccess }: WaitlistModalProps) {
+  const dictionary = useDictionary();
+  const { waitlist } = dictionary;
+  const { refresh } = useWaitlistCount();
+
   const [shouldRender, setShouldRender] = useState(open);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<FormStatus>("idle");
   const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState(
-    "We'll reach out when registration opens.",
-  );
+  const [successMessage, setSuccessMessage] = useState(waitlist.successDefault);
 
   const backdropRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -142,9 +147,9 @@ export function WaitlistModal({ open, onClose }: WaitlistModalProps) {
       setEmail("");
       setStatus("idle");
       setErrorMessage("");
-      setSuccessMessage("We'll reach out when registration opens.");
+      setSuccessMessage(waitlist.successDefault);
     }
-  }, [open]);
+  }, [open, waitlist.successDefault]);
 
   useEffect(() => {
     if (status !== "success") return;
@@ -180,19 +185,19 @@ export function WaitlistModal({ open, onClose }: WaitlistModalProps) {
     setErrorMessage("");
 
     try {
-      const result = await joinWaitlist(name, email);
+      const result = await joinWaitlist(name, email, waitlist.errors);
       setSuccessMessage(
         result.alreadyRegistered
-          ? "You're already signed up — we'll be in touch."
-          : "We'll reach out when registration opens.",
+          ? waitlist.successAlready
+          : waitlist.successDefault,
       );
       setStatus("success");
+      void refresh();
+      onSuccess?.();
     } catch (error) {
       setStatus("error");
       setErrorMessage(
-        error instanceof Error
-          ? error.message
-          : "Something went wrong. Please try again.",
+        error instanceof Error ? error.message : waitlist.errors.generic,
       );
     }
   }
@@ -243,7 +248,7 @@ export function WaitlistModal({ open, onClose }: WaitlistModalProps) {
             className="waitlist-success-item text-2xl font-black text-white"
             style={{ fontFamily: montserrat }}
           >
-            You&apos;re on the list!
+            {waitlist.successTitle}
           </p>
           <p
             className="waitlist-success-item mt-3 text-white/70"
@@ -257,7 +262,7 @@ export function WaitlistModal({ open, onClose }: WaitlistModalProps) {
             className="waitlist-success-item mt-8 text-sm tracking-[0.25em] text-[#aaff00] transition-opacity hover:opacity-80"
             style={{ fontFamily: outfit }}
           >
-            CLOSE
+            {waitlist.close}
           </button>
         </div>
 
@@ -269,7 +274,7 @@ export function WaitlistModal({ open, onClose }: WaitlistModalProps) {
               className="shrink-0 text-xl font-black tracking-wide text-white"
               style={{ fontFamily: montserrat }}
             >
-              JOIN THE WAITLIST
+              {waitlist.title}
             </h2>
             <div className="waitlist-line h-px flex-1 bg-[#aaff00]/70" />
           </div>
@@ -278,7 +283,7 @@ export function WaitlistModal({ open, onClose }: WaitlistModalProps) {
             className="waitlist-field mt-4 text-center text-sm tracking-wide text-white/55"
             style={{ fontFamily: outfit }}
           >
-            Be the first to know when registration opens.
+            {waitlist.subtitle}
           </p>
 
           <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
@@ -287,7 +292,7 @@ export function WaitlistModal({ open, onClose }: WaitlistModalProps) {
                 className="mb-2 block text-xs tracking-[0.3em] text-white/45"
                 style={{ fontFamily: outfit }}
               >
-                NAME
+                {waitlist.name}
               </span>
               <input
                 type="text"
@@ -298,7 +303,7 @@ export function WaitlistModal({ open, onClose }: WaitlistModalProps) {
                 minLength={2}
                 autoComplete="name"
                 className="waitlist-input w-full rounded-xl border border-white/12 bg-white/[0.04] px-4 py-3 text-white outline-none placeholder:text-white/25"
-                placeholder="Your name"
+                placeholder={waitlist.namePlaceholder}
                 style={{ fontFamily: outfit }}
               />
             </label>
@@ -308,7 +313,7 @@ export function WaitlistModal({ open, onClose }: WaitlistModalProps) {
                 className="mb-2 block text-xs tracking-[0.3em] text-white/45"
                 style={{ fontFamily: outfit }}
               >
-                EMAIL
+                {waitlist.email}
               </span>
               <input
                 type="email"
@@ -350,7 +355,7 @@ export function WaitlistModal({ open, onClose }: WaitlistModalProps) {
                   className="w-full cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
                   style={{ fontFamily: montserrat }}
                 >
-                  {status === "submitting" ? "JOINING..." : "JOIN WAITLIST"}
+                  {status === "submitting" ? waitlist.joining : waitlist.join}
                 </StarBorder>
               </ClickSpark>
             </div>

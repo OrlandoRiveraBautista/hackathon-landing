@@ -1,18 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useDictionary } from "@/components/LocaleProvider";
+import { WaitlistCounter } from "@/components/WaitlistCounter";
+import { outfit } from "@/lib/theme";
 import StarBorder from "./reactbits/StarBorder";
 import ClickSpark from "./reactbits/ClickSpark";
 import Cubes from "./reactbits/Cubes";
 import BlobCursor from "./reactbits/BlobCursor";
 import R3FBlob from "./reactbits/R3FBlob";
-import { WaitlistModal } from "./WaitlistModal";
+
+type AnimatedHeroProps = {
+  onRegisterClick: () => void;
+};
 
 /* ─────────────────────────────────────────────────────────────────────────
    AnimatedHero
    ───────────────────────────────────────────────────────────────────────── */
-export function AnimatedHero() {
-  const [waitlistOpen, setWaitlistOpen] = useState(false);
+export function AnimatedHero({ onRegisterClick }: AnimatedHeroProps) {
+  const dictionary = useDictionary();
 
   return (
     <BlobCursor
@@ -228,11 +233,34 @@ export function AnimatedHero() {
               animationDelay: "280ms",
             }}
           >
-            a tech hackathon for young people
+            {dictionary.hero.tagline}
+          </p>
+
+          <p
+            className="mt-4 text-sm tracking-[0.3em] text-[#aaff00]/80 hero-fade-up"
+            style={{
+              fontFamily: outfit,
+              animationDelay: "360ms",
+            }}
+          >
+            {dictionary.hero.location}
           </p>
 
           <div
-            className="mt-12 flex w-full items-center hero-fade-up"
+            className="mt-6 flex items-baseline justify-center gap-2 hero-fade-up"
+            style={{ animationDelay: "400ms" }}
+          >
+            <WaitlistCounter size="sm" />
+            <span
+              className="text-sm tracking-[0.2em] text-white/55"
+              style={{ fontFamily: outfit }}
+            >
+              {dictionary.hero.waitlistLabel}
+            </span>
+          </div>
+
+          <div
+            className="mt-10 flex w-full items-center hero-fade-up"
             style={{ animationDelay: "450ms" }}
           >
             <div className="h-px flex-1 bg-[#aaff00]" />
@@ -245,7 +273,7 @@ export function AnimatedHero() {
               <StarBorder
                 as="button"
                 type="button"
-                onClick={() => setWaitlistOpen(true)}
+                onClick={onRegisterClick}
                 color="#aaff00"
                 speed="5s"
                 thickness={1}
@@ -254,7 +282,7 @@ export function AnimatedHero() {
                   fontFamily: "var(--font-montserrat), Montserrat, sans-serif",
                 }}
               >
-                REGISTER NOW
+                {dictionary.hero.registerNow}
               </StarBorder>
             </ClickSpark>
             <div className="h-px flex-1 bg-[#aaff00]" />
@@ -271,11 +299,6 @@ export function AnimatedHero() {
           }
         `}</style>
       </div>
-
-      <WaitlistModal
-        open={waitlistOpen}
-        onClose={() => setWaitlistOpen(false)}
-      />
     </BlobCursor>
   );
 }

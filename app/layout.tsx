@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { Geist, Geist_Mono, Montserrat, Outfit } from "next/font/google";
 import "./globals.css";
 
@@ -24,11 +23,6 @@ const outfit = Outfit({
   weight: ["400"],
 });
 
-export const metadata: Metadata = {
-  title: "Build Pa'l Norte",
-  description: "A tech hackathon for young people",
-};
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -36,7 +30,6 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${montserrat.variable} ${outfit.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>

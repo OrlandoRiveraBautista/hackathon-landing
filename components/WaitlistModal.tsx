@@ -205,13 +205,13 @@ export function WaitlistModal({ open, onClose, onSuccess }: WaitlistModalProps) 
   return (
     <div
       ref={backdropRef}
-      className="waitlist-backdrop fixed inset-0 z-[100] flex items-center justify-center bg-black/80 px-4 backdrop-blur-md"
+      className="waitlist-backdrop fixed inset-0 z-[100] flex items-end justify-center overflow-y-auto bg-black/80 px-4 py-4 backdrop-blur-md sm:items-center sm:py-8"
       onClick={requestClose}
       role="presentation"
     >
       <div
         ref={panelRef}
-        className="waitlist-panel relative w-full max-w-md overflow-hidden rounded-2xl border border-[#aaff00]/25 bg-[#050505] p-8 shadow-[0_0_80px_rgba(170,255,0,0.1)]"
+        className="waitlist-panel relative my-auto w-full max-w-md overflow-hidden rounded-2xl border border-[#aaff00]/25 bg-[#050505] p-6 shadow-[0_0_80px_rgba(170,255,0,0.1)] sm:p-8"
         onClick={(event) => event.stopPropagation()}
         role="dialog"
         aria-modal="true"
@@ -222,7 +222,7 @@ export function WaitlistModal({ open, onClose, onSuccess }: WaitlistModalProps) 
         <button
           type="button"
           onClick={requestClose}
-          className="absolute right-4 top-4 z-10 text-white/40 transition-all duration-300 hover:rotate-90 hover:text-[#aaff00]"
+          className="absolute right-3 top-3 z-10 flex h-10 w-10 items-center justify-center text-lg text-white/40 transition-all duration-300 hover:rotate-90 hover:text-[#aaff00] sm:right-4 sm:top-4"
           aria-label="Close"
         >
           ✕

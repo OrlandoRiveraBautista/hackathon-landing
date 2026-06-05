@@ -16,14 +16,14 @@ export function SectionHeading({ label, title, subtitle }: SectionHeadingProps) 
         {label}
       </p>
       <h2
-        className="mt-4 text-3xl font-black tracking-tight text-white sm:text-4xl md:text-5xl"
+        className="mt-4 text-2xl font-black tracking-tight text-white sm:text-3xl md:text-4xl lg:text-5xl"
         style={{ fontFamily: montserrat }}
       >
         {title}
       </h2>
       {subtitle && (
         <p
-          className="mx-auto mt-5 max-w-xl text-base text-white/60 sm:text-lg"
+          className="mx-auto mt-4 max-w-xl text-sm text-white/60 sm:mt-5 sm:text-base md:text-lg"
           style={{ fontFamily: outfit }}
         >
           {subtitle}

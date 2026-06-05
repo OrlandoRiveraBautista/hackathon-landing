@@ -36,13 +36,25 @@
   border: 1px solid rgba(170, 255, 0, 0.4);
   background: #000;
   color: white;
-  font-size: 13px;
+  font-size: 12px;
   text-align: center;
-  padding: 12px 36px;
+  padding: 14px 22px;
   border-radius: 20px;
   z-index: 1;
-  letter-spacing: 3px;
+  letter-spacing: 2px;
   font-weight: 700;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (min-width: 640px) {
+  .inner-content {
+    font-size: 13px;
+    padding: 12px 36px;
+    letter-spacing: 3px;
+  }
 }
 
 @keyframes star-movement-bottom {

@@ -11,7 +11,7 @@ export function FaqSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="relative border-t border-[#aaff00]/10 bg-[#030303] px-6 py-24 sm:py-32">
+    <section id="faq" className="relative scroll-mt-16 border-t border-[#aaff00]/10 bg-[#030303] px-4 py-16 sm:px-6 sm:py-24 md:py-32">
       <div className="mx-auto max-w-3xl">
         <FadeIn>
           <SectionHeading
@@ -21,7 +21,7 @@ export function FaqSection() {
           />
         </FadeIn>
 
-        <div className="mt-14 space-y-3">
+        <div className="mt-10 space-y-3 sm:mt-14">
           {faq.items.map((item, index) => {
             const isOpen = openIndex === index;
 
@@ -37,11 +37,11 @@ export function FaqSection() {
                   <button
                     type="button"
                     onClick={() => setOpenIndex(isOpen ? null : index)}
-                    className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left"
+                    className="flex w-full items-center justify-between gap-3 px-4 py-4 text-left sm:gap-4 sm:px-6 sm:py-5"
                     aria-expanded={isOpen}
                   >
                     <span
-                      className="text-base font-semibold text-white"
+                      className="text-sm font-semibold text-white sm:text-base"
                       style={{ fontFamily: montserrat }}
                     >
                       {item.question}
@@ -62,7 +62,7 @@ export function FaqSection() {
                   >
                     <div className="overflow-hidden">
                       <p
-                        className="px-6 pb-5 text-sm leading-relaxed text-white/60"
+                        className="px-4 pb-4 text-sm leading-relaxed text-white/60 sm:px-6 sm:pb-5"
                         style={{ fontFamily: outfit }}
                       >
                         {item.answer}

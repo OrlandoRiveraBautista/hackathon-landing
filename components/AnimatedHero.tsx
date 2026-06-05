@@ -2,11 +2,11 @@
 
 import { useDictionary } from "@/components/LocaleProvider";
 import { WaitlistCounter } from "@/components/WaitlistCounter";
+import { useIsMobile } from "@/lib/useMediaQuery";
 import { outfit } from "@/lib/theme";
 import StarBorder from "./reactbits/StarBorder";
 import ClickSpark from "./reactbits/ClickSpark";
 import Cubes from "./reactbits/Cubes";
-import BlobCursor from "./reactbits/BlobCursor";
 import R3FBlob from "./reactbits/R3FBlob";
 
 type AnimatedHeroProps = {
@@ -18,31 +18,19 @@ type AnimatedHeroProps = {
    ───────────────────────────────────────────────────────────────────────── */
 export function AnimatedHero({ onRegisterClick }: AnimatedHeroProps) {
   const dictionary = useDictionary();
+  const isMobile = useIsMobile();
 
   return (
-    <BlobCursor
-      fillColor="#2a0a5e"
-      trailCount={3}
-      sizes={[70, 120, 80]}
-      innerSizes={[20, 36, 24]}
-      innerColor="rgba(180,100,255,0.5)"
-      opacities={[0.5, 0.4, 0.45]}
-      filterStdDeviation={26}
-      filterColorMatrixValues="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 28 -8"
-      fastDuration={0.12}
-      slowDuration={0.55}
-      zIndex={50}
-    >
-      <div className="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-black">
+    <div className="relative flex min-h-[100dvh] w-full items-center justify-center overflow-hidden bg-black">
         {/* Cubes background */}
         <div
           className="absolute inset-0 z-0"
           style={{ height: "100%", width: "100%" }}
         >
           <Cubes
-            gridSize={12}
-            maxAngle={28}
-            radius={3}
+            gridSize={isMobile ? 8 : 12}
+            maxAngle={isMobile ? 22 : 28}
+            radius={isMobile ? 2 : 3}
             borderStyle="1px solid rgba(170,255,0,0.12)"
             faceColor="#070c02"
             rippleColor="#aaff00"
@@ -55,7 +43,7 @@ export function AnimatedHero({ onRegisterClick }: AnimatedHeroProps) {
         {/* SVG layer: orbital rings, neon shapes, sparkles */}
         <svg
           viewBox="0 0 800 800"
-          className="pointer-events-none absolute inset-0 z-10 h-full w-full"
+          className="pointer-events-none absolute inset-0 z-10 hidden h-full w-full opacity-60 sm:block sm:opacity-100"
           xmlns="http://www.w3.org/2000/svg"
           aria-hidden="true"
           preserveAspectRatio="xMidYMid meet"
@@ -187,32 +175,34 @@ export function AnimatedHero({ onRegisterClick }: AnimatedHeroProps) {
 
         {/* Top blob — claw/boomerang shape over "Build" */}
         <div
-          className="pointer-events-none absolute z-20"
-          style={{
-            top: "50%",
-            left: "50%",
-            transform: "translate(-58%, -128%)",
-          }}
+          className="pointer-events-none absolute z-20 hero-blob-claw"
         >
-          <R3FBlob variant="claw" width={440} height={250} />
+          <R3FBlob
+            variant="claw"
+            width={isMobile ? 400 : 440}
+            height={isMobile ? 230 : 250}
+          />
         </div>
 
         {/* Bottom blob — mushroom/teardrop shape under "Pa'l Norte" */}
         <div
-          className="pointer-events-none absolute z-20"
-          style={{ top: "50%", left: "50%", transform: "translate(6%, 0%)" }}
+          className="pointer-events-none absolute z-20 hero-blob-mushroom"
         >
-          <R3FBlob variant="mushroom" width={210} height={360} />
+          <R3FBlob
+            variant="mushroom"
+            width={isMobile ? 205 : 210}
+            height={isMobile ? 350 : 360}
+          />
         </div>
 
         {/* Foreground: title, tagline, button */}
-        <div className="relative z-30 flex w-full max-w-2xl flex-col items-center px-6 text-center">
+        <div className="relative z-30 flex w-full max-w-2xl flex-col items-center px-4 pt-20 pb-10 text-center sm:px-6 sm:pt-0 sm:pb-0">
           <h1
-            className="leading-none text-white hero-fade-up"
+            className="leading-[0.92] text-white hero-fade-up"
             style={{
               fontFamily: "var(--font-montserrat), Montserrat, sans-serif",
               fontWeight: 900,
-              fontSize: "clamp(72px, 14vw, 120px)",
+              fontSize: "clamp(2.75rem, 11vw, 7.5rem)",
               letterSpacing: "-0.03em",
             }}
           >
@@ -223,11 +213,9 @@ export function AnimatedHero({ onRegisterClick }: AnimatedHeroProps) {
           </h1>
 
           <p
-            className="mt-10 text-white hero-fade-up"
+            className="mt-6 max-w-xs text-sm tracking-[0.15em] text-white hero-fade-up sm:mt-10 sm:max-w-none sm:text-[17px] sm:tracking-[0.22em]"
             style={{
               fontFamily: "var(--font-outfit), Outfit, sans-serif",
-              fontSize: "17px",
-              letterSpacing: "3.5px",
               fontWeight: 400,
               opacity: 0.9,
               animationDelay: "280ms",
@@ -237,7 +225,7 @@ export function AnimatedHero({ onRegisterClick }: AnimatedHeroProps) {
           </p>
 
           <p
-            className="mt-4 text-sm tracking-[0.3em] text-[#aaff00]/80 hero-fade-up"
+            className="mt-3 text-xs tracking-[0.2em] text-[#aaff00]/80 hero-fade-up sm:mt-4 sm:text-sm sm:tracking-[0.3em]"
             style={{
               fontFamily: outfit,
               animationDelay: "360ms",
@@ -247,12 +235,12 @@ export function AnimatedHero({ onRegisterClick }: AnimatedHeroProps) {
           </p>
 
           <div
-            className="mt-6 flex items-baseline justify-center gap-2 hero-fade-up"
+            className="mt-5 flex flex-col items-center gap-1 hero-fade-up sm:mt-6 sm:flex-row sm:items-baseline sm:gap-2"
             style={{ animationDelay: "400ms" }}
           >
             <WaitlistCounter size="sm" />
             <span
-              className="text-sm tracking-[0.2em] text-white/55"
+              className="text-xs tracking-[0.15em] text-white/55 sm:text-sm sm:tracking-[0.2em]"
               style={{ fontFamily: outfit }}
             >
               {dictionary.hero.waitlistLabel}
@@ -260,7 +248,7 @@ export function AnimatedHero({ onRegisterClick }: AnimatedHeroProps) {
           </div>
 
           <div
-            className="mt-10 flex w-full items-center hero-fade-up"
+            className="mt-8 flex w-full max-w-sm items-center hero-fade-up sm:mt-10 sm:max-w-none"
             style={{ animationDelay: "450ms" }}
           >
             <div className="h-px flex-1 bg-[#aaff00]" />
@@ -290,6 +278,32 @@ export function AnimatedHero({ onRegisterClick }: AnimatedHeroProps) {
         </div>
 
         <style>{`
+          .hero-blob-claw {
+            top: 50%;
+            left: 50%;
+            transform: translate(-58%, -125%) scale(0.95);
+          }
+          .hero-blob-mushroom {
+            top: 50%;
+            left: 50%;
+            transform: translate(4%, 2%) scale(0.95);
+          }
+          @media (min-width: 640px) {
+            .hero-blob-claw {
+              transform: translate(-58%, -128%) scale(1);
+            }
+            .hero-blob-mushroom {
+              transform: translate(5%, 0%) scale(1);
+            }
+          }
+          @media (min-width: 768px) {
+            .hero-blob-claw {
+              transform: translate(-58%, -128%) scale(1);
+            }
+            .hero-blob-mushroom {
+              transform: translate(6%, 0%) scale(1);
+            }
+          }
           @keyframes hero-fade-up {
             from { opacity: 0; transform: translateY(22px); }
             to   { opacity: 1; transform: translateY(0); }
@@ -298,7 +312,6 @@ export function AnimatedHero({ onRegisterClick }: AnimatedHeroProps) {
             animation: hero-fade-up 0.9s cubic-bezier(0.22,1,0.36,1) both;
           }
         `}</style>
-      </div>
-    </BlobCursor>
+    </div>
   );
 }

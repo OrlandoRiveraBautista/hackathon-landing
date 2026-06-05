@@ -3,6 +3,7 @@
 import { useRef, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
+import { useIsMobile } from "@/lib/useMediaQuery";
 
 // R3F still uses THREE.Clock internally — harmless deprecation noise from three r184
 if (
@@ -155,7 +156,7 @@ function buildMushroomGeometry(): THREE.BufferGeometry {
   const points: THREE.Vector2[] = [
     new THREE.Vector2(0.0, -3.35),
     new THREE.Vector2(0.05, -3.05),
-    new THREE.Vector2(0.10, -2.72),
+    new THREE.Vector2(0.1, -2.72),
     new THREE.Vector2(0.16, -2.38),
     new THREE.Vector2(0.22, -2.02),
     new THREE.Vector2(0.26, -1.65),
@@ -306,7 +307,7 @@ function BlobMesh({
       : {
           position: [0.15, 0.12, 0] as [number, number, number],
           rotation: [0.08, -0.25, 0.12] as [number, number, number],
-          scale: [0.90, 1.28, 0.95] as [number, number, number],
+          scale: [0.9, 1.28, 0.95] as [number, number, number],
         };
 
   return (
@@ -348,6 +349,7 @@ export default function R3FBlob({
   className,
   style,
 }: R3FBlobProps) {
+  const isMobile = useIsMobile();
   const defaults =
     variant === "claw"
       ? {
@@ -374,10 +376,10 @@ export default function R3FBlob({
       }}
     >
       <Canvas
-        gl={{ alpha: true, antialias: true }}
+        gl={{ alpha: true, antialias: !isMobile }}
         camera={{ position: defaults.cam, fov: 38 }}
         style={{ background: "transparent" }}
-        dpr={[1, 2]}
+        dpr={isMobile ? 1 : [1, 2]}
       >
         <BlobMesh
           variant={variant}

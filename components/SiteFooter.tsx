@@ -11,10 +11,10 @@ export function SiteFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="relative border-t border-[#aaff00]/15 bg-black px-6 py-14">
+    <footer className="relative border-t border-[#aaff00]/15 bg-black px-4 py-12 sm:px-6 sm:py-14">
       <div className="mx-auto flex max-w-5xl flex-col items-center gap-8 text-center">
         <p
-          className="text-2xl font-black tracking-tight text-white"
+          className="text-xl font-black tracking-tight text-white sm:text-2xl"
           style={{ fontFamily: montserrat }}
         >
           Build Pa&apos;l Norte

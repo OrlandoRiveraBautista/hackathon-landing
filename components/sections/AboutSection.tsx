@@ -11,7 +11,7 @@ export function AboutSection() {
   const { about } = dictionary;
 
   return (
-    <section id="about" className="relative bg-black px-6 py-24 sm:py-32">
+    <section id="about" className="relative scroll-mt-16 bg-black px-4 py-16 sm:px-6 sm:py-24 md:py-32">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(170,255,0,0.04)_0%,transparent_70%)]" />
 
       <div className="relative mx-auto max-w-5xl">
@@ -23,9 +23,9 @@ export function AboutSection() {
           />
         </FadeIn>
 
-        <div className="mt-16 grid gap-6 md:grid-cols-2">
+        <div className="mt-12 grid gap-5 sm:mt-16 sm:gap-6 md:grid-cols-2">
           <FadeIn delay={80}>
-            <div className="rounded-2xl border border-[#aaff00]/15 bg-white/[0.02] p-8 backdrop-blur-sm">
+            <div className="rounded-2xl border border-[#aaff00]/15 bg-white/[0.02] p-6 backdrop-blur-sm sm:p-8">
               <p
                 className="text-xs tracking-[0.35em] text-[#aaff00]"
                 style={{ fontFamily: outfit }}
@@ -42,7 +42,7 @@ export function AboutSection() {
           </FadeIn>
 
           <FadeIn delay={160}>
-            <div className="rounded-2xl border border-[#aaff00]/15 bg-white/[0.02] p-8 backdrop-blur-sm">
+            <div className="rounded-2xl border border-[#aaff00]/15 bg-white/[0.02] p-6 backdrop-blur-sm sm:p-8">
               <p
                 className="text-xs tracking-[0.35em] text-[#aaff00]"
                 style={{ fontFamily: outfit }}
@@ -60,7 +60,7 @@ export function AboutSection() {
         </div>
 
         <FadeIn delay={240}>
-          <div className="mt-12 flex flex-wrap items-center justify-center gap-8 sm:gap-14">
+          <div className="mt-10 grid grid-cols-2 gap-6 sm:mt-12 sm:flex sm:flex-wrap sm:items-center sm:justify-center sm:gap-14">
             {about.stats.map((stat) => (
               <div key={stat.label} className="text-center">
                 {stat.source === "waitlist" ? (

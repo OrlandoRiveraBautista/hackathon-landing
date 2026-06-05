@@ -14,7 +14,7 @@ export function CtaSection({ onRegisterClick }: CtaSectionProps) {
   const { cta } = useDictionary();
 
   return (
-    <section className="relative overflow-hidden bg-black px-6 py-24 sm:py-32">
+    <section className="relative overflow-hidden bg-black px-4 py-16 sm:px-6 sm:py-24 md:py-32">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(170,255,0,0.08)_0%,transparent_60%)]" />
 
       <FadeIn>
@@ -26,7 +26,7 @@ export function CtaSection({ onRegisterClick }: CtaSectionProps) {
             {cta.label}
           </p>
           <h2
-            className="mt-4 text-3xl font-black tracking-tight text-white sm:text-5xl"
+            className="mt-4 text-2xl font-black tracking-tight text-white sm:text-3xl md:text-5xl"
             style={{ fontFamily: montserrat }}
           >
             {cta.title}
@@ -38,7 +38,7 @@ export function CtaSection({ onRegisterClick }: CtaSectionProps) {
             {cta.subtitle}
           </p>
 
-          <div className="mt-10 flex w-full items-center">
+          <div className="mx-auto mt-8 flex w-full max-w-sm items-center sm:mt-10 sm:max-w-none">
             <div className="h-px flex-1 bg-[#aaff00]/50" />
             <ClickSpark
               sparkColor="#aaff00"

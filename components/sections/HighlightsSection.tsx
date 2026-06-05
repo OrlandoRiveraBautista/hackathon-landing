@@ -55,7 +55,7 @@ export function HighlightsSection() {
   const { highlights } = useDictionary();
 
   return (
-    <section id="highlights" className="relative border-t border-[#aaff00]/10 bg-[#030303] px-6 py-24 sm:py-32">
+    <section id="highlights" className="relative scroll-mt-16 border-t border-[#aaff00]/10 bg-[#030303] px-4 py-16 sm:px-6 sm:py-24 md:py-32">
       <div className="mx-auto max-w-5xl">
         <FadeIn>
           <SectionHeading
@@ -65,10 +65,10 @@ export function HighlightsSection() {
           />
         </FadeIn>
 
-        <div className="mt-16 grid gap-5 sm:grid-cols-2">
+        <div className="mt-12 grid gap-4 sm:mt-16 sm:grid-cols-2 sm:gap-5">
           {highlights.items.map((item, index) => (
             <FadeIn key={item.id} delay={index * 80}>
-              <div className="group h-full rounded-2xl border border-white/8 bg-black/60 p-7 transition-colors duration-300 hover:border-[#aaff00]/30 hover:bg-[#aaff00]/[0.03]">
+              <div className="group h-full rounded-2xl border border-white/8 bg-black/60 p-5 transition-colors duration-300 hover:border-[#aaff00]/30 hover:bg-[#aaff00]/[0.03] sm:p-7">
                 <div className="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-xl border border-[#aaff00]/25 text-[#aaff00] transition-transform duration-300 group-hover:scale-110">
                   <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
                     {HIGHLIGHT_ICONS[item.id]}

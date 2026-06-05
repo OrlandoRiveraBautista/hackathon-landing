@@ -25,20 +25,20 @@ export function LegalLayout({
 
   return (
     <div className="min-h-screen bg-black text-white">
-      <header className="border-b border-[#aaff00]/15 px-6 py-8">
-        <div className="mx-auto flex max-w-3xl items-center justify-between gap-4">
+      <header className="border-b border-[#aaff00]/15 px-4 py-5 sm:px-6 sm:py-8">
+        <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-3 sm:gap-4">
           <Link
             href={localizedPath(locale)}
-            className="text-lg font-black tracking-tight transition-colors hover:text-[#aaff00]"
+            className="min-w-0 truncate text-base font-black tracking-tight transition-colors hover:text-[#aaff00] sm:text-lg"
             style={{ fontFamily: montserrat }}
           >
             Build Pa&apos;l Norte
           </Link>
-          <div className="flex items-center gap-4">
+          <div className="flex shrink-0 items-center gap-3 sm:gap-4">
             <LanguageSwitcher />
             <Link
               href={localizedPath(locale)}
-              className="text-xs tracking-[0.25em] text-white/45 transition-colors hover:text-[#aaff00]"
+              className="text-[10px] tracking-[0.2em] text-white/45 transition-colors hover:text-[#aaff00] sm:text-xs sm:tracking-[0.25em]"
               style={{ fontFamily: outfit }}
             >
               {dictionary.legal.back}
@@ -47,7 +47,7 @@ export function LegalLayout({
         </div>
       </header>
 
-      <main className="px-6 py-16">
+      <main className="px-4 py-12 sm:px-6 sm:py-16">
         <article className="legal-content mx-auto max-w-3xl">
           <p
             className="text-xs tracking-[0.35em] text-[#aaff00]/75"
@@ -56,7 +56,7 @@ export function LegalLayout({
             {dictionary.legal.label}
           </p>
           <h1
-            className="mt-3 text-4xl font-black tracking-tight sm:text-5xl"
+            className="mt-3 text-3xl font-black tracking-tight sm:text-4xl md:text-5xl"
             style={{ fontFamily: montserrat }}
           >
             {title}

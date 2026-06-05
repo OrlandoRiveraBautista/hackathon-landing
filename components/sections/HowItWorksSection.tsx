@@ -9,7 +9,7 @@ export function HowItWorksSection() {
   const { howItWorks } = useDictionary();
 
   return (
-    <section id="how-it-works" className="relative bg-black px-6 py-24 sm:py-32">
+    <section id="how-it-works" className="relative scroll-mt-16 bg-black px-4 py-16 sm:px-6 sm:py-24 md:py-32">
       <div className="mx-auto max-w-5xl">
         <FadeIn>
           <SectionHeading
@@ -19,7 +19,7 @@ export function HowItWorksSection() {
           />
         </FadeIn>
 
-        <div className="relative mt-16">
+        <div className="relative mt-12 sm:mt-16">
           <div
             className="absolute left-[27px] top-8 hidden h-[calc(100%-4rem)] w-px bg-gradient-to-b from-[#aaff00]/50 via-[#aaff00]/20 to-transparent md:block"
             aria-hidden="true"
@@ -28,9 +28,9 @@ export function HowItWorksSection() {
           <div className="space-y-8">
             {howItWorks.steps.map((item, index) => (
               <FadeIn key={item.step} delay={index * 100}>
-                <div className="flex gap-6 md:gap-10">
+                <div className="flex gap-4 sm:gap-6 md:gap-10">
                   <div
-                    className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-[#aaff00]/40 bg-[#aaff00]/10 text-sm font-black text-[#aaff00]"
+                    className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-[#aaff00]/40 bg-[#aaff00]/10 text-sm font-black text-[#aaff00] sm:h-14 sm:w-14"
                     style={{ fontFamily: montserrat }}
                   >
                     {item.step}

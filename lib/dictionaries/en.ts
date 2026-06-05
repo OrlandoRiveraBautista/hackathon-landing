@@ -105,9 +105,9 @@ const dictionary: Dictionary = {
       "We've got answers. Still stuck? Hit us up at hello@buildpalnorte.com",
     items: [
       {
-        question: "How old do I need to be?",
+        question: "Is there an age limit?",
         answer:
-          "Build Pa'l Norte is designed for young people — typically ages 14–25. If you're outside that range and excited to participate, reach out and we'll figure it out together.",
+          "No. Build Pa'l Norte is open to everyone — all ages welcome. Whether you're a student, a professional, or just curious about tech, you can join.",
       },
       {
         question: "Do I need experience to join?",
@@ -195,7 +195,7 @@ const dictionary: Dictionary = {
           blocks: [
             {
               type: "paragraph",
-              text: "Build Pa'l Norte is intended for young people, generally ages 14–25. Participants under 18 must have permission from a parent or legal guardian. Organizers reserve the right to verify eligibility and deny or revoke participation at their discretion.",
+              text: "Build Pa'l Norte is open to participants of all ages. Participants under 18 must have permission from a parent or legal guardian. Organizers reserve the right to deny or revoke participation for violations of these terms or the code of conduct.",
             },
           ],
         },

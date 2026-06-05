@@ -105,9 +105,9 @@ const dictionary: Dictionary = {
       "Tenemos respuestas. ¿Aún con dudas? Escríbenos a hello@buildpalnorte.com",
     items: [
       {
-        question: "¿Qué edad necesito tener?",
+        question: "¿Hay límite de edad?",
         answer:
-          "Build Pa'l Norte está pensado para jóvenes — normalmente de 14 a 25 años. Si estás fuera de ese rango y quieres participar, contáctanos y lo vemos juntos.",
+          "No. Build Pa'l Norte está abierto para todos — todas las edades son bienvenidas. Ya seas estudiante, profesional o simplemente tengas curiosidad por la tecnología, puedes unirte.",
       },
       {
         question: "¿Necesito experiencia para unirme?",
@@ -195,7 +195,7 @@ const dictionary: Dictionary = {
           blocks: [
             {
               type: "paragraph",
-              text: "Build Pa'l Norte está dirigido a jóvenes, generalmente de 14 a 25 años. Los participantes menores de 18 deben contar con permiso de un padre o tutor legal. Los organizadores se reservan el derecho de verificar elegibilidad y negar o revocar la participación a su discreción.",
+              text: "Build Pa'l Norte está abierto a participantes de todas las edades. Los menores de 18 deben contar con permiso de un padre o tutor legal. Los organizadores se reservan el derecho de negar o revocar la participación por violaciones a estos términos o al código de conducta.",
             },
           ],
         },

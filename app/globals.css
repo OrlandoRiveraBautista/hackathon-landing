@@ -30,6 +30,86 @@ body {
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+  scrollbar-color: rgba(170, 255, 0, 0.55) rgba(255, 255, 255, 0.04);
+  scrollbar-width: thin;
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+*::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    rgba(170, 255, 0, 0.75) 0%,
+    rgba(170, 255, 0, 0.45) 100%
+  );
+  border: 2px solid rgba(0, 0, 0, 0.85);
+  border-radius: 999px;
+  box-shadow: 0 0 12px rgba(170, 255, 0, 0.25);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    180deg,
+    rgba(170, 255, 0, 0.95) 0%,
+    rgba(170, 255, 0, 0.65) 100%
+  );
+  box-shadow: 0 0 16px rgba(170, 255, 0, 0.45);
+}
+
+*::-webkit-scrollbar-corner {
+  background: rgba(0, 0, 0, 0.85);
+}
+
+.hero-cubes-layer {
+  opacity: 0;
+}
+
+.hero-svg-layer {
+  opacity: 0;
+}
+
+.hero-blob-inner {
+  opacity: 0;
+  transform: translateY(var(--hero-blob-offset, 0)) scale(0.92);
+}
+
+.hero-blob-claw .hero-blob-inner {
+  --hero-blob-offset: -28px;
+}
+
+.hero-blob-mushroom .hero-blob-inner {
+  --hero-blob-offset: 28px;
+}
+
+.hero-title-line,
+.hero-fade-item {
+  opacity: 0;
+  transform: translateY(22px);
+}
+
+.hero-cta-line {
+  transform: scaleX(0);
+  transform-origin: center;
+}
+
+.hero-deco-shape,
+.hero-deco-sparkle {
+  opacity: 0;
+  transform: scale(0.55);
+  transform-origin: center;
+  transform-box: fill-box;
+}
+
+.site-nav-mount {
+  opacity: 0;
+  transform: translateY(-14px);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -43,8 +123,20 @@ html {
     transition: none;
   }
 
-  .hero-fade-up {
-    animation: none;
+  .hero-cubes-layer,
+  .hero-svg-layer,
+  .hero-blob-inner,
+  .hero-title-line,
+  .hero-fade-item,
+  .hero-deco-shape,
+  .hero-deco-sparkle,
+  .site-nav-mount {
+    opacity: 1;
+    transform: none;
+  }
+
+  .hero-cta-line {
+    transform: none;
   }
 }
 

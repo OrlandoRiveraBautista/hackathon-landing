@@ -1,15 +1,22 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import gsap from "gsap";
 import Link from "next/link";
 import { useDictionary, useLocale } from "@/components/LocaleProvider";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { localizedPath } from "@/lib/i18n";
+import { HERO_EASE, prefersReducedMotion } from "@/lib/motion";
 import { montserrat, outfit } from "@/lib/theme";
 
-export function SiteNav() {
+type SiteNavProps = {
+  onRegisterClick: () => void;
+};
+
+export function SiteNav({ onRegisterClick }: SiteNavProps) {
   const { locale } = useLocale();
   const dictionary = useDictionary();
+  const headerRef = useRef<HTMLElement>(null);
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -25,6 +32,21 @@ export function SiteNav() {
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    if (prefersReducedMotion()) return;
+
+    const header = headerRef.current;
+    if (!header) return;
+
+    gsap.to(header, {
+      opacity: 1,
+      y: 0,
+      duration: 0.75,
+      delay: 0.2,
+      ease: HERO_EASE,
+    });
   }, []);
 
   useEffect(() => {
@@ -49,7 +71,8 @@ export function SiteNav() {
 
   return (
     <header
-      className={`fixed top-0 right-0 left-0 z-[60] transition-all duration-500 ${
+      ref={headerRef}
+      className={`site-nav-mount fixed top-0 right-0 left-0 z-[60] transition-all duration-500 ${
         scrolled || menuOpen
           ? "border-b border-[#aaff00]/15 bg-black/80 backdrop-blur-md"
           : "bg-transparent"
@@ -87,6 +110,15 @@ export function SiteNav() {
 
           <button
             type="button"
+            onClick={onRegisterClick}
+            className="shrink-0 rounded border border-[#aaff00]/35 bg-[#aaff00]/10 px-2.5 py-1.5 text-[10px] font-black tracking-[0.12em] text-[#aaff00] shadow-[0_0_20px_rgba(170,255,0,0.12)] transition-all hover:border-[#aaff00]/70 hover:bg-[#aaff00]/20 hover:shadow-[0_0_24px_rgba(170,255,0,0.25)] sm:px-3.5 sm:py-2 sm:text-xs sm:tracking-[0.15em]"
+            style={{ fontFamily: montserrat }}
+          >
+            {dictionary.hero.registerNow}
+          </button>
+
+          <button
+            type="button"
             className="relative flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 text-white/70 transition-colors hover:border-[#aaff00]/30 hover:text-[#aaff00] md:hidden"
             onClick={() => setMenuOpen((open) => !open)}
             aria-expanded={menuOpen}
@@ -118,7 +150,7 @@ export function SiteNav() {
       <div
         id="mobile-nav-menu"
         className={`overflow-hidden border-t border-[#aaff00]/10 bg-black/95 backdrop-blur-md transition-[max-height,opacity] duration-300 md:hidden ${
-          menuOpen ? "max-h-80 opacity-100" : "max-h-0 opacity-0"
+          menuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
         }`}
         aria-hidden={!menuOpen}
       >
@@ -126,6 +158,18 @@ export function SiteNav() {
           className="mx-auto flex max-w-5xl flex-col px-4 py-2"
           style={{ fontFamily: outfit }}
         >
+          <button
+            type="button"
+            onClick={() => {
+              handleNavClick();
+              onRegisterClick();
+            }}
+            className="mb-2 mt-1 w-full rounded border border-[#aaff00]/35 bg-[#aaff00]/10 py-3 text-xs font-black tracking-[0.15em] text-[#aaff00] shadow-[0_0_20px_rgba(170,255,0,0.12)] transition-all hover:border-[#aaff00]/70 hover:bg-[#aaff00]/20"
+            style={{ fontFamily: montserrat }}
+          >
+            {dictionary.hero.registerNow}
+          </button>
+
           {links.map((link) => (
             <a
               key={link.href}

@@ -17,7 +17,7 @@ export function LandingPage() {
 
   return (
     <WaitlistCountProvider>
-      <SiteNav />
+      <SiteNav onRegisterClick={() => setWaitlistOpen(true)} />
       <AnimatedHero onRegisterClick={() => setWaitlistOpen(true)} />
       <AboutSection />
       <HighlightsSection />

@@ -195,111 +195,117 @@ export function SiteNav({ onRegisterClick }: SiteNavProps) {
         </div>
       </nav>
 
-      {/* ── MOBILE top bar ───────────────────────────────────────────── */}
-      <div
-        className={`
-          flex w-full items-center justify-between px-4 py-3 transition-all duration-500 md:hidden
-          ${
-            scrolled || menuOpen
-              ? "border-b border-white/[0.07] bg-black/80 backdrop-blur-xl"
-              : "bg-transparent"
-          }
-        `}
-      >
-        <Link
-          href={localizedPath(locale)}
-          className="group flex items-center gap-2"
-          style={{ fontFamily: montserrat }}
+      {/* ── MOBILE pill nav ──────────────────────────────────────────── */}
+      <div className="relative mx-auto w-full max-w-lg px-3 md:hidden">
+        <div
+          className={`
+            relative flex w-full items-center justify-between gap-2 transition-all duration-500
+            ${
+              scrolled || menuOpen
+                ? "mt-3 rounded-full border border-white/[0.08] bg-black/75 px-3 py-2 shadow-[0_8px_32px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-2xl"
+                : "mt-0 rounded-none border-transparent bg-transparent py-3 px-1"
+            }
+          `}
         >
-          <svg
-            width="22"
-            height="22"
-            viewBox="0 0 32 32"
-            aria-hidden="true"
-            className="shrink-0 drop-shadow-[0_0_6px_rgba(170,255,0,0.5)]"
-          >
-            <rect width="32" height="32" rx="7" fill="#000" />
-            <polygon points="16,4 28,10.5 16,17 4,10.5" fill="#aaff00" />
-            <polygon points="4,10.5 16,17 16,28 4,21.5" fill="#55aa00" />
-            <polygon points="28,10.5 16,17 16,28 28,21.5" fill="#77cc00" />
-          </svg>
-          <span className="text-xs font-black tracking-tight text-white group-hover:text-[#aaff00]">
-            Build Pa&apos;l Norte
-          </span>
-        </Link>
+          {(scrolled || menuOpen) && (
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-px rounded-full bg-gradient-to-r from-transparent via-[#aaff00]/20 to-transparent" />
+          )}
 
-        <div className="flex items-center gap-2">
-          <LanguageSwitcher />
-          <button
-            type="button"
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-white/60 transition-colors hover:border-[#aaff00]/30 hover:text-[#aaff00]"
-            onClick={() => setMenuOpen((o) => !o)}
-            aria-expanded={menuOpen}
-            aria-controls="mobile-nav-menu"
-            aria-label={menuOpen ? "Close menu" : "Open menu"}
+          <Link
+            href={localizedPath(locale)}
+            className="group flex min-w-0 items-center gap-2 rounded-full py-1 pl-1 pr-2"
+            style={{ fontFamily: montserrat }}
           >
-            <span className="flex h-3.5 w-4 flex-col justify-between">
-              <span
-                className={`block h-0.5 w-full bg-current transition-transform duration-300 ${menuOpen ? "translate-y-[6px] rotate-45" : ""}`}
-              />
-              <span
-                className={`block h-0.5 w-full bg-current transition-opacity duration-300 ${menuOpen ? "opacity-0" : ""}`}
-              />
-              <span
-                className={`block h-0.5 w-full bg-current transition-transform duration-300 ${menuOpen ? "-translate-y-[6px] -rotate-45" : ""}`}
-              />
-            </span>
-          </button>
-        </div>
-      </div>
-
-      {/* ── MOBILE drawer ────────────────────────────────────────────── */}
-      <AnimatePresence>
-        {menuOpen && (
-          <motion.div
-            id="mobile-nav-menu"
-            key="mobile-menu"
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-            className="w-full overflow-hidden border-b border-[#aaff00]/10 bg-black/95 backdrop-blur-2xl md:hidden"
-            aria-hidden={!menuOpen}
-          >
-            <div
-              className="mx-auto flex max-w-md flex-col gap-1 px-4 pb-4 pt-2"
-              style={{ fontFamily: outfit }}
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 32 32"
+              aria-hidden="true"
+              className="shrink-0 drop-shadow-[0_0_6px_rgba(170,255,0,0.5)]"
             >
-              <button
-                type="button"
-                onClick={() => {
-                  setMenuOpen(false);
-                  onRegisterClick();
-                }}
-                className="mb-1 mt-2 w-full rounded-full bg-[#aaff00] py-3 text-xs font-black tracking-[0.15em] text-black shadow-[0_0_20px_rgba(170,255,0,0.3)] transition-all hover:bg-[#c8ff40]"
-                style={{ fontFamily: montserrat }}
-              >
-                {dictionary.hero.registerNow}
-              </button>
+              <rect width="32" height="32" rx="7" fill="#000" />
+              <polygon points="16,4 28,10.5 16,17 4,10.5" fill="#aaff00" />
+              <polygon points="4,10.5 16,17 16,28 4,21.5" fill="#55aa00" />
+              <polygon points="28,10.5 16,17 16,28 28,21.5" fill="#77cc00" />
+            </svg>
+            <span className="truncate text-xs font-black tracking-tight text-white group-hover:text-[#aaff00]">
+              Build Pa&apos;l Norte
+            </span>
+          </Link>
 
-              {links.map((link, i) => (
-                <motion.a
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setMenuOpen(false)}
-                  className="flex items-center gap-2 border-b border-white/5 py-3.5 text-sm tracking-[0.16em] text-white/55 transition-colors last:border-b-0 hover:text-[#aaff00]"
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.22, delay: i * 0.05 }}
+          <div className="flex shrink-0 items-center gap-2">
+            <LanguageSwitcher />
+            <button
+              type="button"
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-white/60 transition-colors hover:border-[#aaff00]/30 hover:text-[#aaff00]"
+              onClick={() => setMenuOpen((o) => !o)}
+              aria-expanded={menuOpen}
+              aria-controls="mobile-nav-menu"
+              aria-label={menuOpen ? "Close menu" : "Open menu"}
+            >
+              <span className="flex h-3.5 w-4 flex-col justify-between">
+                <span
+                  className={`block h-0.5 w-full bg-current transition-transform duration-300 ${menuOpen ? "translate-y-[6px] rotate-45" : ""}`}
+                />
+                <span
+                  className={`block h-0.5 w-full bg-current transition-opacity duration-300 ${menuOpen ? "opacity-0" : ""}`}
+                />
+                <span
+                  className={`block h-0.5 w-full bg-current transition-transform duration-300 ${menuOpen ? "-translate-y-[6px] -rotate-45" : ""}`}
+                />
+              </span>
+            </button>
+          </div>
+        </div>
+
+        {/* ── MOBILE menu panel ──────────────────────────────────────── */}
+        <AnimatePresence>
+          {menuOpen && (
+            <motion.div
+              id="mobile-nav-menu"
+              key="mobile-menu"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+              className="mt-2 overflow-hidden rounded-2xl border border-white/[0.08] bg-black/90 shadow-[0_8px_32px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-2xl"
+              aria-hidden={!menuOpen}
+            >
+              <div
+                className="flex flex-col gap-1 px-3 pb-3 pt-2"
+                style={{ fontFamily: outfit }}
+              >
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMenuOpen(false);
+                    onRegisterClick();
+                  }}
+                  className="mb-1 mt-1 w-full rounded-full bg-[#aaff00] py-3 text-xs font-black tracking-[0.15em] text-black shadow-[0_0_20px_rgba(170,255,0,0.3)] transition-all hover:bg-[#c8ff40]"
+                  style={{ fontFamily: montserrat }}
                 >
-                  <span className="h-px w-3 shrink-0 bg-[#aaff00]/30" />
-                  {link.label}
-                </motion.a>
-              ))}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+                  {dictionary.hero.registerNow}
+                </button>
+
+                {links.map((link, i) => (
+                  <motion.a
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => setMenuOpen(false)}
+                    className="flex items-center gap-2 rounded-xl px-2 py-3 text-sm tracking-[0.16em] text-white/55 transition-colors hover:bg-white/[0.03] hover:text-[#aaff00]"
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.22, delay: i * 0.05 }}
+                  >
+                    <span className="h-px w-3 shrink-0 bg-[#aaff00]/30" />
+                    {link.label}
+                  </motion.a>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </motion.header>
   );
 }

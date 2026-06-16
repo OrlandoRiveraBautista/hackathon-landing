@@ -8,7 +8,6 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { getWaitlistCount } from "@/lib/waitlist";
 
 type WaitlistCountContextValue = {
   count: number | null;
@@ -26,10 +25,15 @@ export function WaitlistCountProvider({ children }: { children: ReactNode }) {
 
   const refresh = useCallback(async () => {
     try {
-      const next = await getWaitlistCount();
-      setCount(next);
-    } catch (error) {
-      console.error("Failed to fetch waitlist count:", error);
+      const response = await fetch("/api/waitlist/count");
+      if (!response.ok) return;
+
+      const data = (await response.json()) as { count: number | null };
+      if (typeof data.count === "number") {
+        setCount(data.count);
+      }
+    } catch {
+      // Counter falls back to placeholder when Firestore is unreachable.
     }
   }, []);
 

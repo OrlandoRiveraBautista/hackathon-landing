@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useDictionary } from "@/components/LocaleProvider";
 import { PESEROS_LOGO, PESEROS_URL } from "@/lib/brand";
@@ -43,14 +42,13 @@ export function PeserosCredit({
       className="inline-flex shrink-0 items-center rounded-md bg-white px-2 py-1 transition-opacity hover:opacity-85"
       aria-label="Peseros — peseros.com"
     >
-      <Image
+      <img
         src={PESEROS_LOGO}
         alt=""
-        width={logoHeight * 3}
-        height={logoHeight}
-        className="h-auto w-auto object-contain"
+        width={1397}
+        height={1397}
+        className="object-contain"
         style={{ height: logoHeight, width: "auto", maxWidth: logoHeight * 3.5 }}
-        unoptimized
       />
     </Link>
   );

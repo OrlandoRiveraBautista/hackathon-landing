@@ -1,10 +1,15 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Montserrat, Outfit } from "next/font/google";
+import { SITE_LOGO } from "@/lib/brand";
 import { getSiteUrl } from "@/lib/site";
 import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
+  icons: {
+    icon: SITE_LOGO,
+    apple: SITE_LOGO,
+  },
 };
 
 export const viewport: Viewport = {

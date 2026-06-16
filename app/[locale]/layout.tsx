@@ -25,6 +25,19 @@ export async function generateMetadata({
   return {
     title: dictionary.meta.title,
     description: dictionary.meta.description,
+    openGraph: {
+      title: dictionary.meta.title,
+      description: dictionary.meta.description,
+      url: `/${locale}`,
+      siteName: "Build Pa'l Norte",
+      locale: locale === "es" ? "es_MX" : "en_US",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: dictionary.meta.title,
+      description: dictionary.meta.description,
+    },
   };
 }
 

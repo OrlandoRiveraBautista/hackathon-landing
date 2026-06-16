@@ -1,6 +1,11 @@
-import type { Viewport } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Montserrat, Outfit } from "next/font/google";
+import { getSiteUrl } from "@/lib/site";
 import "./globals.css";
+
+export const metadata: Metadata = {
+  metadataBase: new URL(getSiteUrl()),
+};
 
 export const viewport: Viewport = {
   width: "device-width",

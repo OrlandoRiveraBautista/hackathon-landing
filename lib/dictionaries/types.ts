@@ -31,6 +31,15 @@ export type Dictionary = {
     waitlistLabel: string;
     registerNow: string;
   };
+  profile: {
+    title: string;
+    subtitle: string;
+    usernameLabel: string;
+    emailLabel: string;
+    bioLabel: string;
+    bioText: string;
+    editButton: string;
+  };
   about: {
     label: string;
     title: string;

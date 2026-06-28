@@ -3,8 +3,6 @@ import { nextCookies } from "better-auth/next-js";
 import { getPool } from "@/lib/db";
 import { getAuthBaseUrl } from "@/lib/site";
 
-const googleClientId = process.env.GOOGLE_CLIENT_ID;
-const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
 const authBaseUrl = getAuthBaseUrl();
 
 export const auth = betterAuth({
@@ -13,22 +11,29 @@ export const auth = betterAuth({
   secret: process.env.BETTER_AUTH_SECRET,
   database: getPool(),
   trustedOrigins: [authBaseUrl],
-  emailAndPassword: {
-    enabled: true,
-    requireEmailVerification: false,
+  user: {
+    additionalFields: {
+      role: {
+        type: ["user", "admin", "owner"],
+        required: false,
+        defaultValue: "user",
+        input: false,
+      },
+    },
   },
-  ...(googleClientId && googleClientSecret
-    ? {
-        socialProviders: {
-          google: {
-            clientId: googleClientId,
-            clientSecret: googleClientSecret,
-          },
-        },
-      }
-    : {}),
+  session: {
+    cookieCache: {
+      enabled: true,
+      maxAge: 60 * 60 * 24 * 7,
+    },
+  },
+  socialProviders: {
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    },
+  },
   plugins: [nextCookies()],
 });
 
 export type Session = typeof auth.$Infer.Session;
-export type User = typeof auth.$Infer.Session.user;

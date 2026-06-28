@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import {
-  hasAuthSession,
+  getAdminAuth,
   isProtectedAdminPath,
 } from "@/lib/auth/middleware";
 import { defaultLocale, isLocale } from "@/lib/i18n";
 
 const LOCALE_COOKIE = "NEXT_LOCALE";
+const ADMIN_LOGIN = "/admin/login";
 
 function getPreferredLocale(request: NextRequest) {
   const cookieLocale = request.cookies.get(LOCALE_COOKIE)?.value;
@@ -22,14 +23,21 @@ function getPreferredLocale(request: NextRequest) {
   return defaultLocale;
 }
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  if (isProtectedAdminPath(pathname) && !hasAuthSession(request)) {
-    const loginUrl = request.nextUrl.clone();
-    loginUrl.pathname = "/admin/login";
-    loginUrl.searchParams.set("next", pathname);
-    return NextResponse.redirect(loginUrl);
+  if (isProtectedAdminPath(pathname)) {
+    const { signedIn, allowed } = await getAdminAuth(request);
+
+    if (!allowed) {
+      const loginUrl = request.nextUrl.clone();
+      loginUrl.pathname = ADMIN_LOGIN;
+      loginUrl.searchParams.set("next", pathname);
+      if (signedIn) {
+        loginUrl.searchParams.set("error", "unauthorized");
+      }
+      return NextResponse.redirect(loginUrl);
+    }
   }
 
   if (

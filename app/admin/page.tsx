@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { authClient } from "@/lib/auth/client";
 import { getSponsorSignups, type SponsorSignup } from "@/lib/sponsors-admin";
 import { getWaitlistSignups, type WaitlistSignup } from "@/lib/waitlist-admin";
 
@@ -29,10 +30,12 @@ function firestoreErrorMessage(err: unknown) {
 }
 
 export default function AdminPage() {
+  const { data: session } = authClient.useSession();
   const [tab, setTab] = useState<AdminTab>("participants");
   const [participants, setParticipants] = useState<WaitlistSignup[]>([]);
   const [sponsors, setSponsors] = useState<SponsorSignup[]>([]);
   const [loading, setLoading] = useState(true);
+  const [signingOut, setSigningOut] = useState(false);
   const [error, setError] = useState("");
 
   const loadData = useCallback(async () => {
@@ -59,24 +62,57 @@ export default function AdminPage() {
     loadData();
   }, [loadData]);
 
+  async function signOut() {
+    setSigningOut(true);
+
+    try {
+      await authClient.signOut();
+      window.location.href = "/admin/login";
+    } catch {
+      setError("Sign out failed. Try again.");
+      setSigningOut(false);
+    }
+  }
+
   const activeRows = tab === "participants" ? participants : sponsors;
   const activeCount = activeRows.length;
 
   return (
     <main className="min-h-screen bg-[#050505] px-4 py-10 text-white">
       <div className="mx-auto max-w-7xl">
-        <p
-          className="text-xs tracking-[0.35em] text-[#aaff00]/80"
-          style={{ fontFamily: outfit }}
-        >
-          BUILD PA&apos;L NORTE
-        </p>
-        <h1
-          className="mt-2 text-3xl font-black"
-          style={{ fontFamily: montserrat }}
-        >
-          Registration Admin
-        </h1>
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <p
+              className="text-xs tracking-[0.35em] text-[#aaff00]/80"
+              style={{ fontFamily: outfit }}
+            >
+              BUILD PA&apos;L NORTE
+            </p>
+            <h1
+              className="mt-2 text-3xl font-black"
+              style={{ fontFamily: montserrat }}
+            >
+              Registration Admin
+            </h1>
+          </div>
+
+          {session?.user && (
+            <div className="text-right">
+              <p className="text-sm text-white/50" style={{ fontFamily: outfit }}>
+                {session.user.email}
+              </p>
+              <button
+                type="button"
+                onClick={signOut}
+                disabled={signingOut}
+                className="mt-2 cursor-pointer rounded-xl border border-white/15 px-4 py-2 text-sm text-white/70 transition-opacity hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-40"
+                style={{ fontFamily: outfit }}
+              >
+                {signingOut ? "Signing out..." : "Sign out"}
+              </button>
+            </div>
+          )}
+        </div>
 
         <div className="mt-6 flex flex-wrap gap-2">
           <button

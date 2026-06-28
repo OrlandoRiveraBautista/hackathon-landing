@@ -1,21 +1,30 @@
 import type { NextRequest } from "next/server";
-import { getSessionCookie } from "better-auth/cookies";
+import { getCookieCache } from "better-auth/cookies";
+import { canAccessAdmin } from "@/lib/auth/roles";
 
-const ADMIN_PUBLIC_PATHS = ["/admin/login"];
-
-export function isAdminPath(pathname: string) {
-  return pathname.startsWith("/admin");
-}
+const ADMIN_LOGIN = "/admin/login";
 
 export function isProtectedAdminPath(pathname: string) {
   return (
-    isAdminPath(pathname) &&
-    !ADMIN_PUBLIC_PATHS.some(
-      (path) => pathname === path || pathname.startsWith(`${path}/`),
-    )
+    pathname.startsWith("/admin") &&
+    pathname !== ADMIN_LOGIN &&
+    !pathname.startsWith(`${ADMIN_LOGIN}/`)
   );
 }
 
-export function hasAuthSession(request: NextRequest) {
-  return Boolean(getSessionCookie(request));
+async function getSessionUser(request: NextRequest) {
+  const cached = (await getCookieCache(request, {
+    secret: process.env.BETTER_AUTH_SECRET,
+  })) as { user?: { email?: string | null; role?: string | null } } | null;
+
+  return cached?.user ?? null;
+}
+
+export async function getAdminAuth(request: NextRequest) {
+  const user = await getSessionUser(request);
+
+  return {
+    signedIn: Boolean(user?.email),
+    allowed: canAccessAdmin(user?.role),
+  };
 }

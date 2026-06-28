@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import {
+  hasAuthSession,
+  isProtectedAdminPath,
+} from "@/lib/auth/middleware";
 import { defaultLocale, isLocale } from "@/lib/i18n";
 
 const LOCALE_COOKIE = "NEXT_LOCALE";
@@ -20,6 +24,13 @@ function getPreferredLocale(request: NextRequest) {
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  if (isProtectedAdminPath(pathname) && !hasAuthSession(request)) {
+    const loginUrl = request.nextUrl.clone();
+    loginUrl.pathname = "/admin/login";
+    loginUrl.searchParams.set("next", pathname);
+    return NextResponse.redirect(loginUrl);
+  }
 
   if (
     pathname.startsWith("/admin") ||

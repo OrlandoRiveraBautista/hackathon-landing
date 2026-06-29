@@ -27,6 +27,7 @@ export type Dictionary = {
   };
   hero: {
     tagline: string;
+    dates: string;
     location: string;
     waitlistLabel: string;
     registerNow: string;
@@ -43,6 +44,7 @@ export type Dictionary = {
     stats: Array<{
       value: string;
       label: string;
+      sublabel?: string;
       source?: "waitlist";
       compact?: boolean;
     }>;
@@ -141,6 +143,7 @@ export type Dictionary = {
     close: string;
     successTitle: string;
     successDefault: string;
+    successAlreadyTitle: string;
     successAlready: string;
     errors: {
       invalidName: string;
@@ -179,6 +182,7 @@ export type Dictionary = {
     close: string;
     successTitle: string;
     successDefault: string;
+    successAlreadyTitle: string;
     successAlready: string;
     errors: {
       invalidName: string;

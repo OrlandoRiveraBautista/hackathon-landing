@@ -134,8 +134,18 @@ export function AboutSection() {
                     {stat.value}
                   </p>
                 )}
+                {stat.sublabel && (
+                  <p
+                    className="mt-1 text-[11px] font-semibold tracking-[0.12em] text-[#aaff00]/75 sm:text-xs"
+                    style={{ fontFamily: outfit }}
+                  >
+                    {stat.sublabel}
+                  </p>
+                )}
                 <p
-                  className="mt-1.5 text-[10px] tracking-[0.3em] text-white/40 sm:text-xs"
+                  className={`text-[10px] tracking-[0.3em] text-white/40 sm:text-xs ${
+                    stat.sublabel ? "mt-1" : "mt-1.5"
+                  }`}
                   style={{ fontFamily: outfit }}
                 >
                   {stat.label}

@@ -309,6 +309,13 @@ export function AnimatedHero({ onRegisterClick, ready = true }: AnimatedHeroProp
           className="hero-fade-item mt-3 text-xs tracking-[0.2em] text-[#aaff00]/80 sm:mt-4 sm:text-sm sm:tracking-[0.3em]"
           style={{ fontFamily: outfit }}
         >
+          {dictionary.hero.dates}
+        </p>
+
+        <p
+          className="hero-fade-item mt-2 text-xs tracking-[0.2em] text-white/55 sm:text-sm sm:tracking-[0.25em]"
+          style={{ fontFamily: outfit }}
+        >
           {dictionary.hero.location}
         </p>
 

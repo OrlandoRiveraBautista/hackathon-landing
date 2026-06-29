@@ -1,10 +1,13 @@
 import type { Dictionary } from "./types";
+import { getEventCopy } from "@/lib/event";
+
+const event = getEventCopy("es");
 
 const dictionary: Dictionary = {
   meta: {
     title: "Build Pa'l Norte — Hackathon de tecnología para jóvenes",
     description:
-      "Un hackathon de 24 horas en Matamoros para jóvenes. Programa, crea y compite — únete a la lista de espera de Build Pa'l Norte.",
+      "Un hackathon de 24 horas en Matamoros, 25–26 de julio de 2026. Programa, crea y compite — únete a la lista de espera de Build Pa'l Norte.",
   },
   brand: {
     organizedBy: "Organizado por",
@@ -19,6 +22,7 @@ const dictionary: Dictionary = {
   },
   hero: {
     tagline: "un hackathon de tecnología de 24h para jóvenes",
+    dates: event.heroDates,
     location: "Matamoros, Tamaulipas",
     waitlistLabel: "en la lista de espera",
     registerNow: "REGÍSTRATE AHORA",
@@ -36,9 +40,9 @@ const dictionary: Dictionary = {
     whoIsItForBody:
       "Ya sea tu primera línea de código o tu décimo hackathon, aquí tienes lugar. Desarrolladores, diseñadores, makers y soñadores — si tienes curiosidad y ganas de construir, apúntate a la lista de espera.",
     stats: [
-      { value: "24H", label: "PARA CREAR" },
+      { value: "24H", label: "PARA CREAR", sublabel: event.statDateSublabel },
       { value: "0", label: "EN LA LISTA", source: "waitlist" },
-      { value: "MATAMOROS", label: "TAMAULIPAS", compact: true },
+      { value: "MATAMOROS", label: event.venueShort, compact: true },
     ],
   },
   highlights: {
@@ -90,7 +94,7 @@ const dictionary: Dictionary = {
         step: "01",
         title: "Únete a la Lista de Espera",
         description:
-          "Regístrate con tu nombre, correo y número de teléfono. Te avisamos en cuanto abra el registro y compartimos los detalles del evento.",
+          "Regístrate con tu nombre, correo y número de teléfono. Te avisamos en cuanto abra el registro — el evento es el 25–26 de julio, 10 AM a 10 AM.",
       },
       {
         step: "02",
@@ -145,8 +149,7 @@ const dictionary: Dictionary = {
       },
       {
         question: "¿Cuándo y dónde es el evento?",
-        answer:
-          "Build Pa'l Norte se lleva a cabo en Matamoros, Tamaulipas — un hackathon de 24 horas. Las fechas exactas se anunciarán pronto. Únete a la lista de espera para ser el primero en saber.",
+        answer: event.faqWhenWhere,
       },
     ],
   },
@@ -154,7 +157,7 @@ const dictionary: Dictionary = {
     label: "NO TE LO PIERDAS",
     title: "¿Listo para construir pa'l norte?",
     subtitle:
-      "Los lugares se van rápido. Deja tu nombre en la lista de espera y te contactamos cuando abran las puertas.",
+      "25–26 de julio en Matamoros. Deja tu nombre en la lista de espera y te contactamos cuando abra el registro.",
     button: "ÚNETE A LA LISTA",
     urgencyBadge: "LUGARES SE AGOTAN",
     socialProof: "Constructores ya registrados — únete",
@@ -214,6 +217,8 @@ const dictionary: Dictionary = {
   ticker: {
     items: [
       "24 HORAS PARA CREAR",
+      "25–26 JUL 2026",
+      "10 AM – 10 AM",
       "GRATIS",
       "MENTORES EXPERTOS",
       "MATAMOROS 2026",
@@ -267,8 +272,10 @@ const dictionary: Dictionary = {
     joining: "REGISTRANDO...",
     close: "CERRAR",
     successTitle: "¡Registro completado!",
-    successDefault: "Te contactaremos pronto con los detalles del evento.",
-    successAlready: "Ya estás registrado — estaremos en contacto.",
+    successDefault: event.waitlistSuccessDetail,
+    successAlreadyTitle: "¡Ya estás en la lista!",
+    successAlready:
+      "Buenas noticias — ya te tenemos registrado para el 25–26 de julio. Te escribiremos en cuanto abra el registro con la sede y los siguientes pasos.",
     errors: {
       invalidName: "Por favor ingresa tu nombre.",
       invalidEmail: "Por favor ingresa un correo válido.",
@@ -312,7 +319,9 @@ const dictionary: Dictionary = {
     successTitle: "¡Gracias por tu interés!",
     successDefault:
       "Te contactaremos para hablar de los detalles del patrocinio.",
-    successAlready: "Ya tenemos tu información — estaremos en contacto.",
+    successAlreadyTitle: "¡Ya tenemos tu información!",
+    successAlready:
+      "Parece que ya nos escribiste — estaremos en contacto pronto.",
     errors: {
       invalidName: "Por favor ingresa tu nombre.",
       invalidEmail: "Por favor ingresa un correo válido.",

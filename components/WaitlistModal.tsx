@@ -2,9 +2,9 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import gsap from "gsap";
-import { useDictionary } from "@/components/LocaleProvider";
+import { useDictionary, useLocale } from "@/components/LocaleProvider";
 import { useWaitlistCount } from "@/components/WaitlistCountProvider";
-import { joinWaitlist, SEX_OPTIONS } from "@/lib/waitlist";
+import { SEX_OPTIONS } from "@/lib/waitlist";
 import ClickSpark from "./reactbits/ClickSpark";
 import StarBorder from "./reactbits/StarBorder";
 import "./WaitlistModal.css";
@@ -28,6 +28,7 @@ const inputClassName =
 
 export function WaitlistModal({ open, onClose, onSuccess }: WaitlistModalProps) {
   const dictionary = useDictionary();
+  const { locale } = useLocale();
   const { waitlist } = dictionary;
   const { refresh } = useWaitlistCount();
 
@@ -43,12 +44,34 @@ export function WaitlistModal({ open, onClose, onSuccess }: WaitlistModalProps) 
   const [status, setStatus] = useState<FormStatus>("idle");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState(waitlist.successDefault);
+  const [successTitle, setSuccessTitle] = useState(waitlist.successTitle);
 
   const backdropRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const formContentRef = useRef<HTMLDivElement>(null);
   const successContentRef = useRef<HTMLDivElement>(null);
   const isClosingRef = useRef(false);
+
+  const resetForm = useCallback(() => {
+    setName("");
+    setEmail("");
+    setPhone("");
+    setAge("");
+    setSex("");
+    setSchool("");
+    setGithub("");
+    setInterests("");
+    setStatus("idle");
+    setErrorMessage("");
+    setSuccessMessage(waitlist.successDefault);
+    setSuccessTitle(waitlist.successTitle);
+  }, [waitlist.successDefault, waitlist.successTitle]);
+
+  const [prevOpen, setPrevOpen] = useState(open);
+  if (open !== prevOpen) {
+    setPrevOpen(open);
+    if (open) setShouldRender(true);
+  }
 
   const animateIn = useCallback(() => {
     const panel = panelRef.current;
@@ -117,10 +140,6 @@ export function WaitlistModal({ open, onClose, onSuccess }: WaitlistModalProps) 
   }, [animateOut, onClose, open]);
 
   useEffect(() => {
-    if (open) setShouldRender(true);
-  }, [open]);
-
-  useEffect(() => {
     if (!shouldRender) return;
 
     if (open) {
@@ -129,10 +148,11 @@ export function WaitlistModal({ open, onClose, onSuccess }: WaitlistModalProps) 
       isClosingRef.current = true;
       animateOut(() => {
         isClosingRef.current = false;
+        resetForm();
         setShouldRender(false);
       });
     }
-  }, [open, shouldRender, animateIn, animateOut]);
+  }, [open, shouldRender, animateIn, animateOut, resetForm]);
 
   useEffect(() => {
     if (!shouldRender) return;
@@ -149,22 +169,6 @@ export function WaitlistModal({ open, onClose, onSuccess }: WaitlistModalProps) 
       document.body.style.overflow = "";
     };
   }, [shouldRender, requestClose]);
-
-  useEffect(() => {
-    if (!open) {
-      setName("");
-      setEmail("");
-      setPhone("");
-      setAge("");
-      setSex("");
-      setSchool("");
-      setGithub("");
-      setInterests("");
-      setStatus("idle");
-      setErrorMessage("");
-      setSuccessMessage(waitlist.successDefault);
-    }
-  }, [open, waitlist.successDefault]);
 
   useEffect(() => {
     if (status !== "success") return;
@@ -200,9 +204,35 @@ export function WaitlistModal({ open, onClose, onSuccess }: WaitlistModalProps) 
     setErrorMessage("");
 
     try {
-      const result = await joinWaitlist(
-        { name, email, phone, age, sex, school, github, interests },
-        waitlist.errors,
+      const response = await fetch("/api/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          email,
+          phone,
+          age,
+          sex,
+          school,
+          github,
+          interests,
+          locale,
+        }),
+      });
+
+      const result = (await response.json()) as {
+        alreadyRegistered?: boolean;
+        error?: string;
+      };
+
+      if (!response.ok) {
+        throw new Error(result.error ?? waitlist.errors.generic);
+      }
+
+      setSuccessTitle(
+        result.alreadyRegistered
+          ? waitlist.successAlreadyTitle
+          : waitlist.successTitle,
       );
       setSuccessMessage(
         result.alreadyRegistered
@@ -282,7 +312,7 @@ export function WaitlistModal({ open, onClose, onSuccess }: WaitlistModalProps) 
             className="waitlist-success-item text-2xl font-black text-white"
             style={{ fontFamily: montserrat }}
           >
-            {waitlist.successTitle}
+            {successTitle}
           </p>
           <p
             className="waitlist-success-item mt-3 text-white/70"

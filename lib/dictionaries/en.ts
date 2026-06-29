@@ -1,10 +1,13 @@
 import type { Dictionary } from "./types";
+import { getEventCopy } from "@/lib/event";
+
+const event = getEventCopy("en");
 
 const dictionary: Dictionary = {
   meta: {
     title: "Build Pa'l Norte — Tech Hackathon for Young Builders",
     description:
-      "A 24-hour tech hackathon in Matamoros for young people. Code, create, and compete — join the waitlist for Build Pa'l Norte.",
+      "A 24-hour tech hackathon in Matamoros, July 25–26, 2026. Code, create, and compete — join the waitlist for Build Pa'l Norte.",
   },
   brand: {
     organizedBy: "Organized by",
@@ -19,6 +22,7 @@ const dictionary: Dictionary = {
   },
   hero: {
     tagline: "a 24h tech hackathon for young people",
+    dates: event.heroDates,
     location: "Matamoros, Tamaulipas",
     waitlistLabel: "on the waitlist",
     registerNow: "REGISTER NOW",
@@ -36,9 +40,9 @@ const dictionary: Dictionary = {
     whoIsItForBody:
       "Whether it's your first line of code or your tenth hackathon, you belong here. Developers, designers, makers, and dreamers — if you're curious and ready to build, grab a spot on the waitlist.",
     stats: [
-      { value: "24H", label: "TO BUILD" },
+      { value: "24H", label: "TO BUILD", sublabel: event.statDateSublabel },
       { value: "0", label: "ON WAITLIST", source: "waitlist" },
-      { value: "MATAMOROS", label: "TAMAULIPAS", compact: true },
+      { value: "MATAMOROS", label: event.venueShort, compact: true },
     ],
   },
   highlights: {
@@ -90,7 +94,7 @@ const dictionary: Dictionary = {
         step: "01",
         title: "Join the Waitlist",
         description:
-          "Sign up with your name, email, and phone number. We'll notify you the moment registration opens and share event details.",
+          "Sign up with your name, email, and phone number. We'll notify you when registration opens — the event is July 25–26, 10 AM to 10 AM.",
       },
       {
         step: "02",
@@ -145,8 +149,7 @@ const dictionary: Dictionary = {
       },
       {
         question: "When and where is the event?",
-        answer:
-          "Build Pa'l Norte takes place in Matamoros, Tamaulipas — a 24-hour hackathon. Exact dates will be announced soon. Join the waitlist to be the first to know.",
+        answer: event.faqWhenWhere,
       },
     ],
   },
@@ -154,7 +157,7 @@ const dictionary: Dictionary = {
     label: "DON'T SLEEP ON THIS",
     title: "Ready to build pa'l norte?",
     subtitle:
-      "Spots will go fast. Drop your name on the waitlist and we'll hit you up when doors open.",
+      "July 25–26 in Matamoros. Drop your name on the waitlist and we'll hit you up when registration opens.",
     button: "JOIN THE WAITLIST",
     urgencyBadge: "SPOTS FILLING FAST",
     socialProof: "Builders already signed up — join them",
@@ -213,6 +216,8 @@ const dictionary: Dictionary = {
   ticker: {
     items: [
       "24 HOURS TO BUILD",
+      "JUL 25–26, 2026",
+      "10 AM – 10 AM",
       "FREE TO JOIN",
       "EXPERT MENTORS",
       "MATAMOROS 2026",
@@ -266,8 +271,10 @@ const dictionary: Dictionary = {
     joining: "REGISTERING...",
     close: "CLOSE",
     successTitle: "You're registered!",
-    successDefault: "We'll reach out with event details soon.",
-    successAlready: "You're already registered — we'll be in touch.",
+    successDefault: event.waitlistSuccessDetail,
+    successAlreadyTitle: "You're already on the list!",
+    successAlready:
+      "Good news — we already have you signed up for July 25–26. We'll email you when registration opens with venue details and next steps.",
     errors: {
       invalidName: "Please enter your name.",
       invalidEmail: "Please enter a valid email address.",
@@ -308,7 +315,8 @@ const dictionary: Dictionary = {
     close: "CLOSE",
     successTitle: "Thanks for your interest!",
     successDefault: "We'll reach out to discuss sponsorship details.",
-    successAlready: "We already have your info — we'll be in touch.",
+    successAlreadyTitle: "We already have your info!",
+    successAlready: "Looks like you've already reached out — we'll be in touch soon.",
     errors: {
       invalidName: "Please enter your name.",
       invalidEmail: "Please enter a valid email address.",

@@ -9,8 +9,20 @@ service cloud.firestore {
       return !(field in request.resource.data) || request.resource.data[field] is string;
     }
 
+    function waitlistCoreFieldsUnchanged() {
+      return request.resource.data.name == resource.data.name
+          && request.resource.data.email == resource.data.email
+          && request.resource.data.phone == resource.data.phone
+          && request.resource.data.age == resource.data.age
+          && request.resource.data.sex == resource.data.sex
+          && request.resource.data.createdAt == resource.data.createdAt
+          && (!('school' in resource.data) || request.resource.data.school == resource.data.school)
+          && (!('github' in resource.data) || request.resource.data.github == resource.data.github)
+          && (!('interests' in resource.data) || request.resource.data.interests == resource.data.interests);
+    }
+
     match /waitlist/{emailId} {
-      allow create: if request.resource.data.keys().hasAll(['name', 'email', 'phone', 'age', 'sex', 'createdAt'])
+      allow create: if request.resource.data.keys().hasAll(['name', 'email', 'phone', 'age', 'sex', 'status', 'createdAt'])
                     && request.resource.data.name is string
                     && request.resource.data.name.size() >= 2
                     && request.resource.data.email is string
@@ -23,11 +35,15 @@ service cloud.firestore {
                     && request.resource.data.age <= 120
                     && request.resource.data.sex is string
                     && isValidSex(request.resource.data.sex)
+                    && request.resource.data.status == 'pending'
                     && isOptionalString('school')
                     && isOptionalString('github')
                     && isOptionalString('interests');
       allow read: if true;
-      allow update, delete: if false;
+      allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'contactedAt'])
+                    && request.resource.data.status == 'contacted'
+                    && waitlistCoreFieldsUnchanged();
+      allow delete: if false;
     }
 
     match /sponsors/{emailId} {

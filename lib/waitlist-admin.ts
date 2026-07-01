@@ -1,5 +1,6 @@
 import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import { getDb } from "./firebase";
+import { normalizeWaitlistStatus, type WaitlistStatus } from "./waitlist-status";
 import type { SexOption } from "./waitlist";
 
 export type WaitlistSignup = {
@@ -12,6 +13,8 @@ export type WaitlistSignup = {
   school: string;
   github: string;
   interests: string;
+  status: WaitlistStatus;
+  contactedAt: Date | null;
   createdAt: Date | null;
 };
 
@@ -33,6 +36,8 @@ export async function getWaitlistSignups(): Promise<WaitlistSignup[]> {
       school: (data.school as string | undefined) ?? "—",
       github: (data.github as string | undefined) ?? "—",
       interests: (data.interests as string | undefined) ?? "—",
+      status: normalizeWaitlistStatus(data.status),
+      contactedAt: data.contactedAt?.toDate?.() ?? null,
       createdAt: data.createdAt?.toDate?.() ?? null,
     };
   });

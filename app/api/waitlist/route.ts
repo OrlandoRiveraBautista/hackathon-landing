@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import { sendWaitlistConfirmation } from "@/lib/emails/send-waitlist-confirmation";
 import { getDictionary } from "@/lib/dictionaries";
 import { defaultLocale, isLocale } from "@/lib/i18n";
-import { joinWaitlist, type ParticipantInput } from "@/lib/waitlist";
+import { markWaitlistContacted } from "@/lib/waitlist-contact";
+import { joinWaitlist, waitlistDocIdForEmail, type ParticipantInput } from "@/lib/waitlist";
 
 export async function POST(request: Request) {
   let body: Record<string, unknown>;
@@ -40,6 +41,14 @@ export async function POST(request: Request) {
 
       if (error) {
         console.error("Waitlist confirmation email failed:", error);
+      } else {
+        try {
+          await markWaitlistContacted(
+            waitlistDocIdForEmail(input.email.trim().toLowerCase()),
+          );
+        } catch (updateError) {
+          console.error("Waitlist contacted status update failed:", updateError);
+        }
       }
     }
 

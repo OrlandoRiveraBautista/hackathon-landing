@@ -183,6 +183,7 @@ export default function AdminPage() {
                   <th className="px-4 py-3 font-medium">School</th>
                   <th className="px-4 py-3 font-medium">GitHub</th>
                   <th className="px-4 py-3 font-medium">Interests</th>
+                  <th className="px-4 py-3 font-medium">Status</th>
                   <th className="px-4 py-3 font-medium">Signed up</th>
                 </tr>
               </thead>
@@ -215,6 +216,17 @@ export default function AdminPage() {
                     </td>
                     <td className="px-4 py-3" style={{ fontFamily: outfit }}>
                       {signup.interests}
+                    </td>
+                    <td className="px-4 py-3" style={{ fontFamily: outfit }}>
+                      <span
+                        className={
+                          signup.status === "contacted"
+                            ? "text-[#aaff00]"
+                            : "text-white/50"
+                        }
+                      >
+                        {signup.status}
+                      </span>
                     </td>
                     <td
                       className="px-4 py-3 text-white/50"

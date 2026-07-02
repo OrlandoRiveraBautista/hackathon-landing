@@ -57,6 +57,10 @@ function emailToDocId(email: string) {
   return email.toLowerCase().replace(/[^a-z0-9]/g, "_");
 }
 
+export function waitlistDocIdForEmail(email: string) {
+  return emailToDocId(email);
+}
+
 function isValidAge(age: string) {
   const parsed = Number.parseInt(age, 10);
   return Number.isInteger(parsed) && parsed >= 18 && parsed <= 120;
@@ -167,6 +171,7 @@ export async function joinWaitlist(
       phone: normalizedPhone,
       age,
       sex: input.sex,
+      status: "pending",
       createdAt: serverTimestamp(),
     };
 

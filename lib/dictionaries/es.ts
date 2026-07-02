@@ -27,6 +27,15 @@ const dictionary: Dictionary = {
     waitlistLabel: "en la lista de espera",
     registerNow: "REGÍSTRATE AHORA",
   },
+  profile: {
+    title: "Perfil de usuario",
+    subtitle: "Administra tu cuenta y tu información personal.",
+    usernameLabel: "Nombre de usuario",
+    emailLabel: "Correo electrónico",
+    bioLabel: "Biografía",
+    bioText: "Esta es tu página de perfil. Actualiza tu nombre, correo y biografía para mantener tus datos al día.",
+    editButton: "Editar perfil",
+  },
   about: {
     label: "LA MISIÓN",
     title: "Programa. Crea. Compite.",

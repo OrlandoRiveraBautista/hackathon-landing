@@ -585,6 +585,34 @@ const dictionary: Dictionary = {
     ctaNote: "No commitment until you're ready · We'll reach out within 48h",
     back: "← BACK",
   },
+  login: {
+    metaTitle: "Member Login — Build Pa'l Norte",
+    metaDescription:
+      "Sign in with Google to access your Build Pa'l Norte member portal.",
+    eyebrow: "MEMBERS",
+    title: "Sign in",
+    subtitle: "Use your Google account to open your member dashboard.",
+    signingIn: "Signing in...",
+    signInWithGoogle: "Sign in with Google",
+    signInFailed: "Google sign in failed. Try again.",
+    signedInAs: "Signed in as",
+    signOut: "Sign out",
+    signingOut: "Signing out...",
+    signOutFailed: "Sign out failed. Try again.",
+    backToHome: "Back to home",
+  },
+  members: {
+    metaTitle: "Member Portal — Build Pa'l Norte",
+    metaDescription:
+      "Your Build Pa'l Norte member dashboard for hackathon updates and team info.",
+    eyebrow: "MEMBER ACCESS",
+    title: "Welcome, Builder",
+    subtitle:
+      "You're in. Team assignments, schedules, and updates will appear here as we get closer to event day.",
+    signOut: "Sign out",
+    signingOut: "Signing out...",
+    backToHome: "Back to home",
+  },
   legal: {
     back: "← BACK",
     label: "LEGAL",

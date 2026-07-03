@@ -2,7 +2,10 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import {
   getAdminAuth,
+  getMemberAuth,
+  getMemberLoginPath,
   isProtectedAdminPath,
+  isProtectedMemberPath,
 } from "@/lib/auth/middleware";
 import { defaultLocale, isLocale } from "@/lib/i18n";
 
@@ -36,6 +39,17 @@ export async function middleware(request: NextRequest) {
       if (signedIn) {
         loginUrl.searchParams.set("error", "unauthorized");
       }
+      return NextResponse.redirect(loginUrl);
+    }
+  }
+
+  if (isProtectedMemberPath(pathname)) {
+    const { signedIn } = await getMemberAuth(request);
+
+    if (!signedIn) {
+      const loginUrl = request.nextUrl.clone();
+      loginUrl.pathname = getMemberLoginPath(pathname);
+      loginUrl.searchParams.set("next", pathname);
       return NextResponse.redirect(loginUrl);
     }
   }

@@ -12,6 +12,7 @@
     "start": "next start",
     "lint": "eslint",
     "auth:migrate": "better-auth migrate --config lib/auth.ts --yes",
+    "db:migrate": "tsx scripts/migrate-db.ts",
     "email:test": "tsx scripts/test-waitlist-email.ts",
     "email:bulk-waitlist": "tsx scripts/bulk-waitlist-email.ts"
   },

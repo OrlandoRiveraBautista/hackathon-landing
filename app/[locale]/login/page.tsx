@@ -28,10 +28,13 @@ export async function generateMetadata({
 
 function LoginPageFallback() {
   return (
-    <main className="relative flex min-h-[100dvh] flex-col bg-[#050505]">
-      <div className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center px-4 py-12">
-        <div className="mb-8 h-10 w-44 animate-pulse rounded-lg bg-white/5" />
-        <div className="h-72 animate-pulse rounded-2xl border border-white/10 bg-black/30" />
+    <main className="flex min-h-[100dvh] bg-[#050505]">
+      <div className="hidden lg:block lg:w-[48%] xl:w-[52%] animate-pulse bg-white/[0.02]" />
+      <div className="flex flex-1 flex-col items-center justify-center px-5 py-12">
+        <div className="w-full max-w-sm">
+          <div className="mb-8 h-5 w-32 animate-pulse rounded-lg bg-white/5" />
+          <div className="h-64 animate-pulse rounded-2xl border border-white/8 bg-white/[0.03]" />
+        </div>
       </div>
     </main>
   );

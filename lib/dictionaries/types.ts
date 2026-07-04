@@ -255,6 +255,33 @@ export type Dictionary = {
     ctaNote: string;
     back: string;
   };
+  login: {
+    metaTitle: string;
+    metaDescription: string;
+    eyebrow: string;
+    title: string;
+    subtitle: string;
+    signingIn: string;
+    signInWithGoogle: string;
+    signInFailed: string;
+    signedInAs: string;
+    signOut: string;
+    signingOut: string;
+    signOutFailed: string;
+    notRegistered: string;
+    backToHome: string;
+  };
+  members: {
+    metaTitle: string;
+    metaDescription: string;
+    eyebrow: string;
+    title: string;
+    subtitle: string;
+    signOut: string;
+    signingOut: string;
+    signOutFailed: string;
+    backToHome: string;
+  };
   legal: {
     back: string;
     label: string;

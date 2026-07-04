@@ -595,6 +595,37 @@ const dictionary: Dictionary = {
     ctaNote: "Sin compromiso hasta que estés listo · Te contactamos en 48h",
     back: "← VOLVER",
   },
+  login: {
+    metaTitle: "Inicio de sesión — Build Pa'l Norte",
+    metaDescription:
+      "Inicia sesión con Google para acceder al portal de miembros de Build Pa'l Norte.",
+    eyebrow: "MIEMBROS",
+    title: "Inicia sesión",
+    subtitle: "Usa tu cuenta de Google para abrir tu panel de miembro.",
+    signingIn: "Iniciando sesión...",
+    signInWithGoogle: "Iniciar sesión con Google",
+    signInFailed: "No se pudo iniciar sesión con Google. Intenta de nuevo.",
+    signedInAs: "Sesión iniciada como",
+    signOut: "Cerrar sesión",
+    signingOut: "Cerrando sesión...",
+    signOutFailed: "No se pudo cerrar sesión. Intenta de nuevo.",
+    notRegistered:
+      "Esta cuenta de Google no está en la lista de espera. Únete primero y luego inicia sesión.",
+    backToHome: "Volver al inicio",
+  },
+  members: {
+    metaTitle: "Portal de miembros — Build Pa'l Norte",
+    metaDescription:
+      "Tu panel de miembro de Build Pa'l Norte para actualizaciones del hackathon e info de equipo.",
+    eyebrow: "ACCESO DE MIEMBROS",
+    title: "Bienvenido, Builder",
+    subtitle:
+      "Ya estás dentro. Asignaciones de equipo, horarios y actualizaciones aparecerán aquí conforme se acerque el evento.",
+    signOut: "Cerrar sesión",
+    signingOut: "Cerrando sesión...",
+    signOutFailed: "No se pudo cerrar sesión. Intenta de nuevo.",
+    backToHome: "Volver al inicio",
+  },
   legal: {
     back: "← VOLVER",
     label: "LEGAL",

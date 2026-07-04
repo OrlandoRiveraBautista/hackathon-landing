@@ -1,31 +1,39 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Build Pa'l Norte
+
+Hackathon landing site and member platform for Build Pa'l Norte (Matamoros, 2026).
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+pnpm install
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Database setup
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Member profiles and auth use **Neon Postgres**. Waitlist signups stay in **Firestore**.
 
-## Learn More
+Run migrations after setting `DATABASE_URL` in `.env` or `.env.local`:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+pnpm auth:migrate   # Better Auth tables (user, session, …)
+pnpm db:migrate     # Platform tables (members, …)
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Run both in **every environment** (local, preview, production) before deploying profile features. Without `db:migrate`, `/profile` will fail with `relation "members" does not exist`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Platform docs
 
-## Deploy on Vercel
+See [`docs/PLATFORM.md`](docs/PLATFORM.md) for the product roadmap, data models, and phased build plan.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Deploy
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# hackathon-landing
+On Vercel (or any host), add a build or release step that runs:
+
+```bash
+pnpm auth:migrate && pnpm db:migrate
+```
+
+Ensure `DATABASE_URL`, `BETTER_AUTH_SECRET`, and Google OAuth env vars are configured.

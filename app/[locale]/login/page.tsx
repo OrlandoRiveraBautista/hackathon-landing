@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
 import { MemberLoginScreen } from "@/components/MemberLoginScreen";
 import { resolveSafeRedirect } from "@/lib/auth/redirect";
+import { getSession } from "@/lib/auth/session";
 import { getDictionary } from "@/lib/dictionaries";
 import { isLocale, localizedPath } from "@/lib/i18n";
+import { getWaitlistSignupByEmail } from "@/lib/waitlist-admin";
 
 type LoginPageProps = {
   params: Promise<{ locale: string }>;
@@ -50,8 +52,20 @@ async function LoginPageInner({ params, searchParams }: LoginPageProps) {
 
   const nextPath = resolveSafeRedirect(
     next,
-    localizedPath(locale, "/members"),
+    localizedPath(locale, "/profile"),
   );
+
+  if (!error) {
+    const session = await getSession();
+    const email = session?.user?.email;
+
+    if (email) {
+      const signup = await getWaitlistSignupByEmail(email);
+      if (signup) {
+        redirect(nextPath);
+      }
+    }
+  }
 
   return (
     <MemberLoginScreen nextPath={nextPath} errorCode={error ?? null} />

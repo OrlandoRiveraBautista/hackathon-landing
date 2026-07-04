@@ -282,6 +282,41 @@ export type Dictionary = {
     signOutFailed: string;
     backToHome: string;
   };
+  profile: {
+    metaTitle: string;
+    metaDescription: string;
+    eyebrow: string;
+    subtitle: string;
+    statusPending: string;
+    statusContacted: string;
+    memberSince: string;
+    signOut: string;
+    signingOut: string;
+    signOutFailed: string;
+    backToHome: string;
+    editProfile: string;
+    saveProfile: string;
+    savingProfile: string;
+    cancelEdit: string;
+    saveSuccess: string;
+    bio: string;
+    skills: string;
+    openToTeams: string;
+    openToTeamsHint: string;
+    bioPlaceholder: string;
+    skillsPlaceholder: string;
+    errors: {
+      unauthorized: string;
+      notFound: string;
+      notRegistered: string;
+      invalidBody: string;
+      invalidGithub: string;
+      fieldTooLong: string;
+      invalidSkills: string;
+      generic: string;
+      saveFailed: string;
+    };
+  };
   legal: {
     back: string;
     label: string;

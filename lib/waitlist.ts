@@ -70,7 +70,7 @@ function isValidSex(sex: string): sex is SexOption {
   return SEX_OPTIONS.includes(sex as SexOption);
 }
 
-function normalizeGithub(github: string) {
+export function normalizeGithub(github: string) {
   const trimmed = github.trim();
   if (!trimmed) return "";
 

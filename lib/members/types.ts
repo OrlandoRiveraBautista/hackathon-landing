@@ -13,6 +13,8 @@ export type MemberProfile = {
   bio: string | null;
   skills: string[];
   openToTeams: boolean;
+  showEmail: boolean;
+  showPhone: boolean;
   waitlistId: string | null;
   createdAt: Date;
   updatedAt: Date;
@@ -30,7 +32,10 @@ export type PublicMemberProfile = Pick<
   | "openToTeams"
   | "createdAt"
   | "updatedAt"
->;
+> & {
+  email: string | null;
+  phone: string | null;
+};
 
 export type MemberProfileUpdate = {
   school?: string | null;
@@ -39,4 +44,6 @@ export type MemberProfileUpdate = {
   bio?: string | null;
   skills?: string[];
   openToTeams?: boolean;
+  showEmail?: boolean;
+  showPhone?: boolean;
 };

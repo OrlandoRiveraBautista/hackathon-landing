@@ -12,6 +12,8 @@ export function toPublicMemberProfile(member: MemberProfile): PublicMemberProfil
     openToTeams: member.openToTeams,
     createdAt: member.createdAt,
     updatedAt: member.updatedAt,
+    email: member.showEmail ? member.email : null,
+    phone: member.showPhone ? member.phone : null,
   };
 }
 

@@ -4,13 +4,14 @@ import {
   ExternalLinkIcon,
   GlassCard,
   GithubIcon,
+  MailIcon,
   PhoneIcon,
   SchoolIcon,
   SectionLabel,
   SkillPill,
   UserIcon,
 } from "@/components/platform";
-import { formatMemberDate, displayValue, parseGithubUrl } from "@/lib/members/shared";
+import { formatMemberDate, parseGithubUrl } from "@/lib/members/shared";
 import { outfit } from "@/lib/theme";
 import { ProfileTeamStatusCard } from "./ProfileTeamStatusCard";
 
@@ -23,6 +24,7 @@ type ProfileViewLabels = {
   detailsSection: string;
   school: string;
   memberSince: string;
+  email: string;
   phone: string;
   age: string;
   sex: string;
@@ -39,6 +41,7 @@ type ProfileViewMember = {
   createdAt: Date;
   openToTeams: boolean;
   github: string | null;
+  email?: string | null;
   phone?: string | null;
   age?: number | null;
   sex?: string | null;
@@ -120,11 +123,40 @@ export function ProfileViewGrid({
               label={labels.memberSince}
               value={formatMemberDate(member.createdAt, locale)}
             />
-            {showPrivateFields && (
+            {member.email && (
+              <DetailRow
+                icon={<MailIcon className="h-4 w-4" />}
+                label={labels.email}
+                value={
+                  showPrivateFields ? (
+                    member.email
+                  ) : (
+                    <a
+                      href={`mailto:${member.email}`}
+                      className="text-[#aaff00]/70 transition-colors hover:text-[#aaff00]"
+                    >
+                      {member.email}
+                    </a>
+                  )
+                }
+              />
+            )}
+            {member.phone && (
               <DetailRow
                 icon={<PhoneIcon className="h-4 w-4" />}
                 label={labels.phone}
-                value={displayValue(member.phone)}
+                value={
+                  showPrivateFields ? (
+                    member.phone
+                  ) : (
+                    <a
+                      href={`tel:${member.phone}`}
+                      className="text-[#aaff00]/70 transition-colors hover:text-[#aaff00]"
+                    >
+                      {member.phone}
+                    </a>
+                  )
+                }
               />
             )}
             {showPrivateFields && (

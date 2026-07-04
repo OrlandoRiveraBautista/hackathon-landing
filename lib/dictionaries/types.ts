@@ -314,6 +314,13 @@ export type Dictionary = {
     openToTeams: string;
     openToTeamsHint: string;
     notOpenToTeams: string;
+    email: string;
+    phone: string;
+    showEmail: string;
+    showEmailHint: string;
+    showPhone: string;
+    showPhoneHint: string;
+    contactVisibilitySection: string;
     viewOnGithub: string;
     bioPlaceholder: string;
     skillsPlaceholder: string;

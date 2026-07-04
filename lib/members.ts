@@ -23,6 +23,8 @@ type MemberRow = {
   bio: string | null;
   skills: string[] | null;
   open_to_teams: boolean;
+  show_email: boolean;
+  show_phone: boolean;
   waitlist_id: string | null;
   created_at: Date;
   updated_at: Date;
@@ -50,6 +52,8 @@ function mapMemberRow(row: MemberRow): MemberProfile {
     bio: row.bio,
     skills: row.skills ?? [],
     openToTeams: row.open_to_teams,
+    showEmail: row.show_email,
+    showPhone: row.show_phone,
     waitlistId: row.waitlist_id,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
@@ -217,6 +221,20 @@ export function parseMemberProfileUpdate(
     update.openToTeams = body.openToTeams;
   }
 
+  if (body.showEmail !== undefined) {
+    if (typeof body.showEmail !== "boolean") {
+      throw new Error("invalid_show_email");
+    }
+    update.showEmail = body.showEmail;
+  }
+
+  if (body.showPhone !== undefined) {
+    if (typeof body.showPhone !== "boolean") {
+      throw new Error("invalid_show_phone");
+    }
+    update.showPhone = body.showPhone;
+  }
+
   return update;
 }
 
@@ -240,6 +258,12 @@ async function updateMemberQuery(
   if (update.skills !== undefined) addField("skills", update.skills);
   if (update.openToTeams !== undefined) {
     addField("open_to_teams", update.openToTeams);
+  }
+  if (update.showEmail !== undefined) {
+    addField("show_email", update.showEmail);
+  }
+  if (update.showPhone !== undefined) {
+    addField("show_phone", update.showPhone);
   }
 
   if (fields.length === 0) {

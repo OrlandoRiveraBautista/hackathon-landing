@@ -16,6 +16,8 @@ export type ProfileFormState = {
   bio: string;
   skills: string;
   openToTeams: boolean;
+  showEmail: boolean;
+  showPhone: boolean;
 };
 
 type ProfileEditFormLabels = {
@@ -32,6 +34,11 @@ type ProfileEditFormLabels = {
   skillsHint?: string;
   openToTeams: string;
   openToTeamsHint: string;
+  showEmail: string;
+  showEmailHint: string;
+  showPhone: string;
+  showPhoneHint: string;
+  contactVisibilitySection?: string;
   saveProfile: string;
   savingProfile: string;
   cancelEdit: string;
@@ -104,6 +111,24 @@ export function ProfileEditForm({
             description={labels.openToTeamsHint}
             disabled={disabled || saving}
           />
+
+          <div className="space-y-3 rounded-xl border border-white/[0.07] bg-white/[0.02] p-4">
+            <SectionLabel>{labels.contactVisibilitySection ?? "CONTACT VISIBILITY"}</SectionLabel>
+            <ToggleSwitch
+              checked={form.showEmail}
+              onChange={(checked) => onChange("showEmail", checked)}
+              label={labels.showEmail}
+              description={labels.showEmailHint}
+              disabled={disabled || saving}
+            />
+            <ToggleSwitch
+              checked={form.showPhone}
+              onChange={(checked) => onChange("showPhone", checked)}
+              label={labels.showPhone}
+              description={labels.showPhoneHint}
+              disabled={disabled || saving}
+            />
+          </div>
 
           <div className="flex flex-wrap items-center gap-3 pt-3">
             <PlatformButton

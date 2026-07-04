@@ -54,6 +54,8 @@ function formFromMember(member: MemberProfile): ProfileFormState {
     bio: member.bio ?? "",
     skills: skillsToInput(member.skills),
     openToTeams: member.openToTeams,
+    showEmail: member.showEmail,
+    showPhone: member.showPhone,
   };
 }
 
@@ -125,6 +127,8 @@ function OwnMemberProfileScreen({
           bio: form.bio,
           skills: skillsFromInput(form.skills),
           openToTeams: form.openToTeams,
+          showEmail: form.showEmail,
+          showPhone: form.showPhone,
         }),
       });
 
@@ -210,16 +214,18 @@ function OwnMemberProfileScreen({
         meta={
           <>
             <div className="flex flex-wrap items-center gap-2.5">
-              <span className="text-sm text-white/40" style={{ fontFamily: outfit }}>
-                {member.email}
-              </span>
+              {member.showEmail && (
+                <span className="text-sm text-white/40" style={{ fontFamily: outfit }}>
+                  {member.email}
+                </span>
+              )}
+              {member.showEmail && member.school && (
+                <span className="h-1 w-1 rounded-full bg-white/15" />
+              )}
               {member.school && (
-                <>
-                  <span className="h-1 w-1 rounded-full bg-white/15" />
-                  <span className="text-sm text-white/40" style={{ fontFamily: outfit }}>
-                    {member.school}
-                  </span>
-                </>
+                <span className="text-sm text-white/40" style={{ fontFamily: outfit }}>
+                  {member.school}
+                </span>
               )}
             </div>
             <p
@@ -267,6 +273,11 @@ function OwnMemberProfileScreen({
             skillsHint: "Separate with commas — React, Python, UI design...",
             openToTeams: profile.openToTeams,
             openToTeamsHint: profile.openToTeamsHint,
+            showEmail: profile.showEmail,
+            showEmailHint: profile.showEmailHint,
+            showPhone: profile.showPhone,
+            showPhoneHint: profile.showPhoneHint,
+            contactVisibilitySection: profile.contactVisibilitySection,
             saveProfile: profile.saveProfile,
             savingProfile: profile.savingProfile,
             cancelEdit: profile.cancelEdit,
@@ -286,7 +297,8 @@ function OwnMemberProfileScreen({
             createdAt: member.createdAt,
             openToTeams: member.openToTeams,
             github: member.github,
-            phone: member.phone,
+            email: member.showEmail ? member.email : null,
+            phone: member.showPhone ? member.phone : null,
             age: member.age,
             sex: member.sex ? waitlist.sexOptions[member.sex] : null,
           }}
@@ -299,6 +311,7 @@ function OwnMemberProfileScreen({
             detailsSection: profile.detailsSection,
             school: profile.school,
             memberSince: profile.memberSince.toUpperCase(),
+            email: waitlist.email,
             phone: waitlist.phone,
             age: waitlist.age,
             sex: waitlist.sex,
@@ -348,6 +361,14 @@ function PublicMemberProfileScreen({ member }: { member: PublicMemberProfile }) 
                 {member.school}
               </span>
             )}
+            {member.email && (
+              <>
+                {member.school && <span className="h-1 w-1 rounded-full bg-white/15" />}
+                <span className="text-sm text-white/40" style={{ fontFamily: outfit }}>
+                  {member.email}
+                </span>
+              </>
+            )}
             <span
               className="flex items-center gap-1.5 text-[11px] text-white/20"
               style={{ fontFamily: outfit }}
@@ -376,6 +397,8 @@ function PublicMemberProfileScreen({ member }: { member: PublicMemberProfile }) 
           createdAt: member.createdAt,
           openToTeams: member.openToTeams,
           github: member.github,
+          email: member.email,
+          phone: member.phone,
         }}
         labels={{
           aboutSection: profile.aboutSection,
@@ -386,7 +409,8 @@ function PublicMemberProfileScreen({ member }: { member: PublicMemberProfile }) 
           detailsSection: profile.detailsSection,
           school: profile.school,
           memberSince: profile.memberSince.toUpperCase(),
-          phone: "",
+          email: profile.email,
+          phone: profile.phone,
           age: "",
           sex: "",
           openToTeams: profile.openToTeams,

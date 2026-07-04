@@ -28,6 +28,8 @@ export type MemberProfileJson = Omit<
 export function parseMemberFromJson(raw: MemberProfileJson): MemberProfile {
   return {
     ...raw,
+    showEmail: raw.showEmail ?? false,
+    showPhone: raw.showPhone ?? false,
     createdAt: new Date(raw.createdAt),
     updatedAt: new Date(raw.updatedAt),
   };

@@ -6,6 +6,7 @@ import {
   ProfileEditForm,
   ProfileHeroCard,
   ProfileViewGrid,
+  ContactVisibilityBadge,
   type ProfileFormState,
 } from "@/components/profile";
 import {
@@ -214,18 +215,24 @@ function OwnMemberProfileScreen({
         meta={
           <>
             <div className="flex flex-wrap items-center gap-2.5">
-              {member.showEmail && (
-                <span className="text-sm text-white/40" style={{ fontFamily: outfit }}>
-                  {member.email}
-                </span>
-              )}
-              {member.showEmail && member.school && (
-                <span className="h-1 w-1 rounded-full bg-white/15" />
-              )}
+              <span
+                className="inline-flex flex-wrap items-center gap-2 text-sm text-white/40"
+                style={{ fontFamily: outfit }}
+              >
+                {member.email}
+                <ContactVisibilityBadge
+                  isPublic={member.showEmail}
+                  publicLabel={profile.contactPublic}
+                  privateLabel={profile.contactPrivate}
+                />
+              </span>
               {member.school && (
-                <span className="text-sm text-white/40" style={{ fontFamily: outfit }}>
-                  {member.school}
-                </span>
+                <>
+                  <span className="h-1 w-1 rounded-full bg-white/15" />
+                  <span className="text-sm text-white/40" style={{ fontFamily: outfit }}>
+                    {member.school}
+                  </span>
+                </>
               )}
             </div>
             <p
@@ -270,18 +277,21 @@ function OwnMemberProfileScreen({
             bioPlaceholder: profile.bioPlaceholder,
             skills: profile.skills,
             skillsPlaceholder: profile.skillsPlaceholder,
-            skillsHint: "Separate with commas — React, Python, UI design...",
+            skillsHint: profile.skillsHint,
             openToTeams: profile.openToTeams,
             openToTeamsHint: profile.openToTeamsHint,
             showEmail: profile.showEmail,
             showEmailHint: profile.showEmailHint,
             showPhone: profile.showPhone,
             showPhoneHint: profile.showPhoneHint,
+            showPhoneDisabledHint: profile.showPhoneDisabledHint,
             contactVisibilitySection: profile.contactVisibilitySection,
+            editSection: profile.editSection,
             saveProfile: profile.saveProfile,
             savingProfile: profile.savingProfile,
             cancelEdit: profile.cancelEdit,
           }}
+          hasPhone={Boolean(member.phone?.trim())}
           onSave={saveProfile}
           onCancel={cancelEditing}
           saving={saving}
@@ -297,8 +307,8 @@ function OwnMemberProfileScreen({
             createdAt: member.createdAt,
             openToTeams: member.openToTeams,
             github: member.github,
-            email: member.showEmail ? member.email : null,
-            phone: member.showPhone ? member.phone : null,
+            email: member.email,
+            phone: member.phone,
             age: member.age,
             sex: member.sex ? waitlist.sexOptions[member.sex] : null,
           }}
@@ -311,16 +321,23 @@ function OwnMemberProfileScreen({
             detailsSection: profile.detailsSection,
             school: profile.school,
             memberSince: profile.memberSince.toUpperCase(),
-            email: waitlist.email,
-            phone: waitlist.phone,
+            email: profile.email,
+            phone: profile.phone,
+            github: profile.github,
             age: waitlist.age,
             sex: waitlist.sex,
             openToTeams: profile.openToTeams,
             notOpenToTeams: profile.notOpenToTeams,
             openToTeamsHint: profile.openToTeamsHint,
+            contactPublic: profile.contactPublic,
+            contactPrivate: profile.contactPrivate,
           }}
           locale={locale}
           showPrivateFields
+          ownerContact={{
+            emailPublic: member.showEmail,
+            phonePublic: member.showPhone,
+          }}
         />
       )}
 
@@ -355,27 +372,19 @@ function PublicMemberProfileScreen({ member }: { member: PublicMemberProfile }) 
           </h1>
         }
         meta={
-          <div className="flex flex-wrap items-center gap-2.5">
+          <div className="flex flex-col gap-1">
             {member.school && (
               <span className="text-sm text-white/40" style={{ fontFamily: outfit }}>
                 {member.school}
               </span>
             )}
-            {member.email && (
-              <>
-                {member.school && <span className="h-1 w-1 rounded-full bg-white/15" />}
-                <span className="text-sm text-white/40" style={{ fontFamily: outfit }}>
-                  {member.email}
-                </span>
-              </>
-            )}
-            <span
+            <p
               className="flex items-center gap-1.5 text-[11px] text-white/20"
               style={{ fontFamily: outfit }}
             >
               <CalendarIcon className="h-3 w-3" />
               {profile.memberSince} {formatMemberDate(member.createdAt, locale)}
-            </span>
+            </p>
           </div>
         }
         footer={
@@ -411,11 +420,14 @@ function PublicMemberProfileScreen({ member }: { member: PublicMemberProfile }) 
           memberSince: profile.memberSince.toUpperCase(),
           email: profile.email,
           phone: profile.phone,
+          github: profile.github,
           age: "",
           sex: "",
           openToTeams: profile.openToTeams,
           notOpenToTeams: profile.notOpenToTeams,
           openToTeamsHint: profile.openToTeamsHint,
+          contactPublic: profile.contactPublic,
+          contactPrivate: profile.contactPrivate,
         }}
         locale={locale}
         animationClass="auth-item-in-2"

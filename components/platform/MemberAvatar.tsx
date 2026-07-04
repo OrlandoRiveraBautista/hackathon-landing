@@ -33,6 +33,7 @@ export function MemberAvatar({ name, imageUrl, size = "lg" }: MemberAvatarProps)
           alt={name}
           width={dim}
           height={dim}
+          referrerPolicy="no-referrer"
           className="h-full w-full object-cover"
         />
       ) : (

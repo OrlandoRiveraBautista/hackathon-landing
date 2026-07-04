@@ -38,17 +38,19 @@ type ProfileEditFormLabels = {
   showEmailHint: string;
   showPhone: string;
   showPhoneHint: string;
-  contactVisibilitySection?: string;
+  showPhoneDisabledHint?: string;
+  contactVisibilitySection: string;
+  editSection: string;
   saveProfile: string;
   savingProfile: string;
   cancelEdit: string;
-  editSection?: string;
 };
 
 type ProfileEditFormProps = {
   form: ProfileFormState;
   onChange: <K extends keyof ProfileFormState>(key: K, value: ProfileFormState[K]) => void;
   labels: ProfileEditFormLabels;
+  hasPhone: boolean;
   onSave: () => void;
   onCancel: () => void;
   saving: boolean;
@@ -59,6 +61,7 @@ export function ProfileEditForm({
   form,
   onChange,
   labels,
+  hasPhone,
   onSave,
   onCancel,
   saving,
@@ -68,7 +71,7 @@ export function ProfileEditForm({
     <section className="auth-item-in-4 mt-6">
       <GlassCard>
         <SectionLabel icon={<PencilIcon className="h-3.5 w-3.5" />}>
-          {labels.editSection ?? "EDIT PROFILE"}
+          {labels.editSection}
         </SectionLabel>
         <div className="space-y-3">
           <PlatformInput
@@ -113,7 +116,7 @@ export function ProfileEditForm({
           />
 
           <div className="space-y-3 rounded-xl border border-white/[0.07] bg-white/[0.02] p-4">
-            <SectionLabel>{labels.contactVisibilitySection ?? "CONTACT VISIBILITY"}</SectionLabel>
+            <SectionLabel>{labels.contactVisibilitySection}</SectionLabel>
             <ToggleSwitch
               checked={form.showEmail}
               onChange={(checked) => onChange("showEmail", checked)}
@@ -125,8 +128,10 @@ export function ProfileEditForm({
               checked={form.showPhone}
               onChange={(checked) => onChange("showPhone", checked)}
               label={labels.showPhone}
-              description={labels.showPhoneHint}
-              disabled={disabled || saving}
+              description={
+                hasPhone ? labels.showPhoneHint : labels.showPhoneDisabledHint
+              }
+              disabled={disabled || saving || !hasPhone}
             />
           </div>
 

@@ -290,8 +290,6 @@ export type Dictionary = {
     eyebrow: string;
     memberEyebrow: string;
     subtitle: string;
-    statusPending: string;
-    statusContacted: string;
     memberSince: string;
     signOut: string;
     signingOut: string;
@@ -299,6 +297,7 @@ export type Dictionary = {
     backToHome: string;
     backToDirectory: string;
     editProfile: string;
+    editSection: string;
     saveProfile: string;
     savingProfile: string;
     cancelEdit: string;
@@ -320,10 +319,15 @@ export type Dictionary = {
     showEmailHint: string;
     showPhone: string;
     showPhoneHint: string;
+    showPhoneDisabledHint: string;
     contactVisibilitySection: string;
+    contactPublic: string;
+    contactPrivate: string;
+    github: string;
     viewOnGithub: string;
     bioPlaceholder: string;
     skillsPlaceholder: string;
+    skillsHint: string;
     aboutSection: string;
     detailsSection: string;
     errors: {

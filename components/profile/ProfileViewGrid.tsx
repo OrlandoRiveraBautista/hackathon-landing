@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import {
   CalendarIcon,
   DetailRow,
@@ -11,8 +12,9 @@ import {
   SkillPill,
   UserIcon,
 } from "@/components/platform";
-import { formatMemberDate, parseGithubUrl } from "@/lib/members/shared";
+import { displayValue, formatMemberDate, parseGithubUrl } from "@/lib/members/shared";
 import { outfit } from "@/lib/theme";
+import { ContactVisibilityBadge } from "./ContactVisibilityBadge";
 import { ProfileTeamStatusCard } from "./ProfileTeamStatusCard";
 
 type ProfileViewLabels = {
@@ -26,11 +28,19 @@ type ProfileViewLabels = {
   memberSince: string;
   email: string;
   phone: string;
+  github: string;
   age: string;
   sex: string;
   openToTeams: string;
   notOpenToTeams: string;
   openToTeamsHint: string;
+  contactPublic: string;
+  contactPrivate: string;
+};
+
+type OwnerContactVisibility = {
+  emailPublic: boolean;
+  phonePublic: boolean;
 };
 
 type ProfileViewMember = {
@@ -52,15 +62,35 @@ type ProfileViewGridProps = {
   labels: ProfileViewLabels;
   locale: string;
   showPrivateFields?: boolean;
+  ownerContact?: OwnerContactVisibility;
   animationClass?: string;
   className?: string;
 };
+
+function withVisibilityBadge(
+  value: ReactNode,
+  isPublic: boolean,
+  publicLabel: string,
+  privateLabel: string,
+) {
+  return (
+    <span className="inline-flex flex-wrap items-center gap-2">
+      {value}
+      <ContactVisibilityBadge
+        isPublic={isPublic}
+        publicLabel={publicLabel}
+        privateLabel={privateLabel}
+      />
+    </span>
+  );
+}
 
 export function ProfileViewGrid({
   member,
   labels,
   locale,
   showPrivateFields = false,
+  ownerContact,
   animationClass = "auth-item-in-4",
   className = "mt-6",
 }: ProfileViewGridProps) {
@@ -123,39 +153,55 @@ export function ProfileViewGrid({
               label={labels.memberSince}
               value={formatMemberDate(member.createdAt, locale)}
             />
-            {member.email && (
+            {ownerContact && member.email && (
+              <DetailRow
+                icon={<MailIcon className="h-4 w-4" />}
+                label={labels.email}
+                value={withVisibilityBadge(
+                  member.email,
+                  ownerContact.emailPublic,
+                  labels.contactPublic,
+                  labels.contactPrivate,
+                )}
+              />
+            )}
+            {ownerContact && (
+              <DetailRow
+                icon={<PhoneIcon className="h-4 w-4" />}
+                label={labels.phone}
+                value={withVisibilityBadge(
+                  displayValue(member.phone),
+                  ownerContact.phonePublic,
+                  labels.contactPublic,
+                  labels.contactPrivate,
+                )}
+              />
+            )}
+            {!ownerContact && member.email && (
               <DetailRow
                 icon={<MailIcon className="h-4 w-4" />}
                 label={labels.email}
                 value={
-                  showPrivateFields ? (
-                    member.email
-                  ) : (
-                    <a
-                      href={`mailto:${member.email}`}
-                      className="text-[#aaff00]/70 transition-colors hover:text-[#aaff00]"
-                    >
-                      {member.email}
-                    </a>
-                  )
+                  <a
+                    href={`mailto:${member.email}`}
+                    className="text-[#aaff00]/70 transition-colors hover:text-[#aaff00]"
+                  >
+                    {member.email}
+                  </a>
                 }
               />
             )}
-            {member.phone && (
+            {!ownerContact && member.phone && (
               <DetailRow
                 icon={<PhoneIcon className="h-4 w-4" />}
                 label={labels.phone}
                 value={
-                  showPrivateFields ? (
-                    member.phone
-                  ) : (
-                    <a
-                      href={`tel:${member.phone}`}
-                      className="text-[#aaff00]/70 transition-colors hover:text-[#aaff00]"
-                    >
-                      {member.phone}
-                    </a>
-                  )
+                  <a
+                    href={`tel:${member.phone}`}
+                    className="text-[#aaff00]/70 transition-colors hover:text-[#aaff00]"
+                  >
+                    {member.phone}
+                  </a>
                 }
               />
             )}
@@ -176,7 +222,7 @@ export function ProfileViewGrid({
             {githubHref && githubHandle && (
               <DetailRow
                 icon={<GithubIcon className="h-4 w-4" />}
-                label="GITHUB"
+                label={labels.github}
                 value={
                   <a
                     href={githubHref}

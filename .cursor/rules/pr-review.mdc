@@ -1,0 +1,66 @@
+---
+description: Greptile-style PR review — triggered when user says "review", "review this PR", "review my changes", or similar. Performs a structured, multi-pass code review of staged/unstaged changes.
+alwaysApply: false
+---
+
+# PR Review (Greptile Style)
+
+When the user asks for a review, perform a structured multi-pass review of the current git diff. Run `git diff HEAD` (or `git diff main...HEAD` for branch comparisons) to get the changes, then analyze them across the categories below. Be concise, direct, and specific — cite file names and line numbers. Group findings by severity.
+
+## Review Passes
+
+### 1. Correctness & Bugs
+- Logic errors, off-by-one, null/undefined dereferences
+- Unhandled promise rejections or missing `await`
+- Wrong HTTP methods, incorrect status codes
+- Race conditions or missing error boundaries
+
+### 2. Security
+- Auth/authz gaps — are protected routes/actions actually gated?
+- Secrets or credentials in code
+- Unvalidated user input passed to DB queries, shell commands, or HTML
+- Missing CSRF protection on mutations
+
+### 3. Performance
+- N+1 queries or missing pagination
+- Large payloads sent to the client unnecessarily
+- Missing `useMemo`/`useCallback` on expensive renders (React)
+- Unnecessary re-renders or missing keys in lists
+
+### 4. Type Safety (TypeScript)
+- `any` used where a real type should exist
+- Non-null assertions (`!`) without justification
+- Missing return types on exported functions
+- Types that lie (e.g., claiming something is non-optional when it can be `undefined`)
+
+### 5. Code Quality
+- Dead code or unused imports/variables
+- Functions doing too many things — flag if >30 lines and not obvious why
+- Duplicated logic that should be extracted
+- Magic strings/numbers without constants
+
+### 6. Tests & Observability
+- New logic without test coverage
+- Missing error logs on catch blocks that swallow errors
+- Side effects (DB writes, emails, payments) not logged or traced
+
+## Output Format
+
+```
+## Summary
+<1–3 sentence overview of what the diff does>
+
+## 🔴 Critical
+- [file:line] <issue and suggested fix>
+
+## 🟡 Important
+- [file:line] <issue and suggested fix>
+
+## 🟢 Suggestions
+- [file:line] <non-blocking improvement>
+
+## ✅ Looks Good
+- <things done well — be genuine, not filler>
+```
+
+Use `🔴 Critical` for bugs, security issues, or data-loss risks. Use `🟡 Important` for correctness and type issues. Use `🟢 Suggestions` for style, performance hints, and nice-to-haves. Skip sections that have no findings. If the diff is clean, say so plainly.

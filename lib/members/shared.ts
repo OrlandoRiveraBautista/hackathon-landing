@@ -1,4 +1,21 @@
-import type { MemberProfile } from "@/lib/members/types";
+import type { MemberProfile, PublicMemberProfile } from "@/lib/members/types";
+
+export function toPublicMemberProfile(member: MemberProfile): PublicMemberProfile {
+  return {
+    userId: member.userId,
+    name: member.name,
+    school: member.school,
+    github: member.github,
+    interests: member.interests,
+    bio: member.bio,
+    skills: member.skills,
+    openToTeams: member.openToTeams,
+    createdAt: member.createdAt,
+    updatedAt: member.updatedAt,
+    email: member.showEmail ? member.email : null,
+    phone: member.showPhone ? member.phone : null,
+  };
+}
 
 export type MemberProfileJson = Omit<
   MemberProfile,
@@ -11,6 +28,8 @@ export type MemberProfileJson = Omit<
 export function parseMemberFromJson(raw: MemberProfileJson): MemberProfile {
   return {
     ...raw,
+    showEmail: raw.showEmail ?? false,
+    showPhone: raw.showPhone ?? false,
     createdAt: new Date(raw.createdAt),
     updatedAt: new Date(raw.updatedAt),
   };
@@ -46,4 +65,24 @@ export function skillsFromInput(input: string) {
     .map((skill) => skill.trim())
     .filter(Boolean)
     .slice(0, 20);
+}
+
+export function parseGithubUrl(github: string | null | undefined) {
+  if (!github?.trim()) {
+    return { handle: null, href: undefined };
+  }
+
+  const handle = github
+    .trim()
+    .replace(/^https?:\/\/(www\.)?github\.com\//, "")
+    .replace(/^@/, "");
+
+  if (!handle) {
+    return { handle: null, href: undefined };
+  }
+
+  return {
+    handle,
+    href: `https://github.com/${handle}`,
+  };
 }

@@ -31,6 +31,8 @@ function errorMessage(code: string, locale: ReturnType<typeof resolveLocale>) {
     case "invalid_skills":
       return errors.invalidSkills;
     case "invalid_open_to_teams":
+    case "invalid_show_email":
+    case "invalid_show_phone":
       return errors.invalidBody;
     default:
       return errors.generic;

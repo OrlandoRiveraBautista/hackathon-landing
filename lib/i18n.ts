@@ -10,3 +10,7 @@ export function localizedPath(locale: Locale, path = ""): string {
   const normalized = path.startsWith("/") ? path : `/${path}`;
   return normalized === "/" ? `/${locale}` : `/${locale}${normalized}`;
 }
+
+export function memberProfilePath(locale: Locale, userId: string): string {
+  return localizedPath(locale, `/profile/${userId}`);
+}

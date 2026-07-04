@@ -23,7 +23,7 @@ import {
   PlatformPageFooter,
 } from "@/components/platform";
 import { authClient } from "@/lib/auth/client";
-import { localizedPath, memberHomePath } from "@/lib/i18n";
+import { localizedPath, memberHomePath, membersDirectoryPath } from "@/lib/i18n";
 import {
   formatMemberDate,
   parseGithubUrl,
@@ -359,7 +359,7 @@ function PublicMemberProfileScreen({ member }: { member: PublicMemberProfile }) 
   return (
     <MemberAppShell locale={locale} eyebrow={profile.memberEyebrow}>
       <ProfileHeroCard
-        avatar={<MemberAvatar name={member.name} size="xl" />}
+        avatar={<MemberAvatar name={member.name} imageUrl={member.imageUrl} size="xl" />}
         badges={
           member.openToTeams ? (
             <PlatformBadge active label={profile.openToTeams} pulse />
@@ -440,8 +440,8 @@ function PublicMemberProfileScreen({ member }: { member: PublicMemberProfile }) 
 
       <PlatformPageFooter
         locale={locale}
-        backLabel={profile.backToMemberHome}
-        backHref={memberHomePath(locale)}
+        backLabel={profile.backToDirectory}
+        backHref={membersDirectoryPath(locale)}
       />
     </MemberAppShell>
   );

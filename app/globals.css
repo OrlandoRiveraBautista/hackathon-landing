@@ -217,6 +217,107 @@ html {
 .auth-item-in-4 {
   animation: auth-item-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.55s both;
 }
+.auth-item-in-5 {
+  animation: auth-item-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.65s both;
+}
+.auth-item-in-6 {
+  animation: auth-item-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.75s both;
+}
+
+@keyframes platform-dropdown-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes platform-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.platform-dropdown-in {
+  animation: platform-dropdown-in 0.22s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.platform-skeleton {
+  position: relative;
+  overflow: hidden;
+  background-color: rgba(255, 255, 255, 0.045);
+}
+
+.platform-skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(170, 255, 0, 0.04) 35%,
+    rgba(255, 255, 255, 0.14) 50%,
+    rgba(170, 255, 0, 0.04) 65%,
+    transparent 100%
+  );
+  animation: platform-shimmer 1.5s ease-in-out infinite;
+}
+
+.platform-skeleton-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.platform-skeleton-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    105deg,
+    transparent 35%,
+    rgba(170, 255, 0, 0.035) 45%,
+    rgba(255, 255, 255, 0.07) 50%,
+    rgba(170, 255, 0, 0.035) 55%,
+    transparent 65%
+  );
+  animation: platform-shimmer 2.2s ease-in-out infinite;
+}
+
+.platform-card-lift {
+  transition:
+    transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.28s ease,
+    box-shadow 0.28s ease,
+    background-color 0.28s ease;
+}
+
+.platform-card-lift:hover {
+  transform: translateY(-3px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .platform-dropdown-in {
+    animation: none;
+  }
+  .platform-skeleton {
+    animation: none;
+  }
+  .platform-skeleton::after,
+  .platform-skeleton-card::after {
+    animation: none;
+    display: none;
+  }
+  .platform-card-lift:hover {
+    transform: none;
+  }
+}
 
 .auth-blob-1 {
   animation: auth-blob-drift 14s ease-in-out infinite;
@@ -264,7 +365,9 @@ html {
   .auth-item-in-1,
   .auth-item-in-2,
   .auth-item-in-3,
-  .auth-item-in-4 {
+  .auth-item-in-4,
+  .auth-item-in-5,
+  .auth-item-in-6 {
     animation: none;
     opacity: 1;
     transform: none;

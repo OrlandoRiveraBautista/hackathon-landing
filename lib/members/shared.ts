@@ -14,6 +14,7 @@ export function toPublicMemberProfile(member: MemberProfile): PublicMemberProfil
     updatedAt: member.updatedAt,
     email: member.showEmail ? member.email : null,
     phone: member.showPhone ? member.phone : null,
+    imageUrl: member.imageUrl,
   };
 }
 
@@ -30,6 +31,7 @@ export function parseMemberFromJson(raw: MemberProfileJson): MemberProfile {
     ...raw,
     showEmail: raw.showEmail ?? false,
     showPhone: raw.showPhone ?? false,
+    imageUrl: raw.imageUrl ?? null,
     createdAt: new Date(raw.createdAt),
     updatedAt: new Date(raw.updatedAt),
   };

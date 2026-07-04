@@ -46,3 +46,8 @@ const copy: Record<Locale, EventCopy> = {
 export function getEventCopy(locale: Locale) {
   return copy[locale];
 }
+
+/** July 25, 2026 10:00 AM — Matamoros (UTC-6) */
+export function getEventStartDate() {
+  return new Date("2026-07-25T10:00:00-06:00");
+}

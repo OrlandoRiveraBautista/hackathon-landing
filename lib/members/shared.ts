@@ -67,6 +67,31 @@ export function skillsFromInput(input: string) {
     .slice(0, 20);
 }
 
+export function getProfileCompletion(member: {
+  github: string | null;
+  bio: string | null;
+  skills: string[];
+  interests: string | null;
+}) {
+  const items = {
+    github: Boolean(member.github?.trim()),
+    bio: Boolean(member.bio?.trim()),
+    skills: member.skills.length > 0,
+    interests: Boolean(member.interests?.trim()),
+  };
+
+  const total = Object.keys(items).length;
+  const done = Object.values(items).filter(Boolean).length;
+
+  return {
+    items,
+    done,
+    total,
+    percent: Math.round((done / total) * 100),
+    isComplete: done === total,
+  };
+}
+
 export function parseGithubUrl(github: string | null | undefined) {
   if (!github?.trim()) {
     return { handle: null, href: undefined };

@@ -28,7 +28,7 @@ export function MemberAppShell({
       <PlatformBackground />
       <MemberAppHeader locale={locale} eyebrow={eyebrow} rightSlot={headerActions} />
       <div
-        className={`relative z-10 mx-auto w-full flex-1 px-5 pb-16 sm:px-8 ${maxWidthClasses[maxWidth]}`}
+        className={`relative z-10 mx-auto w-full flex-1 px-5 pt-8 pb-16 sm:px-8 sm:pt-10 ${maxWidthClasses[maxWidth]}`}
       >
         {children}
       </div>

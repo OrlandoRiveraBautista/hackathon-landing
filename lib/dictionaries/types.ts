@@ -281,6 +281,40 @@ export type Dictionary = {
     signingOut: string;
     signOutFailed: string;
     backToHome: string;
+    comingSoon: string;
+    event: {
+      label: string;
+      title: string;
+      countdown: {
+        days: string;
+        hours: string;
+        minutes: string;
+        seconds: string;
+      };
+    };
+    profileCompletion: {
+      label: string;
+      title: string;
+      subtitle: string;
+      completeLabel: string;
+      editLabel: string;
+      items: {
+        github: string;
+        bio: string;
+        skills: string;
+        interests: string;
+      };
+    };
+    quickActions: {
+      label: string;
+      openLabel: string;
+      items: Array<{
+        id: "profile" | "directory" | "team" | "submit";
+        title: string;
+        description: string;
+        comingSoon?: boolean;
+      }>;
+    };
   };
   profile: {
     metaTitle: string;
@@ -295,6 +329,7 @@ export type Dictionary = {
     signingOut: string;
     signOutFailed: string;
     backToHome: string;
+    backToMemberHome: string;
     backToDirectory: string;
     editProfile: string;
     editSection: string;

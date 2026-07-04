@@ -60,7 +60,7 @@ Run migrations: `pnpm auth:migrate && pnpm db:migrate`
 
 ### Pre-hackathon
 1. Join waitlist on landing page (may already have github + interests).
-2. Sign in with Google → land on **profile**.
+2. Sign in with Google → land on **home** (`/{locale}/home`).
 3. Complete / edit profile — bio, skills, GitHub, interests, **"looking for team"** flag.
 4. Browse **member directory** — filter by interests, skills, school, team status.
 5. Create a **team** or **request to join** one; accept/decline invites.

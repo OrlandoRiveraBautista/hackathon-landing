@@ -5,6 +5,7 @@ export * from "./icons";
 export { MemberAppHeader } from "./MemberAppHeader";
 export { MemberAppShell } from "./MemberAppShell";
 export { MemberAvatar } from "./MemberAvatar";
+export { PlatformActionCard } from "./PlatformActionCard";
 export { PlatformBackground } from "./PlatformBackground";
 export { PlatformBadge } from "./PlatformBadge";
 export { PlatformButton } from "./PlatformButton";

@@ -23,7 +23,7 @@ import {
   PlatformPageFooter,
 } from "@/components/platform";
 import { authClient } from "@/lib/auth/client";
-import { localizedPath } from "@/lib/i18n";
+import { localizedPath, memberHomePath } from "@/lib/i18n";
 import {
   formatMemberDate,
   parseGithubUrl,
@@ -341,7 +341,11 @@ function OwnMemberProfileScreen({
         />
       )}
 
-      <PlatformPageFooter locale={locale} backLabel={profile.backToHome} />
+      <PlatformPageFooter
+        locale={locale}
+        backLabel={profile.backToHome}
+        backHref={memberHomePath(locale)}
+      />
     </MemberAppShell>
   );
 }
@@ -434,7 +438,11 @@ function PublicMemberProfileScreen({ member }: { member: PublicMemberProfile }) 
         className="mt-5"
       />
 
-      <PlatformPageFooter locale={locale} backLabel={profile.backToHome} />
+      <PlatformPageFooter
+        locale={locale}
+        backLabel={profile.backToMemberHome}
+        backHref={memberHomePath(locale)}
+      />
     </MemberAppShell>
   );
 }

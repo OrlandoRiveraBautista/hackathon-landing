@@ -11,6 +11,10 @@ export function localizedPath(locale: Locale, path = ""): string {
   return normalized === "/" ? `/${locale}` : `/${locale}${normalized}`;
 }
 
+export function memberHomePath(locale: Locale): string {
+  return localizedPath(locale, "/home");
+}
+
 export function memberProfilePath(locale: Locale, userId: string): string {
   return localizedPath(locale, `/profile/${userId}`);
 }

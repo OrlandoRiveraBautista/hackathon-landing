@@ -5,7 +5,7 @@ import { MemberLoginScreen } from "@/components/MemberLoginScreen";
 import { resolveSafeRedirect } from "@/lib/auth/redirect";
 import { getSession } from "@/lib/auth/session";
 import { getDictionary } from "@/lib/dictionaries";
-import { isLocale, localizedPath, memberProfilePath } from "@/lib/i18n";
+import { isLocale, localizedPath, memberHomePath } from "@/lib/i18n";
 import { getWaitlistSignupByEmail } from "@/lib/waitlist-admin";
 
 type LoginPageProps = {
@@ -52,8 +52,8 @@ async function LoginPageInner({ params, searchParams }: LoginPageProps) {
 
   const session = await getSession();
   const defaultNext = session?.user?.id
-    ? memberProfilePath(locale, session.user.id)
-    : localizedPath(locale, "/profile");
+    ? memberHomePath(locale)
+    : localizedPath(locale, "/home");
 
   const nextPath = resolveSafeRedirect(next, defaultNext);
 

@@ -288,6 +288,7 @@ export type Dictionary = {
     metaTitleMember: string;
     metaDescriptionMember: string;
     eyebrow: string;
+    memberEyebrow: string;
     subtitle: string;
     statusPending: string;
     statusContacted: string;
@@ -296,17 +297,28 @@ export type Dictionary = {
     signingOut: string;
     signOutFailed: string;
     backToHome: string;
+    backToDirectory: string;
     editProfile: string;
     saveProfile: string;
     savingProfile: string;
     cancelEdit: string;
     saveSuccess: string;
     bio: string;
+    bioEmpty: string;
     skills: string;
+    skillsEmpty: string;
+    school: string;
+    schoolEmpty: string;
+    interests: string;
+    interestsEmpty: string;
     openToTeams: string;
     openToTeamsHint: string;
+    notOpenToTeams: string;
+    viewOnGithub: string;
     bioPlaceholder: string;
     skillsPlaceholder: string;
+    aboutSection: string;
+    detailsSection: string;
     errors: {
       unauthorized: string;
       notFound: string;

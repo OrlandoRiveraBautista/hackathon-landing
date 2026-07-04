@@ -4,11 +4,12 @@ import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { authClient } from "@/lib/auth/client";
 import { GoogleIcon } from "@/components/GoogleIcon";
+import { resolveSafeRedirect } from "@/lib/auth/redirect";
 
 function AdminLoginForm() {
   const searchParams = useSearchParams();
   const { data: session } = authClient.useSession();
-  const nextPath = searchParams.get("next") ?? "/admin";
+  const nextPath = resolveSafeRedirect(searchParams.get("next"), "/admin");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(
     searchParams.get("error") === "unauthorized"

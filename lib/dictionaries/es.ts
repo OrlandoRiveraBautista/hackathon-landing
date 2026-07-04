@@ -609,6 +609,8 @@ const dictionary: Dictionary = {
     signOut: "Cerrar sesión",
     signingOut: "Cerrando sesión...",
     signOutFailed: "No se pudo cerrar sesión. Intenta de nuevo.",
+    notRegistered:
+      "Esta cuenta de Google no está en la lista de espera. Únete primero y luego inicia sesión.",
     backToHome: "Volver al inicio",
   },
   members: {
@@ -621,6 +623,7 @@ const dictionary: Dictionary = {
       "Ya estás dentro. Asignaciones de equipo, horarios y actualizaciones aparecerán aquí conforme se acerque el evento.",
     signOut: "Cerrar sesión",
     signingOut: "Cerrando sesión...",
+    signOutFailed: "No se pudo cerrar sesión. Intenta de nuevo.",
     backToHome: "Volver al inicio",
   },
   legal: {

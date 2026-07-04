@@ -21,10 +21,7 @@ export function isProtectedMemberPath(pathname: string) {
     return false;
   }
 
-  return (
-    pathname.startsWith(`/${locale}/members`) &&
-    !pathname.startsWith(`/${locale}/login`)
-  );
+  return pathname.startsWith(`/${locale}/members`);
 }
 
 export function getMemberLoginPath(pathname: string) {

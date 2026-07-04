@@ -599,6 +599,8 @@ const dictionary: Dictionary = {
     signOut: "Sign out",
     signingOut: "Signing out...",
     signOutFailed: "Sign out failed. Try again.",
+    notRegistered:
+      "This Google account isn't on the waitlist. Join the waitlist first, then sign in.",
     backToHome: "Back to home",
   },
   members: {
@@ -611,6 +613,7 @@ const dictionary: Dictionary = {
       "You're in. Team assignments, schedules, and updates will appear here as we get closer to event day.",
     signOut: "Sign out",
     signingOut: "Signing out...",
+    signOutFailed: "Sign out failed. Try again.",
     backToHome: "Back to home",
   },
   legal: {

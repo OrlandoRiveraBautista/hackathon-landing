@@ -268,6 +268,7 @@ export type Dictionary = {
     signOut: string;
     signingOut: string;
     signOutFailed: string;
+    notRegistered: string;
     backToHome: string;
   };
   members: {
@@ -278,6 +279,7 @@ export type Dictionary = {
     subtitle: string;
     signOut: string;
     signingOut: string;
+    signOutFailed: string;
     backToHome: string;
   };
   legal: {

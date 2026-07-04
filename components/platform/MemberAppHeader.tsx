@@ -1,21 +1,28 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { ReactNode } from "react";
+import { Suspense, type ReactNode } from "react";
 import { SITE_LOGO } from "@/lib/brand";
 import { memberHomePath, type Locale } from "@/lib/i18n";
 import { montserrat } from "@/lib/theme";
+import { MemberHeaderSearch } from "./MemberHeaderSearch";
 
 type MemberAppHeaderProps = {
   locale: Locale;
   eyebrow: string;
   rightSlot?: ReactNode;
+  showSearch?: boolean;
 };
 
-export function MemberAppHeader({ locale, eyebrow, rightSlot }: MemberAppHeaderProps) {
+export function MemberAppHeader({
+  locale,
+  eyebrow,
+  rightSlot,
+  showSearch = true,
+}: MemberAppHeaderProps) {
   return (
     <>
       <header
-        className="fixed inset-x-0 top-0 z-50 flex items-center justify-between gap-4 px-5 py-4 sm:px-8"
+        className="fixed inset-x-0 top-0 z-50 flex items-center justify-between px-5 py-3 sm:gap-4 sm:px-8 sm:py-4"
         style={{
           background: "rgba(5,5,5,0.72)",
           backdropFilter: "blur(20px) saturate(180%)",
@@ -26,7 +33,7 @@ export function MemberAppHeader({ locale, eyebrow, rightSlot }: MemberAppHeaderP
       >
         <Link
           href={memberHomePath(locale)}
-          className="group flex items-center gap-3 transition-opacity hover:opacity-75"
+          className="group flex shrink-0 items-center gap-3 transition-opacity hover:opacity-75"
         >
           <div className="relative">
             <div className="absolute inset-0 rounded-xl bg-[#aaff00]/20 blur-md transition-all duration-300 group-hover:bg-[#aaff00]/35 group-hover:blur-lg" />
@@ -53,9 +60,24 @@ export function MemberAppHeader({ locale, eyebrow, rightSlot }: MemberAppHeaderP
             </p>
           </div>
         </Link>
-        {rightSlot && <div className="flex items-center gap-2">{rightSlot}</div>}
+
+        {showSearch && (
+          <Suspense
+            fallback={
+              <div className="min-w-0 flex-1 lg:max-w-2xl" aria-hidden>
+                <div className="h-11 rounded-2xl border border-white/[0.06] bg-white/[0.02]" />
+              </div>
+            }
+          >
+            <MemberHeaderSearch />
+          </Suspense>
+        )}
+
+        {rightSlot && (
+          <div className="flex shrink-0 items-center gap-2">{rightSlot}</div>
+        )}
       </header>
-      <div className="h-[65px] shrink-0" aria-hidden />
+      <div className="h-[72px] shrink-0" aria-hidden />
     </>
   );
 }

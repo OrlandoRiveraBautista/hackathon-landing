@@ -16,6 +16,7 @@ export type MemberProfile = {
   showEmail: boolean;
   showPhone: boolean;
   waitlistId: string | null;
+  imageUrl: string | null;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -35,6 +36,7 @@ export type PublicMemberProfile = Pick<
 > & {
   email: string | null;
   phone: string | null;
+  imageUrl: string | null;
 };
 
 export type MemberProfileUpdate = {

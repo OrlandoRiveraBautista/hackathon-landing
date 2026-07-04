@@ -18,3 +18,34 @@ export function memberHomePath(locale: Locale): string {
 export function memberProfilePath(locale: Locale, userId: string): string {
   return localizedPath(locale, `/profile/${userId}`);
 }
+
+export function membersDirectoryPath(
+  locale: Locale,
+  search: {
+    q?: string;
+    openToTeams?: boolean;
+  } = {},
+): string {
+  const base = localizedPath(locale, "/members");
+  const params = new URLSearchParams();
+
+  if (search.q?.trim()) {
+    params.set("q", search.q.trim());
+  }
+  if (search.openToTeams) {
+    params.set("openToTeams", "true");
+  }
+
+  const queryString = params.toString();
+  return queryString ? `${base}?${queryString}` : base;
+}
+
+export function parseMembersDirectorySearch(searchParams: {
+  q?: string;
+  openToTeams?: string;
+}) {
+  return {
+    q: searchParams.q ?? "",
+    openToTeams: searchParams.openToTeams === "true",
+  };
+}

@@ -315,6 +315,40 @@ export type Dictionary = {
         comingSoon?: boolean;
       }>;
     };
+    directory: {
+      metaTitle: string;
+      metaDescription: string;
+      title: string;
+      subtitle: string;
+      searchPlaceholder: string;
+      searchAriaLabel: string;
+      clearSearch: string;
+      noResults: string;
+      noResultsHint: string;
+      resultsCount: string;
+      resultsCountOne: string;
+      viewProfile: string;
+      loading: string;
+      searchFailed: string;
+      viewAllResults: string;
+      searchHint: string;
+      showingResultsFor: string;
+      sectionLabel: string;
+      filterAll: string;
+      filterOpenTeams: string;
+      loadMore: string;
+      showingCount: string;
+      statSuffix: string;
+      statSuffixOne: string;
+    };
+    platformFooter: {
+      platformHeading: string;
+      legalHeading: string;
+      tagline: string;
+      home: string;
+      directory: string;
+      madeBy: string;
+    };
   };
   profile: {
     metaTitle: string;

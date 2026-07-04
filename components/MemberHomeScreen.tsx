@@ -21,7 +21,7 @@ import {
 } from "@/components/platform";
 import { authClient } from "@/lib/auth/client";
 import { getEventCopy, getEventStartDate } from "@/lib/event";
-import { localizedPath, memberProfilePath } from "@/lib/i18n";
+import { localizedPath, memberProfilePath, membersDirectoryPath } from "@/lib/i18n";
 import { getProfileCompletion, parseGithubUrl } from "@/lib/members/shared";
 import type { MemberProfile } from "@/lib/members/types";
 
@@ -65,7 +65,12 @@ export function MemberHomeScreen({ member, userImage }: MemberHomeScreenProps) {
       title: item.title,
       description: item.description,
       icon: icons[item.id],
-      href: item.id === "profile" ? profileHref : undefined,
+      href:
+        item.id === "profile"
+          ? profileHref
+          : item.id === "directory"
+            ? membersDirectoryPath(locale)
+            : undefined,
       comingSoon: item.comingSoon,
     };
   });

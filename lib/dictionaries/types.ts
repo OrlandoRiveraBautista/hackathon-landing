@@ -341,6 +341,14 @@ export type Dictionary = {
       statSuffix: string;
       statSuffixOne: string;
     };
+    platformFooter: {
+      platformHeading: string;
+      legalHeading: string;
+      tagline: string;
+      home: string;
+      directory: string;
+      madeBy: string;
+    };
   };
   profile: {
     metaTitle: string;

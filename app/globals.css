@@ -390,3 +390,43 @@ html {
   text-decoration: underline;
   text-underline-offset: 3px;
 }
+
+/* Footer — GPU-friendly shimmer, paint containment for scroll perf */
+@keyframes footer-shimmer-slide {
+  from {
+    transform: translate3d(-66%, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.footer-shell {
+  contain: layout style paint;
+  isolation: isolate;
+}
+
+.footer-shimmer-track {
+  overflow: hidden;
+  height: 1px;
+}
+
+.footer-shimmer-bar {
+  height: 100%;
+  width: 300%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(170, 255, 0, 0.45) 50%,
+    transparent 100%
+  );
+  animation: footer-shimmer-slide 8s linear infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .footer-shimmer-bar {
+    animation: none;
+    transform: translate3d(-33%, 0, 0);
+  }
+}

@@ -695,6 +695,14 @@ const dictionary: Dictionary = {
       statSuffix: "builders",
       statSuffixOne: "builder",
     },
+    platformFooter: {
+      platformHeading: "PLATFORM",
+      legalHeading: "LEGAL",
+      tagline: "A space for builders to meet, form teams, and ship together.",
+      home: "Dashboard",
+      directory: "Member directory",
+      madeBy: "Built with ♥ in Matamoros",
+    },
   },
   profile: {
     metaTitle: "Your Profile — Build Pa'l Norte",

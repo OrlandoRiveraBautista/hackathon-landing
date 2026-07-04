@@ -706,6 +706,14 @@ const dictionary: Dictionary = {
       statSuffix: "builders",
       statSuffixOne: "builder",
     },
+    platformFooter: {
+      platformHeading: "PLATAFORMA",
+      legalHeading: "LEGAL",
+      tagline: "Un espacio para que los builders se conozcan, formen equipos y construyan juntos.",
+      home: "Panel",
+      directory: "Directorio de miembros",
+      madeBy: "Hecho con ♥ en Matamoros",
+    },
   },
   profile: {
     metaTitle: "Tu perfil — Build Pa'l Norte",

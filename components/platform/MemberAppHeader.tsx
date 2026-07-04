@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { SITE_LOGO } from "@/lib/brand";
-import { localizedPath, type Locale } from "@/lib/i18n";
+import { memberHomePath, type Locale } from "@/lib/i18n";
 import { montserrat } from "@/lib/theme";
 
 type MemberAppHeaderProps = {
@@ -25,7 +25,7 @@ export function MemberAppHeader({ locale, eyebrow, rightSlot }: MemberAppHeaderP
         }}
       >
         <Link
-          href={localizedPath(locale)}
+          href={memberHomePath(locale)}
           className="group flex items-center gap-3 transition-opacity hover:opacity-75"
         >
           <div className="relative">

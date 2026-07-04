@@ -618,13 +618,67 @@ const dictionary: Dictionary = {
     metaDescription:
       "Tu panel de miembro de Build Pa'l Norte para actualizaciones del hackathon e info de equipo.",
     eyebrow: "ACCESO DE MIEMBROS",
-    title: "Bienvenido, Builder",
+    title: "Bienvenido, {name}",
     subtitle:
-      "Ya estás dentro. Asignaciones de equipo, horarios y actualizaciones aparecerán aquí conforme se acerque el evento.",
+      "Ya estás dentro. Completa tu perfil, explora lo que viene y prepárate para el 25 de julio.",
     signOut: "Cerrar sesión",
     signingOut: "Cerrando sesión...",
     signOutFailed: "No se pudo cerrar sesión. Intenta de nuevo.",
-    backToHome: "Volver al inicio",
+    backToHome: "← Volver al sitio del evento",
+    comingSoon: "PRONTO",
+    event: {
+      label: "EVENTO",
+      title: "Build Pa'l Norte 2026",
+      countdown: {
+        days: "DÍAS",
+        hours: "HRS",
+        minutes: "MIN",
+        seconds: "SEG",
+      },
+    },
+    profileCompletion: {
+      label: "TU PERFIL",
+      title: "Ayuda a que otros builders te encuentren",
+      subtitle:
+        "Agrega lo que falta para que tus futuros compañeros de equipo te descubran en el directorio.",
+      completeLabel: "Tu perfil se ve bien — ya estás listo para ser descubierto.",
+      editLabel: "Completa tu perfil",
+      items: {
+        github: "GitHub vinculado",
+        bio: "Bio agregada",
+        skills: "Habilidades listadas",
+        interests: "Intereses completados",
+      },
+    },
+    quickActions: {
+      label: "ACCIONES RÁPIDAS",
+      openLabel: "Abrir",
+      items: [
+        {
+          id: "profile",
+          title: "Tu perfil",
+          description: "Consulta y edita tu info, habilidades y estado de equipo.",
+        },
+        {
+          id: "directory",
+          title: "Directorio de miembros",
+          description: "Explora builders por intereses, habilidades y disponibilidad.",
+          comingSoon: true,
+        },
+        {
+          id: "team",
+          title: "Mi equipo",
+          description: "Crea un equipo, envía invitaciones y administra tu crew.",
+          comingSoon: true,
+        },
+        {
+          id: "submit",
+          title: "Entrega de proyecto",
+          description: "Comparte tu repo y demo cuando llegue el día del hackathon.",
+          comingSoon: true,
+        },
+      ],
+    },
   },
   profile: {
     metaTitle: "Tu perfil — Build Pa'l Norte",
@@ -641,7 +695,8 @@ const dictionary: Dictionary = {
     signOut: "Cerrar sesión",
     signingOut: "Cerrando sesión...",
     signOutFailed: "No se pudo cerrar sesión. Intenta de nuevo.",
-    backToHome: "← Volver al inicio",
+    backToHome: "← Volver al panel",
+    backToMemberHome: "← Volver al inicio",
     backToDirectory: "← Volver al directorio",
     editProfile: "Editar perfil",
     editSection: "EDITAR PERFIL",

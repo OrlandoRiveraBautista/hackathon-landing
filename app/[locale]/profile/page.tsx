@@ -1,6 +1,6 @@
 import { notFound, redirect } from "next/navigation";
 import { getSession } from "@/lib/auth/session";
-import { isLocale, localizedPath, memberProfilePath } from "@/lib/i18n";
+import { isLocale, localizedPath, memberHomePath } from "@/lib/i18n";
 import { getWaitlistSignupByEmail } from "@/lib/waitlist-admin";
 
 type ProfileIndexPageProps = {
@@ -25,5 +25,5 @@ export default async function ProfileIndexPage({ params }: ProfileIndexPageProps
     redirect(`${localizedPath(locale, "/login")}?error=not_registered`);
   }
 
-  redirect(memberProfilePath(locale, session.user.id));
+  redirect(memberHomePath(locale));
 }

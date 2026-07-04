@@ -62,3 +62,23 @@ export function skillsFromInput(input: string) {
     .filter(Boolean)
     .slice(0, 20);
 }
+
+export function parseGithubUrl(github: string | null | undefined) {
+  if (!github?.trim()) {
+    return { handle: null, href: undefined };
+  }
+
+  const handle = github
+    .trim()
+    .replace(/^https?:\/\/(www\.)?github\.com\//, "")
+    .replace(/^@/, "");
+
+  if (!handle) {
+    return { handle: null, href: undefined };
+  }
+
+  return {
+    handle,
+    href: `https://github.com/${handle}`,
+  };
+}

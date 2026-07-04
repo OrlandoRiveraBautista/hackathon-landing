@@ -77,7 +77,6 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
       <MemberProfileScreen
         isOwnProfile
         member={member}
-        waitlistStatus={signup.status}
         userImage={session.user.image}
       />
     );
@@ -92,7 +91,6 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
     <MemberProfileScreen
       isOwnProfile={false}
       member={toPublicMemberProfile(member)}
-      waitlistStatus={null}
       userImage={null}
     />
   );

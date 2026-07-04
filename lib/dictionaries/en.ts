@@ -620,6 +620,9 @@ const dictionary: Dictionary = {
     metaTitle: "Your Profile — Build Pa'l Norte",
     metaDescription:
       "View your Build Pa'l Norte participant profile, registration details, and hackathon status.",
+    metaTitleMember: "{name} — Build Pa'l Norte",
+    metaDescriptionMember:
+      "View {name}'s hackathon participant profile on Build Pa'l Norte.",
     eyebrow: "YOUR PROFILE",
     subtitle:
       "This is your participant profile. Update your GitHub, interests, and skills so other builders can find you. Team assignments and event updates will show up here as we get closer to July 25.",

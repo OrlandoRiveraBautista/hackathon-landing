@@ -1,30 +1,13 @@
-import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
-import { MemberProfileScreen } from "@/components/MemberProfileScreen";
 import { getSession } from "@/lib/auth/session";
-import { getDictionary } from "@/lib/dictionaries";
-import { isLocale, localizedPath } from "@/lib/i18n";
-import { getOrCreateMember } from "@/lib/members";
+import { isLocale, localizedPath, memberProfilePath } from "@/lib/i18n";
 import { getWaitlistSignupByEmail } from "@/lib/waitlist-admin";
 
-type ProfilePageProps = {
+type ProfileIndexPageProps = {
   params: Promise<{ locale: string }>;
 };
 
-export async function generateMetadata({
-  params,
-}: ProfilePageProps): Promise<Metadata> {
-  const { locale } = await params;
-  if (!isLocale(locale)) return {};
-
-  const dictionary = getDictionary(locale);
-  return {
-    title: dictionary.profile.metaTitle,
-    description: dictionary.profile.metaDescription,
-  };
-}
-
-export default async function ProfilePage({ params }: ProfilePageProps) {
+export default async function ProfileIndexPage({ params }: ProfileIndexPageProps) {
   const { locale } = await params;
   if (!isLocale(locale)) {
     notFound();
@@ -42,13 +25,5 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
     redirect(`${localizedPath(locale, "/login")}?error=not_registered`);
   }
 
-  const member = await getOrCreateMember(session.user.id, signup);
-
-  return (
-    <MemberProfileScreen
-      member={member}
-      waitlistStatus={signup.status}
-      userImage={session.user.image}
-    />
-  );
+  redirect(memberProfilePath(locale, session.user.id));
 }

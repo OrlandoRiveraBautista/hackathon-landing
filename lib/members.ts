@@ -4,7 +4,11 @@ import type { MemberProfile, MemberProfileUpdate } from "@/lib/members/types";
 import { normalizeGithub } from "@/lib/waitlist";
 import type { WaitlistSignup } from "@/lib/waitlist-admin";
 
-export type { MemberProfile, MemberProfileUpdate } from "@/lib/members/types";
+export type {
+  MemberProfile,
+  MemberProfileUpdate,
+  PublicMemberProfile,
+} from "@/lib/members/types";
 
 type MemberRow = {
   user_id: string;

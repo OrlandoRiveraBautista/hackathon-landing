@@ -1,4 +1,19 @@
-import type { MemberProfile } from "@/lib/members/types";
+import type { MemberProfile, PublicMemberProfile } from "@/lib/members/types";
+
+export function toPublicMemberProfile(member: MemberProfile): PublicMemberProfile {
+  return {
+    userId: member.userId,
+    name: member.name,
+    school: member.school,
+    github: member.github,
+    interests: member.interests,
+    bio: member.bio,
+    skills: member.skills,
+    openToTeams: member.openToTeams,
+    createdAt: member.createdAt,
+    updatedAt: member.updatedAt,
+  };
+}
 
 export type MemberProfileJson = Omit<
   MemberProfile,

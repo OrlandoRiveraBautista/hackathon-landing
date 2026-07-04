@@ -285,6 +285,8 @@ export type Dictionary = {
   profile: {
     metaTitle: string;
     metaDescription: string;
+    metaTitleMember: string;
+    metaDescriptionMember: string;
     eyebrow: string;
     subtitle: string;
     statusPending: string;

@@ -630,6 +630,9 @@ const dictionary: Dictionary = {
     metaTitle: "Tu perfil — Build Pa'l Norte",
     metaDescription:
       "Consulta tu perfil de participante, datos de registro y estado en Build Pa'l Norte.",
+    metaTitleMember: "{name} — Build Pa'l Norte",
+    metaDescriptionMember:
+      "Consulta el perfil de participante de {name} en Build Pa'l Norte.",
     eyebrow: "TU PERFIL",
     subtitle:
       "Este es tu perfil de participante. Actualiza tu GitHub, intereses y habilidades para que otros builders te encuentren. Las asignaciones de equipo y actualizaciones del evento aparecerán aquí conforme se acerque el 25 de julio.",

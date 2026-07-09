@@ -28,8 +28,6 @@ import {
   formatMemberDate,
   parseGithubUrl,
   parseMemberFromJson,
-  skillsFromInput,
-  skillsToInput,
   type MemberProfileJson,
 } from "@/lib/members/shared";
 import type { MemberProfile, PublicMemberProfile } from "@/lib/members/types";
@@ -53,7 +51,7 @@ function formFromMember(member: MemberProfile): ProfileFormState {
     github: member.github ?? "",
     interests: member.interests ?? "",
     bio: member.bio ?? "",
-    skills: skillsToInput(member.skills),
+    skills: [...member.skills],
     openToTeams: member.openToTeams,
     showEmail: member.showEmail,
     showPhone: member.showPhone,
@@ -126,7 +124,7 @@ function OwnMemberProfileScreen({
           github: form.github,
           interests: form.interests,
           bio: form.bio,
-          skills: skillsFromInput(form.skills),
+          skills: form.skills,
           openToTeams: form.openToTeams,
           showEmail: form.showEmail,
           showPhone: form.showPhone,

@@ -8,13 +8,14 @@ import {
   ToggleSwitch,
 } from "@/components/platform";
 import { outfit } from "@/lib/theme";
+import { SkillsTagInput } from "./SkillsTagInput";
 
 export type ProfileFormState = {
   school: string;
   github: string;
   interests: string;
   bio: string;
-  skills: string;
+  skills: string[];
   openToTeams: boolean;
   showEmail: boolean;
   showPhone: boolean;
@@ -99,10 +100,10 @@ export function ProfileEditForm({
             placeholder={labels.bioPlaceholder}
             multiline
           />
-          <PlatformInput
+          <SkillsTagInput
             label={labels.skills}
-            value={form.skills}
-            onChange={(value) => onChange("skills", value)}
+            skills={form.skills}
+            onChange={(skills) => onChange("skills", skills)}
             placeholder={labels.skillsPlaceholder}
             hint={labels.skillsHint}
           />

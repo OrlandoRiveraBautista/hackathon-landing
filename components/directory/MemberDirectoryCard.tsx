@@ -16,8 +16,9 @@ import { montserrat, outfit } from "@/lib/theme";
 type AddContext = {
   teamId: string;
   alreadyMember: boolean;
+  inviteSent: boolean;
   teamFull: boolean;
-  onAdd: (userId: string) => Promise<void>;
+  onInvite: (userId: string) => Promise<void>;
 };
 
 type MemberDirectoryCardProps = {
@@ -30,6 +31,7 @@ type MemberDirectoryCardProps = {
     addToTeam: string;
     addingToTeam: string;
     added: string;
+    inviteSent: string;
     alreadyInTeam: string;
     teamFull: string;
     addFailed: string;
@@ -48,18 +50,18 @@ export function MemberDirectoryCard({
   const extraSkills = member.skills.length - skills.length;
   const summary = member.bio?.trim() || member.interests?.trim();
 
-  const [adding, setAdding] = useState(false);
+  const [inviting, setInviting] = useState(false);
   const [addError, setAddError] = useState("");
-  const [wasAdded, setWasAdded] = useState(false);
+  const [wasInvited, setWasInvited] = useState(false);
 
-  async function handleAdd(e: React.MouseEvent) {
+  async function handleInvite(e: React.MouseEvent) {
     e.preventDefault();
-    if (!addContext || adding) return;
-    setAdding(true);
+    if (!addContext || inviting) return;
+    setInviting(true);
     setAddError("");
     try {
-      await addContext.onAdd(member.userId);
-      setWasAdded(true);
+      await addContext.onInvite(member.userId);
+      setWasInvited(true);
     } catch (err) {
       const msg = err instanceof Error ? err.message : "";
       if (msg.toLowerCase().includes("full")) {
@@ -70,12 +72,13 @@ export function MemberDirectoryCard({
         setAddError(labels.addFailed);
       }
     } finally {
-      setAdding(false);
+      setInviting(false);
     }
   }
 
-  const isAdded = wasAdded || addContext?.alreadyMember;
-  const canAdd = addContext && !isAdded && !addContext.teamFull;
+  const isMember = addContext?.alreadyMember;
+  const invitePending = wasInvited || addContext?.inviteSent;
+  const isAdded = isMember;
 
   return (
     <Link
@@ -187,24 +190,28 @@ export function MemberDirectoryCard({
           {addContext && (
             <button
               type="button"
-              onClick={handleAdd}
-              disabled={adding || !!isAdded || addContext.teamFull}
+              onClick={handleInvite}
+              disabled={inviting || !!isAdded || invitePending || addContext.teamFull}
               className={`relative inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-[10px] font-black tracking-[0.14em] transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-60 ${
                 isAdded
                   ? "border-[#aaff00]/20 bg-[#aaff00]/8 text-[#aaff00]/60"
-                  : addContext.teamFull
-                    ? "border-white/[0.07] bg-white/[0.02] text-white/25"
-                    : "border-white/[0.1] bg-white/[0.04] text-white/55 hover:border-[#aaff00]/30 hover:bg-[#aaff00]/10 hover:text-[#aaff00]/80"
+                  : invitePending
+                    ? "border-white/10 bg-white/[0.04] text-white/35"
+                    : addContext.teamFull
+                      ? "border-white/[0.07] bg-white/[0.02] text-white/25"
+                      : "border-white/[0.1] bg-white/[0.04] text-white/55 hover:border-[#aaff00]/30 hover:bg-[#aaff00]/10 hover:text-[#aaff00]/80"
               }`}
               style={{ fontFamily: montserrat }}
             >
-              {adding
+              {inviting
                 ? labels.addingToTeam
                 : isAdded
                   ? labels.added
-                  : addContext.teamFull
-                    ? labels.teamFull
-                    : labels.addToTeam}
+                  : invitePending
+                    ? labels.inviteSent
+                    : addContext.teamFull
+                      ? labels.teamFull
+                      : labels.addToTeam}
             </button>
           )}
 

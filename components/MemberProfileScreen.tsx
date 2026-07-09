@@ -37,6 +37,7 @@ type CaptainTeam = {
   id: string;
   memberIds: string[];
   maxMembers: number;
+  inviteSent: boolean;
 };
 
 type MemberProfileScreenProps =
@@ -373,15 +374,17 @@ function PublicMemberProfileScreen({
     captainTeam !== null &&
     captainTeam.memberIds.length >= captainTeam.maxMembers;
 
-  const [adding, setAdding] = useState(false);
+  const [inviting, setInviting] = useState(false);
   const [addError, setAddError] = useState("");
-  const [wasAdded, setWasAdded] = useState(false);
+  const [wasInvited, setWasInvited] = useState(false);
 
-  const isAdded = wasAdded || alreadyMember;
+  const isMember = alreadyMember;
+  const invitePending = wasInvited || (captainTeam?.inviteSent ?? false);
+  const isAdded = isMember;
 
-  async function handleAdd() {
-    if (!captainTeam || adding) return;
-    setAdding(true);
+  async function handleInvite() {
+    if (!captainTeam || inviting) return;
+    setInviting(true);
     setAddError("");
     try {
       const res = await fetch(`/api/teams/${captainTeam.id}/members`, {
@@ -390,7 +393,7 @@ function PublicMemberProfileScreen({
         body: JSON.stringify({ userId: member.userId }),
       });
       if (res.ok) {
-        setWasAdded(true);
+        setWasInvited(true);
       } else {
         const data = await res.json() as { error?: string };
         setAddError(data.error ?? labels.addFailed);
@@ -398,7 +401,7 @@ function PublicMemberProfileScreen({
     } catch {
       setAddError(labels.addFailed);
     } finally {
-      setAdding(false);
+      setInviting(false);
     }
   }
 
@@ -445,18 +448,20 @@ function PublicMemberProfileScreen({
               )}
               {captainTeam && (
                 <PlatformButton
-                  onClick={handleAdd}
-                  disabled={adding || isAdded || teamFull}
+                  onClick={handleInvite}
+                  disabled={inviting || isAdded || invitePending || teamFull}
                   variant={isAdded ? "ghost" : "primary"}
                   icon={isAdded ? <CheckIcon className="h-3.5 w-3.5" /> : undefined}
                 >
-                  {adding
+                  {inviting
                     ? labels.addingToTeam
                     : isAdded
                       ? labels.added
-                      : teamFull
-                        ? labels.teamFull
-                        : labels.addToTeam}
+                      : invitePending
+                        ? labels.inviteSent
+                        : teamFull
+                          ? labels.teamFull
+                          : labels.addToTeam}
                 </PlatformButton>
               )}
             </div>

@@ -23,6 +23,10 @@ export function memberTeamPath(locale: Locale): string {
   return localizedPath(locale, "/team");
 }
 
+export function memberNotificationsPath(locale: Locale): string {
+  return localizedPath(locale, "/notifications");
+}
+
 export function membersDirectoryPath(
   locale: Locale,
   search: {

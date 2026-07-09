@@ -343,6 +343,7 @@ export type Dictionary = {
       addToTeam: string;
       addingToTeam: string;
       added: string;
+      inviteSent: string;
       alreadyInTeam: string;
       teamFull: string;
       addFailed: string;
@@ -354,7 +355,33 @@ export type Dictionary = {
       home: string;
       directory: string;
       team: string;
+      notifications: string;
       madeBy: string;
+    };
+  };
+  notifications: {
+    metaTitle: string;
+    metaDescription: string;
+    eyebrow: string;
+    title: string;
+    panelTitle: string;
+    viewAll: string;
+    subtitle: string;
+    emptyTitle: string;
+    emptySubtitle: string;
+    inviteMessage: string;
+    accept: string;
+    decline: string;
+    accepting: string;
+    declining: string;
+    acceptedBanner: string;
+    declinedBanner: string;
+    backToHome: string;
+    errors: {
+      generic: string;
+      alreadyInTeam: string;
+      teamFull: string;
+      inviteExpired: string;
     };
   };
   profile: {

@@ -33,6 +33,7 @@ type MemberDirectoryScreenProps = {
   captainTeamId: string | null;
   captainTeamMemberIds: string[] | null;
   captainTeamMaxMembers: number | null;
+  pendingInviteUserIds: string[];
   viewerUserId: string;
 };
 
@@ -56,6 +57,7 @@ export function MemberDirectoryScreen({
   captainTeamId,
   captainTeamMemberIds,
   captainTeamMaxMembers,
+  pendingInviteUserIds,
   viewerUserId,
 }: MemberDirectoryScreenProps) {
   const dictionary = useDictionary();
@@ -77,8 +79,9 @@ export function MemberDirectoryScreen({
   const [loadMoreError, setLoadMoreError] = useState("");
   const [signOutError, setSignOutError] = useState("");
   const [signingOut, setSigningOut] = useState(false);
-  // Track which userIds have been added this session so the button updates instantly
-  const [addedUserIds, setAddedUserIds] = useState<Set<string>>(new Set());
+  const [invitedUserIds, setInvitedUserIds] = useState<Set<string>>(
+    new Set(pendingInviteUserIds),
+  );
   const [teamMemberIds, setTeamMemberIds] = useState<Set<string>>(
     new Set(captainTeamMemberIds ?? []),
   );
@@ -86,7 +89,7 @@ export function MemberDirectoryScreen({
     captainTeamMaxMembers !== null &&
     teamMemberIds.size >= captainTeamMaxMembers;
 
-  async function handleAddToTeam(targetUserId: string) {
+  async function handleInviteToTeam(targetUserId: string) {
     if (!captainTeamId) return;
     const res = await fetch(`/api/teams/${captainTeamId}/members`, {
       method: "POST",
@@ -94,8 +97,7 @@ export function MemberDirectoryScreen({
       body: JSON.stringify({ userId: targetUserId }),
     });
     if (res.ok) {
-      setAddedUserIds((prev) => new Set(prev).add(targetUserId));
-      setTeamMemberIds((prev) => new Set(prev).add(targetUserId));
+      setInvitedUserIds((prev) => new Set(prev).add(targetUserId));
     } else {
       const data = await res.json() as { error?: string };
       throw new Error(data.error ?? "add_failed");
@@ -271,6 +273,7 @@ export function MemberDirectoryScreen({
                     addToTeam: labels.addToTeam,
                     addingToTeam: labels.addingToTeam,
                     added: labels.added,
+                    inviteSent: labels.inviteSent,
                     alreadyInTeam: labels.alreadyInTeam,
                     teamFull: labels.teamFull,
                     addFailed: labels.addFailed,
@@ -280,8 +283,9 @@ export function MemberDirectoryScreen({
                       ? {
                           teamId: captainTeamId,
                           alreadyMember: teamMemberIds.has(member.userId),
+                          inviteSent: invitedUserIds.has(member.userId),
                           teamFull: teamIsFull,
-                          onAdd: handleAddToTeam,
+                          onInvite: handleInviteToTeam,
                         }
                       : null
                   }

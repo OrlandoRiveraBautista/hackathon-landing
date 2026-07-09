@@ -61,3 +61,19 @@ export type UpsertProjectInput = {
   demoUrl?: string | null;
   submit?: boolean;
 };
+
+export type TeamInviteStatus = "pending" | "accepted" | "declined" | "cancelled";
+
+export type TeamInvite = {
+  id: string;
+  teamId: string;
+  teamName: string;
+  fromUserId: string;
+  fromUserName: string;
+  fromUserImageUrl: string | null;
+  toUserId: string;
+  toUserName: string;
+  status: TeamInviteStatus;
+  createdAt: Date;
+  respondedAt: Date | null;
+};

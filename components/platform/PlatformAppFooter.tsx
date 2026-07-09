@@ -8,6 +8,7 @@ import { SITE_LOGO } from "@/lib/brand";
 import {
   localizedPath,
   memberHomePath,
+  memberNotificationsPath,
   memberTeamPath,
   membersDirectoryPath,
   type Locale,
@@ -60,6 +61,7 @@ export function PlatformAppFooter({ locale }: PlatformAppFooterProps) {
     { href: memberHomePath(locale), label: platformFooter.home },
     { href: membersDirectoryPath(locale), label: platformFooter.directory },
     { href: memberTeamPath(locale), label: platformFooter.team },
+    { href: memberNotificationsPath(locale), label: platformFooter.notifications },
   ];
 
   const legalLinks = [

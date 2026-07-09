@@ -7,6 +7,7 @@ import { isLocale, localizedPath } from "@/lib/i18n";
 import { getMemberByUserId, getOrCreateMember } from "@/lib/members";
 import { toPublicMemberProfile } from "@/lib/members/shared";
 import { getTeamByUserId } from "@/lib/teams";
+import { getPendingInviteUserIdsForTeam } from "@/lib/teams/invites";
 import { getWaitlistSignupByEmail } from "@/lib/waitlist-admin";
 
 type ProfilePageProps = {
@@ -95,6 +96,10 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
   const captainTeam =
     viewerTeam && viewerTeam.captainUserId === viewerId ? viewerTeam : null;
 
+  const pendingInviteUserIds = captainTeam
+    ? await getPendingInviteUserIdsForTeam(captainTeam.id)
+    : [];
+
   return (
     <MemberProfileScreen
       isOwnProfile={false}
@@ -106,6 +111,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
               id: captainTeam.id,
               memberIds: captainTeam.members.map((m) => m.userId),
               maxMembers: captainTeam.maxMembers,
+              inviteSent: pendingInviteUserIds.includes(userId),
             }
           : null
       }

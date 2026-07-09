@@ -8,6 +8,7 @@ import { isLocale, localizedPath, parseMembersDirectorySearch } from "@/lib/i18n
 import { searchMembers } from "@/lib/members";
 import { toPublicMemberProfile } from "@/lib/members/shared";
 import { getTeamByUserId } from "@/lib/teams";
+import { getPendingInviteUserIdsForTeam } from "@/lib/teams/invites";
 import { getWaitlistSignupByEmail } from "@/lib/waitlist-admin";
 
 type MembersPageProps = {
@@ -60,6 +61,10 @@ export default async function MembersPage({ params, searchParams }: MembersPageP
   const captainTeam =
     myTeam && myTeam.captainUserId === userId ? myTeam : null;
 
+  const pendingInviteUserIds = captainTeam
+    ? await getPendingInviteUserIdsForTeam(captainTeam.id)
+    : [];
+
   return (
     <Suspense fallback={null}>
       <MemberDirectoryScreen
@@ -71,6 +76,7 @@ export default async function MembersPage({ params, searchParams }: MembersPageP
         captainTeamId={captainTeam?.id ?? null}
         captainTeamMemberIds={captainTeam?.members.map((m) => m.userId) ?? null}
         captainTeamMaxMembers={captainTeam?.maxMembers ?? null}
+        pendingInviteUserIds={pendingInviteUserIds}
         viewerUserId={userId}
       />
     </Suspense>

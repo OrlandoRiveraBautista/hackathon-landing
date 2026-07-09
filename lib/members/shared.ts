@@ -57,18 +57,6 @@ export function displayValue(value: string | null | undefined) {
   return value?.trim() ? value : "—";
 }
 
-export function skillsToInput(skills: string[]) {
-  return skills.join(", ");
-}
-
-export function skillsFromInput(input: string) {
-  return input
-    .split(",")
-    .map((skill) => skill.trim())
-    .filter(Boolean)
-    .slice(0, 20);
-}
-
 export function getProfileCompletion(member: {
   github: string | null;
   bio: string | null;

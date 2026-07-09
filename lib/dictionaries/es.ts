@@ -763,8 +763,8 @@ const dictionary: Dictionary = {
     github: "GITHUB",
     viewOnGithub: "Ver en GitHub",
     bioPlaceholder: "Cuéntales a otros qué estás construyendo o qué buscas...",
-    skillsPlaceholder: "React, Python, diseño UI, hardware...",
-    skillsHint: "Separa con comas — React, Python, diseño UI...",
+    skillsPlaceholder: "Agrega una habilidad...",
+    skillsHint: "Presiona Enter o usa coma para agregar cada habilidad — máximo 20.",
     aboutSection: "ACERCA DE",
     detailsSection: "DETALLES",
     errors: {

@@ -33,6 +33,12 @@ import {
 import type { MemberProfile, PublicMemberProfile } from "@/lib/members/types";
 import { montserrat, outfit } from "@/lib/theme";
 
+type CaptainTeam = {
+  id: string;
+  memberIds: string[];
+  maxMembers: number;
+};
+
 type MemberProfileScreenProps =
   | {
       isOwnProfile: true;
@@ -43,6 +49,7 @@ type MemberProfileScreenProps =
       isOwnProfile: false;
       member: PublicMemberProfile;
       userImage?: null;
+      captainTeam: CaptainTeam | null;
     };
 
 function formFromMember(member: MemberProfile): ProfileFormState {
@@ -68,7 +75,7 @@ export function MemberProfileScreen(props: MemberProfileScreenProps) {
     );
   }
 
-  return <PublicMemberProfileScreen member={props.member} />;
+  return <PublicMemberProfileScreen member={props.member} captainTeam={props.captainTeam} />;
 }
 
 function OwnMemberProfileScreen({
@@ -348,11 +355,52 @@ function OwnMemberProfileScreen({
   );
 }
 
-function PublicMemberProfileScreen({ member }: { member: PublicMemberProfile }) {
+function PublicMemberProfileScreen({
+  member,
+  captainTeam,
+}: {
+  member: PublicMemberProfile;
+  captainTeam: CaptainTeam | null;
+}) {
   const dictionary = useDictionary();
   const { locale } = useLocale();
-  const { profile } = dictionary;
+  const { profile, members } = dictionary;
+  const labels = members.directory;
   const { handle: githubHandle, href: githubHref } = parseGithubUrl(member.github);
+
+  const alreadyMember = captainTeam?.memberIds.includes(member.userId) ?? false;
+  const teamFull =
+    captainTeam !== null &&
+    captainTeam.memberIds.length >= captainTeam.maxMembers;
+
+  const [adding, setAdding] = useState(false);
+  const [addError, setAddError] = useState("");
+  const [wasAdded, setWasAdded] = useState(false);
+
+  const isAdded = wasAdded || alreadyMember;
+
+  async function handleAdd() {
+    if (!captainTeam || adding) return;
+    setAdding(true);
+    setAddError("");
+    try {
+      const res = await fetch(`/api/teams/${captainTeam.id}/members`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: member.userId }),
+      });
+      if (res.ok) {
+        setWasAdded(true);
+      } else {
+        const data = await res.json() as { error?: string };
+        setAddError(data.error ?? labels.addFailed);
+      }
+    } catch {
+      setAddError(labels.addFailed);
+    } finally {
+      setAdding(false);
+    }
+  }
 
   return (
     <MemberAppShell locale={locale} eyebrow={profile.memberEyebrow}>
@@ -390,14 +438,34 @@ function PublicMemberProfileScreen({ member }: { member: PublicMemberProfile }) 
           </div>
         }
         footer={
-          githubHref && githubHandle ? (
-            <div className="mt-5">
-              <PlatformLinkChip href={githubHref} label={githubHandle} />
+          (githubHref && githubHandle) || captainTeam ? (
+            <div className="mt-5 flex flex-wrap items-center gap-3">
+              {githubHref && githubHandle && (
+                <PlatformLinkChip href={githubHref} label={githubHandle} />
+              )}
+              {captainTeam && (
+                <PlatformButton
+                  onClick={handleAdd}
+                  disabled={adding || isAdded || teamFull}
+                  variant={isAdded ? "ghost" : "primary"}
+                  icon={isAdded ? <CheckIcon className="h-3.5 w-3.5" /> : undefined}
+                >
+                  {adding
+                    ? labels.addingToTeam
+                    : isAdded
+                      ? labels.added
+                      : teamFull
+                        ? labels.teamFull
+                        : labels.addToTeam}
+                </PlatformButton>
+              )}
             </div>
           ) : undefined
         }
         animationClass="auth-item-in-1"
       />
+
+      {addError && <FeedbackBanner variant="error" message={addError} />}
 
       <ProfileViewGrid
         member={{

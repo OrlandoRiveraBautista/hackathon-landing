@@ -19,6 +19,10 @@ export function memberProfilePath(locale: Locale, userId: string): string {
   return localizedPath(locale, `/profile/${userId}`);
 }
 
+export function memberTeamPath(locale: Locale): string {
+  return localizedPath(locale, "/team");
+}
+
 export function membersDirectoryPath(
   locale: Locale,
   search: {

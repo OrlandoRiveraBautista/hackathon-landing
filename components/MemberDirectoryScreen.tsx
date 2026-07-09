@@ -30,6 +30,10 @@ type MemberDirectoryScreenProps = {
   initialTotalPages: number;
   initialQuery: string;
   initialOpenToTeams: boolean;
+  captainTeamId: string | null;
+  captainTeamMemberIds: string[] | null;
+  captainTeamMaxMembers: number | null;
+  viewerUserId: string;
 };
 
 type DirectoryResponse = {
@@ -49,6 +53,10 @@ export function MemberDirectoryScreen({
   initialTotalPages,
   initialQuery,
   initialOpenToTeams,
+  captainTeamId,
+  captainTeamMemberIds,
+  captainTeamMaxMembers,
+  viewerUserId,
 }: MemberDirectoryScreenProps) {
   const dictionary = useDictionary();
   const { locale } = useLocale();
@@ -69,6 +77,30 @@ export function MemberDirectoryScreen({
   const [loadMoreError, setLoadMoreError] = useState("");
   const [signOutError, setSignOutError] = useState("");
   const [signingOut, setSigningOut] = useState(false);
+  // Track which userIds have been added this session so the button updates instantly
+  const [addedUserIds, setAddedUserIds] = useState<Set<string>>(new Set());
+  const [teamMemberIds, setTeamMemberIds] = useState<Set<string>>(
+    new Set(captainTeamMemberIds ?? []),
+  );
+  const teamIsFull =
+    captainTeamMaxMembers !== null &&
+    teamMemberIds.size >= captainTeamMaxMembers;
+
+  async function handleAddToTeam(targetUserId: string) {
+    if (!captainTeamId) return;
+    const res = await fetch(`/api/teams/${captainTeamId}/members`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId: targetUserId }),
+    });
+    if (res.ok) {
+      setAddedUserIds((prev) => new Set(prev).add(targetUserId));
+      setTeamMemberIds((prev) => new Set(prev).add(targetUserId));
+    } else {
+      const data = await res.json() as { error?: string };
+      throw new Error(data.error ?? "add_failed");
+    }
+  }
 
   const normalizedQuery = normalizeQuery(query);
   const normalizedInitialQuery = normalizeQuery(initialQuery);
@@ -236,7 +268,23 @@ export function MemberDirectoryScreen({
                     openToTeams: profile.openToTeams,
                     notOpenToTeams: profile.notOpenToTeams,
                     viewProfile: labels.viewProfile,
+                    addToTeam: labels.addToTeam,
+                    addingToTeam: labels.addingToTeam,
+                    added: labels.added,
+                    alreadyInTeam: labels.alreadyInTeam,
+                    teamFull: labels.teamFull,
+                    addFailed: labels.addFailed,
                   }}
+                  addContext={
+                    captainTeamId && member.userId !== viewerUserId
+                      ? {
+                          teamId: captainTeamId,
+                          alreadyMember: teamMemberIds.has(member.userId),
+                          teamFull: teamIsFull,
+                          onAdd: handleAddToTeam,
+                        }
+                      : null
+                  }
                 />
               </div>
             ))}

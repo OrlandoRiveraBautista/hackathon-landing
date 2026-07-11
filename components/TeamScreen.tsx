@@ -19,6 +19,7 @@ import {
   PlatformBadge,
 } from "@/components/platform";
 import { SkillsTagInput } from "@/components/profile/SkillsTagInput";
+import { ProjectSubmitConfirmDialog } from "@/components/team/ProjectSubmitConfirmDialog";
 import { montserrat, outfit } from "@/lib/theme";
 import type { TeamWithMembersAndProject } from "@/lib/teams/types";
 import type { MemberProfile } from "@/lib/members/types";
@@ -71,6 +72,7 @@ export function TeamScreen({ member, initialTeam }: TeamScreenProps) {
   const [projectBanner, setProjectBanner] = useState("");
   const [editingProject, setEditingProject] = useState(!initialTeam?.project);
   const [leavingTeam, setLeavingTeam] = useState(false);
+  const [showSubmitConfirm, setShowSubmitConfirm] = useState(false);
 
   const isCaptain = team ? team.captainUserId === member.userId : false;
 
@@ -143,7 +145,7 @@ export function TeamScreen({ member, initialTeam }: TeamScreenProps) {
   }
 
   async function handleSaveProject(submit: boolean) {
-    if (!team) return;
+    if (!team) return false;
     setSavingProject(true);
     setError("");
     setProjectBanner("");
@@ -157,17 +159,26 @@ export function TeamScreen({ member, initialTeam }: TeamScreenProps) {
       const data = await res.json() as { project?: TeamWithMembersAndProject["project"]; error?: string };
       if (!res.ok) {
         setError(data.error ?? t.errors.generic);
-        return;
+        return false;
       }
 
       setTeam((prev) => prev ? { ...prev, project: data.project ?? null } : prev);
       setProjectBanner(submit ? t.projectSubmittedBanner : t.projectSavedBanner);
       setEditingProject(false);
+      if (submit) {
+        setShowSubmitConfirm(false);
+      }
+      return true;
     } catch {
       setError(t.errors.generic);
+      return false;
     } finally {
       setSavingProject(false);
     }
+  }
+
+  async function confirmSubmitProject() {
+    await handleSaveProject(true);
   }
 
   const updateProject = useCallback(
@@ -425,12 +436,15 @@ export function TeamScreen({ member, initialTeam }: TeamScreenProps) {
                     {savingProject ? t.savingProjectButton : t.saveProjectButton}
                   </PlatformButton>
                   <PlatformButton
-                    onClick={() => handleSaveProject(true)}
+                    onClick={() => {
+                      setError("");
+                      setShowSubmitConfirm(true);
+                    }}
                     disabled={savingProject || !projectForm.githubUrl.trim()}
                     variant="primary"
                     icon={<GithubIcon className="h-3.5 w-3.5" />}
                   >
-                    {savingProject ? t.submittingProjectButton : t.submitProjectButton}
+                    {t.submitProjectButton}
                   </PlatformButton>
                 </div>
               </div>
@@ -458,6 +472,24 @@ export function TeamScreen({ member, initialTeam }: TeamScreenProps) {
       )}
 
       <PlatformPageFooter locale={locale} backLabel={t.backToHome} backHref={memberHomePath(locale)} />
+
+      <ProjectSubmitConfirmDialog
+        open={showSubmitConfirm}
+        githubUrl={projectForm.githubUrl.trim()}
+        onClose={() => setShowSubmitConfirm(false)}
+        onConfirm={confirmSubmitProject}
+        confirming={savingProject}
+        error={showSubmitConfirm ? error : undefined}
+        labels={{
+          title: t.submitConfirmTitle,
+          subtitle: t.submitConfirmSubtitle,
+          warnings: t.submitConfirmWarnings,
+          githubLabel: t.submitConfirmGithubLabel,
+          cancel: t.submitConfirmCancel,
+          confirm: t.submitConfirmConfirm,
+          confirming: t.submitConfirmConfirming,
+        }}
+      />
     </MemberAppShell>
   );
 }

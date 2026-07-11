@@ -485,6 +485,13 @@ export type Dictionary = {
     savingProjectButton: string;
     submitProjectButton: string;
     submittingProjectButton: string;
+    submitConfirmTitle: string;
+    submitConfirmSubtitle: string;
+    submitConfirmWarnings: string[];
+    submitConfirmGithubLabel: string;
+    submitConfirmCancel: string;
+    submitConfirmConfirm: string;
+    submitConfirmConfirming: string;
     projectSavedBanner: string;
     projectSubmittedBanner: string;
     submittedBadge: string;

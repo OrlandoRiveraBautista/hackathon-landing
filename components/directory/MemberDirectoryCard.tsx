@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import {
   GithubIcon,
@@ -10,6 +13,14 @@ import { parseGithubUrl } from "@/lib/members/shared";
 import type { PublicMemberProfile } from "@/lib/members/types";
 import { montserrat, outfit } from "@/lib/theme";
 
+type AddContext = {
+  teamId: string;
+  alreadyMember: boolean;
+  inviteSent: boolean;
+  teamFull: boolean;
+  onInvite: (userId: string) => Promise<void>;
+};
+
 type MemberDirectoryCardProps = {
   member: PublicMemberProfile;
   locale: Locale;
@@ -17,18 +28,57 @@ type MemberDirectoryCardProps = {
     openToTeams: string;
     notOpenToTeams: string;
     viewProfile: string;
+    addToTeam: string;
+    addingToTeam: string;
+    added: string;
+    inviteSent: string;
+    alreadyInTeam: string;
+    teamFull: string;
+    addFailed: string;
   };
+  addContext: AddContext | null;
 };
 
 export function MemberDirectoryCard({
   member,
   locale,
   labels,
+  addContext,
 }: MemberDirectoryCardProps) {
   const { handle: githubHandle } = parseGithubUrl(member.github);
   const skills = member.skills.slice(0, 3);
   const extraSkills = member.skills.length - skills.length;
   const summary = member.bio?.trim() || member.interests?.trim();
+
+  const [inviting, setInviting] = useState(false);
+  const [addError, setAddError] = useState("");
+  const [wasInvited, setWasInvited] = useState(false);
+
+  async function handleInvite(e: React.MouseEvent) {
+    e.preventDefault();
+    if (!addContext || inviting) return;
+    setInviting(true);
+    setAddError("");
+    try {
+      await addContext.onInvite(member.userId);
+      setWasInvited(true);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "";
+      if (msg.toLowerCase().includes("full")) {
+        setAddError(labels.teamFull);
+      } else if (msg.toLowerCase().includes("team")) {
+        setAddError(labels.alreadyInTeam);
+      } else {
+        setAddError(labels.addFailed);
+      }
+    } finally {
+      setInviting(false);
+    }
+  }
+
+  const isMember = addContext?.alreadyMember;
+  const invitePending = wasInvited || addContext?.inviteSent;
+  const isAdded = isMember;
 
   return (
     <Link
@@ -134,18 +184,56 @@ export function MemberDirectoryCard({
         >
           {labels.viewProfile}
         </span>
-        <span className="flex h-7 w-7 items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.03] text-white/30 transition-all duration-200 group-hover:border-[#aaff00]/25 group-hover:bg-[#aaff00]/10 group-hover:text-[#aaff00]">
-          <svg viewBox="0 0 16 16" fill="none" className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5">
-            <path
-              d="M3 8h10M9 4l4 4-4 4"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </span>
+
+        <div className="flex items-center gap-2">
+          {/* Add to team button */}
+          {addContext && (
+            <button
+              type="button"
+              onClick={handleInvite}
+              disabled={inviting || !!isAdded || invitePending || addContext.teamFull}
+              className={`relative inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-[10px] font-black tracking-[0.14em] transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-60 ${
+                isAdded
+                  ? "border-[#aaff00]/20 bg-[#aaff00]/8 text-[#aaff00]/60"
+                  : invitePending
+                    ? "border-white/10 bg-white/[0.04] text-white/35"
+                    : addContext.teamFull
+                      ? "border-white/[0.07] bg-white/[0.02] text-white/25"
+                      : "border-white/[0.1] bg-white/[0.04] text-white/55 hover:border-[#aaff00]/30 hover:bg-[#aaff00]/10 hover:text-[#aaff00]/80"
+              }`}
+              style={{ fontFamily: montserrat }}
+            >
+              {inviting
+                ? labels.addingToTeam
+                : isAdded
+                  ? labels.added
+                  : invitePending
+                    ? labels.inviteSent
+                    : addContext.teamFull
+                      ? labels.teamFull
+                      : labels.addToTeam}
+            </button>
+          )}
+
+          <span className="flex h-7 w-7 items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.03] text-white/30 transition-all duration-200 group-hover:border-[#aaff00]/25 group-hover:bg-[#aaff00]/10 group-hover:text-[#aaff00]">
+            <svg viewBox="0 0 16 16" fill="none" className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5">
+              <path
+                d="M3 8h10M9 4l4 4-4 4"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </span>
+        </div>
       </div>
+
+      {addError && (
+        <p className="mt-2 text-[11px] text-red-400" style={{ fontFamily: outfit }}>
+          {addError}
+        </p>
+      )}
       </div>
     </Link>
   );

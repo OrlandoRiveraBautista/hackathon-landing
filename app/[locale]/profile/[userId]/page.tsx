@@ -6,6 +6,8 @@ import { getDictionary } from "@/lib/dictionaries";
 import { isLocale, localizedPath } from "@/lib/i18n";
 import { getMemberByUserId, getOrCreateMember } from "@/lib/members";
 import { toPublicMemberProfile } from "@/lib/members/shared";
+import { getTeamByUserId } from "@/lib/teams";
+import { getPendingInviteUserIdsForTeam } from "@/lib/teams/invites";
 import { getWaitlistSignupByEmail } from "@/lib/waitlist-admin";
 
 type ProfilePageProps = {
@@ -57,9 +59,10 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
   }
 
   const session = await getSession();
+  const viewerId = session?.user?.id;
   const email = session?.user?.email;
 
-  if (!email) {
+  if (!email || !viewerId) {
     redirect(localizedPath(locale, "/login"));
   }
 
@@ -68,11 +71,10 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
     redirect(`${localizedPath(locale, "/login")}?error=not_registered`);
   }
 
-  const isOwnProfile = session.user.id === userId;
+  const isOwnProfile = viewerId === userId;
 
   if (isOwnProfile) {
-    const member = await getOrCreateMember(session.user.id, signup);
-
+    const member = await getOrCreateMember(viewerId, signup);
     return (
       <MemberProfileScreen
         isOwnProfile
@@ -82,16 +84,37 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
     );
   }
 
-  const member = await getMemberByUserId(userId);
+  const [member, viewerTeam] = await Promise.all([
+    getMemberByUserId(userId),
+    getTeamByUserId(viewerId),
+  ]);
+
   if (!member) {
     notFound();
   }
+
+  const captainTeam =
+    viewerTeam && viewerTeam.captainUserId === viewerId ? viewerTeam : null;
+
+  const pendingInviteUserIds = captainTeam
+    ? await getPendingInviteUserIdsForTeam(captainTeam.id)
+    : [];
 
   return (
     <MemberProfileScreen
       isOwnProfile={false}
       member={toPublicMemberProfile(member)}
       userImage={null}
+      captainTeam={
+        captainTeam
+          ? {
+              id: captainTeam.id,
+              memberIds: captainTeam.members.map((m) => m.userId),
+              maxMembers: captainTeam.maxMembers,
+              inviteSent: pendingInviteUserIds.includes(userId),
+            }
+          : null
+      }
     />
   );
 }

@@ -7,6 +7,8 @@ import { getDictionary } from "@/lib/dictionaries";
 import { isLocale, localizedPath, parseMembersDirectorySearch } from "@/lib/i18n";
 import { searchMembers } from "@/lib/members";
 import { toPublicMemberProfile } from "@/lib/members/shared";
+import { getTeamByUserId } from "@/lib/teams";
+import { getPendingInviteUserIdsForTeam } from "@/lib/teams/invites";
 import { getWaitlistSignupByEmail } from "@/lib/waitlist-admin";
 
 type MembersPageProps = {
@@ -39,9 +41,10 @@ export default async function MembersPage({ params, searchParams }: MembersPageP
   }
 
   const session = await getSession();
+  const userId = session?.user?.id;
   const email = session?.user?.email;
 
-  if (!email) {
+  if (!email || !userId) {
     redirect(localizedPath(locale, "/login"));
   }
 
@@ -50,7 +53,17 @@ export default async function MembersPage({ params, searchParams }: MembersPageP
     redirect(`${localizedPath(locale, "/login")}?error=not_registered`);
   }
 
-  const result = await searchMembers({ query: q, openToTeams });
+  const [result, myTeam] = await Promise.all([
+    searchMembers({ query: q, openToTeams }),
+    getTeamByUserId(userId),
+  ]);
+
+  const captainTeam =
+    myTeam && myTeam.captainUserId === userId ? myTeam : null;
+
+  const pendingInviteUserIds = captainTeam
+    ? await getPendingInviteUserIdsForTeam(captainTeam.id)
+    : [];
 
   return (
     <Suspense fallback={null}>
@@ -60,6 +73,11 @@ export default async function MembersPage({ params, searchParams }: MembersPageP
         initialTotalPages={result.totalPages}
         initialQuery={q}
         initialOpenToTeams={openToTeams}
+        captainTeamId={captainTeam?.id ?? null}
+        captainTeamMemberIds={captainTeam?.members.map((m) => m.userId) ?? null}
+        captainTeamMaxMembers={captainTeam?.maxMembers ?? null}
+        pendingInviteUserIds={pendingInviteUserIds}
+        viewerUserId={userId}
       />
     </Suspense>
   );

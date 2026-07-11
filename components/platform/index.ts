@@ -6,6 +6,7 @@ export { MemberAppHeader } from "./MemberAppHeader";
 export { MemberAppShell } from "./MemberAppShell";
 export { MemberAvatar } from "./MemberAvatar";
 export { MemberHeaderSearch } from "./MemberHeaderSearch";
+export { NotificationBell } from "./NotificationBell";
 export { PlatformActionCard } from "./PlatformActionCard";
 export { PlatformAppFooter } from "./PlatformAppFooter";
 export { PlatformBackground } from "./PlatformBackground";

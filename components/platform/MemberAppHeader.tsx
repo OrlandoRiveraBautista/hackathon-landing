@@ -5,6 +5,7 @@ import { SITE_LOGO } from "@/lib/brand";
 import { memberHomePath, type Locale } from "@/lib/i18n";
 import { montserrat } from "@/lib/theme";
 import { MemberHeaderSearch } from "./MemberHeaderSearch";
+import { NotificationBell } from "./NotificationBell";
 
 type MemberAppHeaderProps = {
   locale: Locale;
@@ -73,9 +74,10 @@ export function MemberAppHeader({
           </Suspense>
         )}
 
-        {rightSlot && (
-          <div className="flex shrink-0 items-center gap-2">{rightSlot}</div>
-        )}
+        <div className="flex shrink-0 items-center gap-2">
+          <NotificationBell />
+          {rightSlot}
+        </div>
       </header>
       <div className="h-[72px] shrink-0" aria-hidden />
     </>

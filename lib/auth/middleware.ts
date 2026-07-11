@@ -24,7 +24,9 @@ export function isProtectedMemberPath(pathname: string) {
   return (
     pathname.startsWith(`/${locale}/home`) ||
     pathname.startsWith(`/${locale}/profile`) ||
-    pathname.startsWith(`/${locale}/members`)
+    pathname.startsWith(`/${locale}/members`) ||
+    pathname.startsWith(`/${locale}/team`) ||
+    pathname.startsWith(`/${locale}/notifications`)
   );
 }
 

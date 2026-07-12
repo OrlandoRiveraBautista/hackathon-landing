@@ -16,6 +16,7 @@ export { PlatformInput } from "./PlatformInput";
 export { PlatformLinkButton } from "./PlatformLinkButton";
 export { PlatformLinkChip } from "./PlatformLinkChip";
 export { PlatformPageFooter } from "./PlatformPageFooter";
+export { PlatformSelect } from "./PlatformSelect";
 export { SectionLabel } from "./SectionLabel";
 export { SkillPill } from "./SkillPill";
 export { ToggleSwitch } from "./ToggleSwitch";

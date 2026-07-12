@@ -9,6 +9,8 @@ import {
   updateMemberProfile,
 } from "@/lib/members";
 import { getWaitlistSignupByEmail } from "@/lib/waitlist-admin";
+import { isValidShirtSize } from "@/lib/shirt-size";
+import { updateWaitlistShirtSize } from "@/lib/waitlist-shirt-size";
 
 function resolveLocale(request: Request) {
   const header = request.headers.get("x-locale");
@@ -34,6 +36,8 @@ function errorMessage(code: string, locale: ReturnType<typeof resolveLocale>) {
     case "invalid_show_email":
     case "invalid_show_phone":
       return errors.invalidBody;
+    case "invalid_shirt_size":
+      return errors.invalidShirtSize;
     default:
       return errors.generic;
   }
@@ -92,6 +96,26 @@ export async function PATCH(request: Request) {
       { error: dictionary.profile.errors.generic },
       { status: 500 },
     );
+  }
+
+  if (body.shirtSize !== undefined) {
+    const shirtSize = String(body.shirtSize);
+    if (!isValidShirtSize(shirtSize)) {
+      return NextResponse.json(
+        { error: dictionary.profile.errors.invalidShirtSize },
+        { status: 400 },
+      );
+    }
+
+    try {
+      await updateWaitlistShirtSize(signup.id, shirtSize);
+    } catch (error) {
+      console.error("Waitlist shirt size update failed:", error);
+      return NextResponse.json(
+        { error: dictionary.profile.errors.generic },
+        { status: 500 },
+      );
+    }
   }
 
   return NextResponse.json({ member: updated });

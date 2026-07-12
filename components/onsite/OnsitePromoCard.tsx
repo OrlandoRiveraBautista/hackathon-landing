@@ -24,7 +24,6 @@ export type OnsitePromoCardProps = {
   accent?: boolean;
   badges?: OnsitePromoBadge[];
   className?: string;
-  labelIcon?: ReactNode;
   ctaIcon?: ReactNode;
 };
 
@@ -38,7 +37,6 @@ export function OnsitePromoCard({
   accent = true,
   badges = [],
   className = "",
-  labelIcon,
   ctaIcon,
 }: OnsitePromoCardProps) {
   return (
@@ -46,7 +44,7 @@ export function OnsitePromoCard({
       <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0 flex-1">
           {label && (
-            <SectionLabel icon={labelIcon}>{label}</SectionLabel>
+            <SectionLabel>{label}</SectionLabel>
           )}
 
           {badges.length > 0 && (

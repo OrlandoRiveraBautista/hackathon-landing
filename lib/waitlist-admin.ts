@@ -12,6 +12,8 @@ import { waitlistDocIdForEmail } from "./waitlist";
 import { normalizeOnsiteStatus, type OnsiteStatus } from "./onsite-selection";
 import { normalizeWaitlistStatus, type WaitlistStatus } from "./waitlist-status";
 import type { SexOption } from "./waitlist";
+import type { ShirtSize } from "./shirt-size";
+import { isValidShirtSize } from "./shirt-size";
 
 export type WaitlistSignup = {
   id: string;
@@ -20,6 +22,7 @@ export type WaitlistSignup = {
   phone: string;
   age: number | null;
   sex: SexOption | null;
+  shirtSize: ShirtSize | null;
   school: string;
   github: string;
   interests: string;
@@ -42,6 +45,10 @@ function mapWaitlistDoc(id: string, data: DocumentData): WaitlistSignup {
     phone: (data.phone as string | undefined) ?? "—",
     age: typeof data.age === "number" ? data.age : null,
     sex: (data.sex as SexOption | undefined) ?? null,
+    shirtSize:
+      typeof data.shirtSize === "string" && isValidShirtSize(data.shirtSize)
+        ? data.shirtSize
+        : null,
     school: (data.school as string | undefined) ?? "—",
     github: (data.github as string | undefined) ?? "—",
     interests: (data.interests as string | undefined) ?? "—",
@@ -63,7 +70,9 @@ export async function getWaitlistSignups(): Promise<WaitlistSignup[]> {
     query(collection(getDb(), "waitlist"), orderBy("createdAt", "desc")),
   );
 
-  return snapshot.docs.map((doc) => mapWaitlistDoc(doc.id, doc.data()));
+  return snapshot.docs.map((docSnapshot) =>
+    mapWaitlistDoc(docSnapshot.id, docSnapshot.data()),
+  );
 }
 
 export async function getWaitlistSignupByEmail(

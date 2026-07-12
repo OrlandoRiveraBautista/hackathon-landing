@@ -103,6 +103,24 @@ export type Dictionary = {
     socialProof: string;
     footnote: string;
   };
+  shirt: {
+    label: string;
+    title: string;
+    accentWord: string;
+    body: string;
+    hint: string;
+    sizeLabel: string;
+    saveButton: string;
+    savingButton: string;
+    savedMessage: string;
+    registerCta: string;
+    registerHint: string;
+    signInPrompt: string;
+  signInCta: string;
+  currentSize: string;
+  expandImage: string;
+  closeImage: string;
+};
   perks: {
     label: string;
     title: string;
@@ -138,6 +156,7 @@ export type Dictionary = {
     phone: string;
     age: string;
     sex: string;
+    shirtSize: string;
     school: string;
     github: string;
     interests: string;
@@ -155,6 +174,7 @@ export type Dictionary = {
       preferNotToSay: string;
     };
     sexPlaceholder: string;
+    shirtSizePlaceholder: string;
     join: string;
     joining: string;
     close: string;
@@ -168,6 +188,7 @@ export type Dictionary = {
       invalidPhone: string;
       invalidAge: string;
       invalidSex: string;
+      invalidShirtSize: string;
       invalidGithub: string;
       firestoreSetup: string;
       unavailable: string;
@@ -450,6 +471,9 @@ export type Dictionary = {
     skillsEmpty: string;
     school: string;
     schoolEmpty: string;
+    shirtSize: string;
+    shirtSizeEmpty: string;
+    shirtSizeHint: string;
     interests: string;
     interestsEmpty: string;
     openToTeams: string;
@@ -480,6 +504,7 @@ export type Dictionary = {
       invalidGithub: string;
       fieldTooLong: string;
       invalidSkills: string;
+      invalidShirtSize: string;
       generic: string;
       saveFailed: string;
     };

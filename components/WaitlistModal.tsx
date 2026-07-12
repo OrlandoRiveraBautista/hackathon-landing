@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { useDictionary, useLocale } from "@/components/LocaleProvider";
 import { useWaitlistCount } from "@/components/WaitlistCountProvider";
 import { SEX_OPTIONS } from "@/lib/waitlist";
+import { SHIRT_SIZE_OPTIONS } from "@/lib/shirt-size";
 import ClickSpark from "./reactbits/ClickSpark";
 import StarBorder from "./reactbits/StarBorder";
 import "./WaitlistModal.css";
@@ -38,6 +39,7 @@ export function WaitlistModal({ open, onClose, onSuccess }: WaitlistModalProps) 
   const [phone, setPhone] = useState("");
   const [age, setAge] = useState("");
   const [sex, setSex] = useState("");
+  const [shirtSize, setShirtSize] = useState("");
   const [school, setSchool] = useState("");
   const [github, setGithub] = useState("");
   const [interests, setInterests] = useState("");
@@ -58,6 +60,7 @@ export function WaitlistModal({ open, onClose, onSuccess }: WaitlistModalProps) 
     setPhone("");
     setAge("");
     setSex("");
+    setShirtSize("");
     setSchool("");
     setGithub("");
     setInterests("");
@@ -213,6 +216,7 @@ export function WaitlistModal({ open, onClose, onSuccess }: WaitlistModalProps) 
           phone,
           age,
           sex,
+          shirtSize,
           school,
           github,
           interests,
@@ -437,6 +441,27 @@ export function WaitlistModal({ open, onClose, onSuccess }: WaitlistModalProps) 
                 </select>
               </label>
             </div>
+
+            <label className="waitlist-field block">
+              {fieldLabel(waitlist.shirtSize)}
+              <select
+                name="shirtSize"
+                value={shirtSize}
+                onChange={(event) => setShirtSize(event.target.value)}
+                required
+                className={`${inputClassName} cursor-pointer`}
+                style={{ fontFamily: outfit }}
+              >
+                <option value="" disabled>
+                  {waitlist.shirtSizePlaceholder}
+                </option>
+                {SHIRT_SIZE_OPTIONS.map((size) => (
+                  <option key={size} value={size}>
+                    {size}
+                  </option>
+                ))}
+              </select>
+            </label>
 
             <label className="waitlist-field block">
               {fieldLabel(waitlist.school, true)}

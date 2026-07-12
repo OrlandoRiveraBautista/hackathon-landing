@@ -24,6 +24,7 @@ export async function POST(request: Request) {
     phone: String(body.phone ?? ""),
     age: String(body.age ?? ""),
     sex: String(body.sex ?? ""),
+    shirtSize: String(body.shirtSize ?? ""),
     school: body.school ? String(body.school) : undefined,
     github: body.github ? String(body.github) : undefined,
     interests: body.interests ? String(body.interests) : undefined,

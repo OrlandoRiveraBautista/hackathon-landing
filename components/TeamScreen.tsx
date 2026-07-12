@@ -14,7 +14,6 @@ import {
   SkillPill,
   ToggleSwitch,
   GithubIcon,
-  UsersIcon,
   LogOutIcon,
   PlatformBadge,
 } from "@/components/platform";
@@ -291,9 +290,7 @@ export function TeamScreen({ member, initialTeam }: TeamScreenProps) {
 
           {/* Members */}
           <GlassCard className="auth-item-in-2">
-            <SectionLabel icon={<UsersIcon className="h-4 w-4" />}>
-              {t.membersLabel}
-            </SectionLabel>
+            <SectionLabel>{t.membersLabel}</SectionLabel>
             <div className="space-y-3">
               {team.members.map((m) => {
                 const isMe = m.userId === member.userId;
@@ -345,9 +342,7 @@ export function TeamScreen({ member, initialTeam }: TeamScreenProps) {
           <GlassCard accent className="auth-item-in-3">
             <div className="mb-5 flex items-start justify-between gap-3">
               <div>
-                <SectionLabel icon={<GithubIcon className="h-4 w-4" />}>
-                  {t.projectLabel}
-                </SectionLabel>
+                <SectionLabel>{t.projectLabel}</SectionLabel>
                 <p className="text-sm text-white/40" style={{ fontFamily: outfit }}>
                   {team.project ? t.projectSubtitle : t.noProjectSubtitle}
                 </p>

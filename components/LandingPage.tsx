@@ -9,6 +9,7 @@ import { MarqueeTicker } from "@/components/MarqueeTicker";
 import { AboutSection } from "@/components/sections/AboutSection";
 import { HighlightsSection } from "@/components/sections/HighlightsSection";
 import { PrizesSection } from "@/components/sections/PrizesSection";
+import { ShirtSection } from "@/components/sections/ShirtSection";
 import { HowItWorksSection } from "@/components/sections/HowItWorksSection";
 import { OnsiteFloatingBanner } from "@/components/OnsiteFloatingBanner";
 import { FaqSection } from "@/components/sections/FaqSection";
@@ -45,6 +46,7 @@ export function LandingPage() {
       <SponsorsSection onSponsorClick={() => setSponsorOpen(true)} />
       <HighlightsSection />
       <PrizesSection />
+      <ShirtSection onRegisterClick={() => setWaitlistOpen(true)} />
       <HowItWorksSection />
       <FaqSection />
       <CtaSection onRegisterClick={() => setWaitlistOpen(true)} />

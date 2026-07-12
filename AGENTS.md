@@ -13,3 +13,7 @@ This repo is **Build Pa'l Norte** — a hackathon landing site that is evolving 
 → [`docs/PLATFORM.md`](docs/PLATFORM.md)
 
 That doc covers vision, current vs target state, phased roadmap, proposed data models, and open decisions.
+
+## UI / UX
+
+When building or editing components under `components/`, follow [`.cursor/rules/ux-style.mdc`](.cursor/rules/ux-style.mdc) — especially: no decorative icons on section labels or eyebrows.

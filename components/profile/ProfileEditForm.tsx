@@ -1,9 +1,9 @@
 import {
   CheckIcon,
   GlassCard,
-  PencilIcon,
   PlatformButton,
   PlatformInput,
+  PlatformSelect,
   SectionLabel,
   ToggleSwitch,
 } from "@/components/platform";
@@ -16,6 +16,7 @@ export type ProfileFormState = {
   interests: string;
   bio: string;
   skills: string[];
+  shirtSize: string;
   openToTeams: boolean;
   showEmail: boolean;
   showPhone: boolean;
@@ -33,6 +34,9 @@ type ProfileEditFormLabels = {
   skills: string;
   skillsPlaceholder: string;
   skillsHint?: string;
+  shirtSize: string;
+  shirtSizePlaceholder: string;
+  shirtSizeHint: string;
   openToTeams: string;
   openToTeamsHint: string;
   showEmail: string;
@@ -51,6 +55,7 @@ type ProfileEditFormProps = {
   form: ProfileFormState;
   onChange: <K extends keyof ProfileFormState>(key: K, value: ProfileFormState[K]) => void;
   labels: ProfileEditFormLabels;
+  shirtSizeOptions: Array<{ value: string; label: string }>;
   hasPhone: boolean;
   onSave: () => void;
   onCancel: () => void;
@@ -62,6 +67,7 @@ export function ProfileEditForm({
   form,
   onChange,
   labels,
+  shirtSizeOptions,
   hasPhone,
   onSave,
   onCancel,
@@ -71,10 +77,17 @@ export function ProfileEditForm({
   return (
     <section className="auth-item-in-4 mt-6">
       <GlassCard>
-        <SectionLabel icon={<PencilIcon className="h-3.5 w-3.5" />}>
-          {labels.editSection}
-        </SectionLabel>
+        <SectionLabel>{labels.editSection}</SectionLabel>
         <div className="space-y-3">
+          <PlatformSelect
+            label={labels.shirtSize}
+            value={form.shirtSize}
+            onChange={(value) => onChange("shirtSize", value)}
+            placeholder={labels.shirtSizePlaceholder}
+            options={shirtSizeOptions}
+            hint={labels.shirtSizeHint}
+            required
+          />
           <PlatformInput
             label={labels.school}
             value={form.school}

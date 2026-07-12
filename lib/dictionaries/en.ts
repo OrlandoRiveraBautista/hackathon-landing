@@ -637,6 +637,31 @@ const dictionary: Dictionary = {
     signOutFailed: "Sign out failed. Try again.",
     backToHome: "← Back to event site",
     comingSoon: "SOON",
+    onsitePromo: {
+      label: "ON-SITE AT PLAZA 11-11",
+      titlePending: "Want to build in person?",
+      titleBoosted: "You're in the boosted pool",
+      titleSelected: "You're in at Plaza 11-11",
+      titleRemote: "You're building with us remotely",
+      titleAnnounced: "On-site list is live",
+      bodyPending:
+        "30 spots at Plaza 11-11. Tap boost before the draw — first tap gives 3× weight, each extra tap adds +1.",
+      bodyBoosted:
+        "{taps} taps · {weight}× draw weight. Keep tapping to push your odds higher before the list drops.",
+      bodySelected:
+        "You made the cut for one of 30 on-site spots. See you at Plaza 11-11.",
+      bodyRemote:
+        "You're still fully part of the hackathon — same energy, same community, building remotely.",
+      bodyAnnounced:
+        "{count} builders confirmed on-site. Open the list to see who's at Plaza 11-11.",
+      statPending: "{count} builders boosted their odds so far",
+      statAnnounced: "{count} on-site · {waitlist} on the waitlist",
+      weightBadge: "{weight}× weight",
+      selectedBadge: "ON-SITE",
+      ctaPending: "BOOST MY ODDS",
+      ctaBoosted: "KEEP BOOSTING",
+      ctaViewList: "VIEW ON-SITE LIST",
+    },
     event: {
       label: "EVENT",
       title: "Build Pa'l Norte 2026",
@@ -914,13 +939,13 @@ const dictionary: Dictionary = {
     boostBody:
       "Confirm you want to build on-site before the list drops. It takes one second.",
     boostSteps: ["Sign in", "Tap boost", "Wait for the list"],
-    boostButton: "BOOST MY ODDS →",
+    boostButton: "BOOST MY ODDS",
     boostButtonBoosted: "BOOSTED ✓ TAP AGAIN",
     boostTapHint: "Tap as many times as you want — first tap locks in 3× weight, each extra tap adds +1",
     boosting: "SAVING...",
     boostDone: "Boost locked in — you're in the 3× pool.",
     boostSignInPrompt: "Sign in with your waitlist Google account first.",
-    boostSignIn: "SIGN IN & BOOST →",
+    boostSignIn: "SIGN IN & BOOST",
     boostSignInReturn: "You'll return here automatically after sign-in.",
     announcedTitle: "On-site builders",
     announcedSubtitle:

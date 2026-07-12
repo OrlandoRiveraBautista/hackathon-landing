@@ -3,6 +3,7 @@
 import { useState } from "react";
 import {
   MemberEventCard,
+  MemberOnsiteBanner,
   MemberProfileCompletion,
   MemberQuickActions,
   MemberWelcomeHero,
@@ -114,6 +115,8 @@ export function MemberHomeScreen({ member, userImage }: MemberHomeScreenProps) {
         openToTeamsLabel={profile.openToTeams}
         githubHandle={githubHandle}
       />
+
+      <MemberOnsiteBanner />
 
       {/* Skills strip */}
       {member.skills.length > 0 && (

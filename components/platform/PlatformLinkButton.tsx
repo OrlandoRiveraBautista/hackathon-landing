@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { ReactNode } from "react";
 import {
   platformControlBase,
@@ -7,32 +8,28 @@ import {
   type PlatformControlVariant,
 } from "./platformControlStyles";
 
-type PlatformButtonProps = {
-  onClick?: () => void;
-  disabled?: boolean;
+type PlatformLinkButtonProps = {
+  href: string;
   children: ReactNode;
   variant?: PlatformControlVariant;
   icon?: ReactNode;
-  type?: "button" | "submit";
+  className?: string;
 };
 
-export function PlatformButton({
-  onClick,
-  disabled,
+export function PlatformLinkButton({
+  href,
   children,
-  variant = "ghost",
+  variant = "primary",
   icon,
-  type = "button",
-}: PlatformButtonProps) {
+  className = "",
+}: PlatformLinkButtonProps) {
   return (
-    <button
-      type={type}
-      onClick={onClick}
-      disabled={disabled}
-      className={`${platformControlBase} ${platformControlVariants[variant]}`}
+    <Link
+      href={href}
+      className={`${platformControlBase} ${platformControlVariants[variant]} ${className}`}
       style={platformControlFont}
     >
       <PlatformControlContent icon={icon}>{children}</PlatformControlContent>
-    </button>
+    </Link>
   );
 }

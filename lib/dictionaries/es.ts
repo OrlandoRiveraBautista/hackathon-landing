@@ -647,6 +647,31 @@ const dictionary: Dictionary = {
     signOutFailed: "No se pudo cerrar sesión. Intenta de nuevo.",
     backToHome: "Volver al sitio del evento",
     comingSoon: "PRONTO",
+    onsitePromo: {
+      label: "PRESENCIAL EN PLAZA 11-11",
+      titlePending: "¿Quieres construir en persona?",
+      titleBoosted: "Estás en el grupo con boost",
+      titleSelected: "¡Entraste presencial en Plaza 11-11!",
+      titleRemote: "Construyes con nosotros en remoto",
+      titleAnnounced: "La lista presencial ya está publicada",
+      bodyPending:
+        "30 cupos en Plaza 11-11. Pulsa boost antes del sorteo — el primer toque da 3× peso, cada toque extra suma +1.",
+      bodyBoosted:
+        "{taps} toques · {weight}× peso en el sorteo. Sigue tocando para subir tus probabilidades antes de que salga la lista.",
+      bodySelected:
+        "Entraste entre los 30 cupos presenciales. Nos vemos en Plaza 11-11.",
+      bodyRemote:
+        "Sigues siendo parte total del hackathon — misma energía, misma comunidad, en remoto.",
+      bodyAnnounced:
+        "{count} builders confirmados presencialmente. Abre la lista para ver quién estará en Plaza 11-11.",
+      statPending: "{count} builders ya mejoraron sus probabilidades",
+      statAnnounced: "{count} presenciales · {waitlist} en la lista de espera",
+      weightBadge: "{weight}× peso",
+      selectedBadge: "PRESENCIAL",
+      ctaPending: "MEJORAR MIS PROBABILIDADES",
+      ctaBoosted: "SEGUIR BOOSTEANDO",
+      ctaViewList: "VER LISTA PRESENCIAL",
+    },
     event: {
       label: "EVENTO",
       title: "Build Pa'l Norte 2026",
@@ -943,13 +968,13 @@ const dictionary: Dictionary = {
     boostBody:
       "Confirma que quieres ir presencial antes de que salga la lista. Toma un segundo.",
     boostSteps: ["Inicia sesión", "Pulsa boost", "Espera la lista"],
-    boostButton: "MEJORAR MIS PROBABILIDADES →",
+    boostButton: "MEJORAR MIS PROBABILIDADES",
     boostButtonBoosted: "BOOST ✓ TOCA OTRA VEZ",
     boostTapHint: "Toca las veces que quieras — el primer toque da 3× peso, cada toque extra suma +1",
     boosting: "GUARDANDO...",
     boostDone: "Boost confirmado — estás en el grupo 3×.",
     boostSignInPrompt: "Primero inicia sesión con tu cuenta de Google de la lista.",
-    boostSignIn: "INICIAR SESIÓN Y BOOST →",
+    boostSignIn: "INICIAR SESIÓN Y BOOST",
     boostSignInReturn: "Regresarás aquí automáticamente después de iniciar sesión.",
     announcedTitle: "Constructores presenciales",
     announcedSubtitle:

@@ -172,7 +172,7 @@ export function BoostButton({
     <>
       <BoostParticleOverlay bursts={bursts} onRemove={removeBurst} />
 
-      <div className="relative w-full [&>div]:block [&>div]:w-full">
+      <div className="relative w-full [&>div]:!block [&>div]:!w-full">
         <ClickSpark
           sparkColor="#aaff00"
           sparkCount={10}

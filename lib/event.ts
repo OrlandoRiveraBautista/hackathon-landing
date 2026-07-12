@@ -9,6 +9,7 @@ type EventCopy = {
   statDateSublabel: string;
   faqWhenWhere: string;
   waitlistEmailBody: string;
+  platformAccessEmailBody: string;
   waitlistSuccessDetail: string;
 };
 
@@ -24,6 +25,8 @@ const copy: Record<Locale, EventCopy> = {
       "Build Pa'l Norte takes place at Plaza 11-11 in Matamoros, Tamaulipas on July 25–26, 2026. It's a 24-hour hackathon running from 10:00 AM Saturday to 10:00 AM Sunday.",
     waitlistEmailBody:
       "You're on the waitlist for Build Pa'l Norte — July 25–26, 2026 at Plaza 11-11 in Matamoros. The hackathon runs 24 hours straight, from 10:00 AM Saturday to 10:00 AM Sunday. We'll email you when registration opens with next steps.",
+    platformAccessEmailBody:
+      "The member platform is now open. Sign in with the Google account that matches your waitlist email to access your profile, browse other members, and get ready for the hackathon on July 25–26, 2026 at Plaza 11-11 in Matamoros.",
     waitlistSuccessDetail:
       "We'll reach out with registration details soon. See you July 25–26 — 10 AM to 10 AM.",
   },
@@ -38,6 +41,8 @@ const copy: Record<Locale, EventCopy> = {
       "Build Pa'l Norte se lleva a cabo en Plaza 11-11, Matamoros, Tamaulipas el 25–26 de julio de 2026. Es un hackathon de 24 horas, de 10:00 AM del sábado a 10:00 AM del domingo.",
     waitlistEmailBody:
       "Ya estás en la lista de espera de Build Pa'l Norte — 25–26 de julio de 2026 en Plaza 11-11, Matamoros. El hackathon dura 24 horas seguidas, de 10:00 AM del sábado a 10:00 AM del domingo. Te escribiremos en cuanto abra el registro con los siguientes pasos.",
+    platformAccessEmailBody:
+      "La plataforma de miembros ya está abierta. Inicia sesión con la cuenta de Google que registraste en la lista de espera para acceder a tu perfil, conocer a otros participantes y prepararte para el hackathon del 25–26 de julio de 2026 en Plaza 11-11, Matamoros.",
     waitlistSuccessDetail:
       "Te contactaremos pronto con los detalles del registro. Nos vemos el 25–26 de julio — 10 AM a 10 AM.",
   },

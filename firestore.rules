@@ -40,9 +40,15 @@ service cloud.firestore {
                     && isOptionalString('github')
                     && isOptionalString('interests');
       allow read: if true;
-      allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'contactedAt'])
-                    && request.resource.data.status == 'contacted'
-                    && waitlistCoreFieldsUnchanged();
+      allow update: if waitlistCoreFieldsUnchanged()
+                    && (
+                      (
+                        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'contactedAt'])
+                        && request.resource.data.status == 'contacted'
+                      )
+                      ||
+                      request.resource.data.diff(resource.data).affectedKeys().hasOnly(['platformNotifiedAt'])
+                    );
       allow delete: if false;
     }
 

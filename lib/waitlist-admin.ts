@@ -24,6 +24,7 @@ export type WaitlistSignup = {
   interests: string;
   status: WaitlistStatus;
   contactedAt: Date | null;
+  platformNotifiedAt: Date | null;
   createdAt: Date | null;
 };
 
@@ -40,6 +41,7 @@ function mapWaitlistDoc(id: string, data: DocumentData): WaitlistSignup {
     interests: (data.interests as string | undefined) ?? "—",
     status: normalizeWaitlistStatus(data.status),
     contactedAt: data.contactedAt?.toDate?.() ?? null,
+    platformNotifiedAt: data.platformNotifiedAt?.toDate?.() ?? null,
     createdAt: data.createdAt?.toDate?.() ?? null,
   };
 }

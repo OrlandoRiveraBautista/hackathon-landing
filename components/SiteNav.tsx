@@ -176,6 +176,21 @@ export function SiteNav({ onRegisterClick }: SiteNavProps) {
         <div className="flex shrink-0 items-center gap-2">
           <LanguageSwitcher />
 
+          <Link
+            href={localizedPath(locale, "/login")}
+            className={`
+              rounded-full px-4 py-2 text-[11px] font-black tracking-[0.12em] transition-all duration-500
+              ${
+                scrolled
+                  ? "text-white/70 hover:bg-white/[0.06] hover:text-white"
+                  : "border border-white/15 text-white/70 hover:border-white/30 hover:text-white"
+              }
+            `}
+            style={{ fontFamily: montserrat }}
+          >
+            {dictionary.nav.signInShort}
+          </Link>
+
           <motion.button
             type="button"
             onClick={onRegisterClick}
@@ -192,7 +207,7 @@ export function SiteNav({ onRegisterClick }: SiteNavProps) {
             whileTap={{ scale: 0.97 }}
             transition={{ type: "spring", stiffness: 400, damping: 20 }}
           >
-            {dictionary.hero.registerNow}
+            {dictionary.nav.registerShort}
           </motion.button>
         </div>
       </nav>
@@ -277,6 +292,15 @@ export function SiteNav({ onRegisterClick }: SiteNavProps) {
                 >
                   {dictionary.hero.registerNow}
                 </button>
+
+                <Link
+                  href={localizedPath(locale, "/login")}
+                  onClick={() => setMenuOpen(false)}
+                  className="mb-2 w-full rounded-full border border-white/15 py-3 text-center text-xs font-black tracking-[0.15em] text-white/80 transition-all hover:border-[#aaff00]/40 hover:text-[#aaff00]"
+                  style={{ fontFamily: montserrat }}
+                >
+                  {dictionary.nav.signInShort}
+                </Link>
 
                 {links.map((link, i) => (
                   <motion.a

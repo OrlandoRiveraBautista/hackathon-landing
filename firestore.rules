@@ -5,6 +5,10 @@ service cloud.firestore {
       return sex in ['male', 'female', 'other', 'preferNotToSay'];
     }
 
+    function isValidShirtSize(size) {
+      return size in ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+    }
+
     function isOptionalString(field) {
       return !(field in request.resource.data) || request.resource.data[field] is string;
     }
@@ -17,6 +21,7 @@ service cloud.firestore {
           && request.resource.data.sex == resource.data.sex
           && request.resource.data.createdAt == resource.data.createdAt
           && (!('school' in resource.data) || request.resource.data.school == resource.data.school)
+          && (!('shirtSize' in resource.data) || request.resource.data.shirtSize == resource.data.shirtSize)
           && (!('github' in resource.data) || request.resource.data.github == resource.data.github)
           && (!('interests' in resource.data) || request.resource.data.interests == resource.data.interests);
     }
@@ -49,6 +54,13 @@ service cloud.firestore {
           );
     }
 
+    function isShirtSizeUpdate() {
+      return waitlistCoreFieldsUnchanged()
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['shirtSize'])
+          && request.resource.data.shirtSize is string
+          && isValidShirtSize(request.resource.data.shirtSize);
+    }
+
     function isOnSiteStatusUpdate() {
       return waitlistCoreFieldsUnchanged()
           && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['onSiteStatus', 'onSiteSelectedAt'])
@@ -63,7 +75,7 @@ service cloud.firestore {
     }
 
     match /waitlist/{emailId} {
-      allow create: if request.resource.data.keys().hasAll(['name', 'email', 'phone', 'age', 'sex', 'status', 'createdAt'])
+      allow create: if request.resource.data.keys().hasAll(['name', 'email', 'phone', 'age', 'sex', 'shirtSize', 'status', 'createdAt'])
                     && request.resource.data.name is string
                     && request.resource.data.name.size() >= 2
                     && request.resource.data.email is string
@@ -76,6 +88,8 @@ service cloud.firestore {
                     && request.resource.data.age <= 120
                     && request.resource.data.sex is string
                     && isValidSex(request.resource.data.sex)
+                    && request.resource.data.shirtSize is string
+                    && isValidShirtSize(request.resource.data.shirtSize)
                     && request.resource.data.status == 'pending'
                     && isOptionalString('school')
                     && isOptionalString('github')
@@ -94,6 +108,7 @@ service cloud.firestore {
                     )
                     || isOnSiteBoostUpdate()
                     || isOnSiteTapUpdate()
+                    || isShirtSizeUpdate()
                     || isOnSiteStatusUpdate()
                     || isOnSiteResetUpdate();
       allow delete: if false;

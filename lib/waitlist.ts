@@ -7,6 +7,7 @@ import {
   setDoc,
 } from "firebase/firestore";
 import { getDb } from "./firebase";
+import { isValidShirtSize, type ShirtSize } from "./shirt-size";
 
 export type SexOption = "male" | "female" | "other" | "preferNotToSay";
 
@@ -17,12 +18,16 @@ export const SEX_OPTIONS: SexOption[] = [
   "preferNotToSay",
 ];
 
+export type { ShirtSize } from "./shirt-size";
+export { SHIRT_SIZE_OPTIONS } from "./shirt-size";
+
 export type ParticipantInput = {
   name: string;
   email: string;
   phone: string;
   age: string;
   sex: string;
+  shirtSize: string;
   school?: string;
   github?: string;
   interests?: string;
@@ -38,6 +43,7 @@ export type WaitlistErrorMessages = {
   invalidPhone: string;
   invalidAge: string;
   invalidSex: string;
+  invalidShirtSize: string;
   invalidGithub: string;
   firestoreSetup: string;
   unavailable: string;
@@ -146,6 +152,10 @@ export async function joinWaitlist(
     throw new Error(messages.invalidSex);
   }
 
+  if (!isValidShirtSize(input.shirtSize)) {
+    throw new Error(messages.invalidShirtSize);
+  }
+
   let github: string | undefined;
   if (trimmedGithub) {
     const normalized = normalizeGithub(trimmedGithub);
@@ -171,6 +181,7 @@ export async function joinWaitlist(
       phone: normalizedPhone,
       age,
       sex: input.sex,
+      shirtSize: input.shirtSize,
       status: "pending",
       createdAt: serverTimestamp(),
     };

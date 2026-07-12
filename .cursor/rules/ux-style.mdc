@@ -1,0 +1,49 @@
+---
+description: UX and visual style conventions for Build Pa'l Norte UI
+globs: components/**/*.tsx
+alwaysApply: false
+---
+
+# UX style — Build Pa'l Norte
+
+## No decorative icons on labels
+
+Do **not** put small Lucide (or similar) icons before section eyebrows, `SectionLabel`, field labels, or stat/meta labels.
+
+These read as tacky decoration and clutter the hierarchy. Typography and tracking carry the label — that is enough.
+
+```tsx
+// ❌ BAD — icon prefixes a section eyebrow
+<span className="inline-flex items-center gap-1.5 ...">
+  <Shirt size={12} />
+  {copy.label}
+</span>
+
+<SectionLabel icon={<PencilIcon />}>{labels.editSection}</SectionLabel>
+
+// ✅ GOOD — text-only label
+<span className="text-[10px] font-black tracking-[0.28em] ...">
+  {copy.label}
+</span>
+
+<SectionLabel>{labels.editSection}</SectionLabel>
+```
+
+Use `SectionLabel` from `@/components/platform` for card section headers. It does not accept an `icon` prop.
+
+## Where icons are fine
+
+Icons belong when they **communicate action or state**, not decoration:
+
+- **Buttons and links** — e.g. `PlatformLinkButton`, sign-out, CTA arrows
+- **Status chips** — e.g. checkmark on “Saved: M”
+- **Empty states / avatars / list row affordances** — when the icon is the primary content
+- **Nav and toolbar** — language switcher, menu items
+
+When unsure: if removing the icon changes nothing about what the user can *do* or *understand*, leave it out.
+
+## Eyebrow / label styling
+
+- Uppercase micro-labels: `text-[9px]`–`text-[10px]`, `font-black`, wide tracking (`tracking-[0.22em]`–`tracking-[0.28em]`)
+- Muted on dark UI: `text-white/25` (platform) or `text-[#aaff00]/90` (landing accent sections)
+- Prefer `SectionLabel` + rule line over one-off icon+text combos

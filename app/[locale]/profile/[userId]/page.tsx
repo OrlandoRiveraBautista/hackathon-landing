@@ -80,6 +80,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
         isOwnProfile
         member={member}
         userImage={session.user.image}
+        shirtSize={signup.shirtSize}
       />
     );
   }

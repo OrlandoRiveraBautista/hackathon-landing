@@ -31,6 +31,8 @@ import {
   type MemberProfileJson,
 } from "@/lib/members/shared";
 import type { MemberProfile, PublicMemberProfile } from "@/lib/members/types";
+import { SHIRT_SIZE_OPTIONS } from "@/lib/shirt-size";
+import type { ShirtSize } from "@/lib/shirt-size";
 import { montserrat, outfit } from "@/lib/theme";
 
 type CaptainTeam = {
@@ -45,6 +47,7 @@ type MemberProfileScreenProps =
       isOwnProfile: true;
       member: MemberProfile;
       userImage?: string | null;
+      shirtSize: ShirtSize | null;
     }
   | {
       isOwnProfile: false;
@@ -53,13 +56,17 @@ type MemberProfileScreenProps =
       captainTeam: CaptainTeam | null;
     };
 
-function formFromMember(member: MemberProfile): ProfileFormState {
+function formFromMember(
+  member: MemberProfile,
+  shirtSize: ShirtSize | null,
+): ProfileFormState {
   return {
     school: member.school ?? "",
     github: member.github ?? "",
     interests: member.interests ?? "",
     bio: member.bio ?? "",
     skills: [...member.skills],
+    shirtSize: shirtSize ?? "",
     openToTeams: member.openToTeams,
     showEmail: member.showEmail,
     showPhone: member.showPhone,
@@ -72,6 +79,7 @@ export function MemberProfileScreen(props: MemberProfileScreenProps) {
       <OwnMemberProfileScreen
         member={props.member}
         userImage={props.userImage}
+        shirtSize={props.shirtSize}
       />
     );
   }
@@ -82,16 +90,21 @@ export function MemberProfileScreen(props: MemberProfileScreenProps) {
 function OwnMemberProfileScreen({
   member: initialMember,
   userImage,
+  shirtSize: initialShirtSize,
 }: {
   member: MemberProfile;
   userImage?: string | null;
+  shirtSize: ShirtSize | null;
 }) {
   const dictionary = useDictionary();
   const { locale } = useLocale();
   const { profile, waitlist } = dictionary;
   const [member, setMember] = useState(initialMember);
+  const [shirtSize, setShirtSize] = useState<ShirtSize | null>(initialShirtSize);
   const [editing, setEditing] = useState(false);
-  const [form, setForm] = useState<ProfileFormState>(() => formFromMember(initialMember));
+  const [form, setForm] = useState<ProfileFormState>(() =>
+    formFromMember(initialMember, initialShirtSize),
+  );
   const [saving, setSaving] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
   const [error, setError] = useState("");
@@ -105,14 +118,14 @@ function OwnMemberProfileScreen({
   }
 
   function startEditing() {
-    setForm(formFromMember(member));
+    setForm(formFromMember(member, shirtSize));
     setError("");
     setSuccess("");
     setEditing(true);
   }
 
   function cancelEditing() {
-    setForm(formFromMember(member));
+    setForm(formFromMember(member, shirtSize));
     setError("");
     setSuccess("");
     setEditing(false);
@@ -133,6 +146,7 @@ function OwnMemberProfileScreen({
           interests: form.interests,
           bio: form.bio,
           skills: form.skills,
+          shirtSize: form.shirtSize,
           openToTeams: form.openToTeams,
           showEmail: form.showEmail,
           showPhone: form.showPhone,
@@ -150,7 +164,8 @@ function OwnMemberProfileScreen({
 
       const parsed = parseMemberFromJson(payload.member);
       setMember(parsed);
-      setForm(formFromMember(parsed));
+      setShirtSize(form.shirtSize as ShirtSize);
+      setForm(formFromMember(parsed, form.shirtSize as ShirtSize));
       setSuccess(profile.saveSuccess);
       setEditing(false);
     } catch (saveError) {
@@ -284,6 +299,9 @@ function OwnMemberProfileScreen({
             skills: profile.skills,
             skillsPlaceholder: profile.skillsPlaceholder,
             skillsHint: profile.skillsHint,
+            shirtSize: profile.shirtSize,
+            shirtSizePlaceholder: waitlist.shirtSizePlaceholder,
+            shirtSizeHint: profile.shirtSizeHint,
             openToTeams: profile.openToTeams,
             openToTeamsHint: profile.openToTeamsHint,
             showEmail: profile.showEmail,
@@ -297,6 +315,10 @@ function OwnMemberProfileScreen({
             savingProfile: profile.savingProfile,
             cancelEdit: profile.cancelEdit,
           }}
+          shirtSizeOptions={SHIRT_SIZE_OPTIONS.map((size) => ({
+            value: size,
+            label: size,
+          }))}
           hasPhone={Boolean(member.phone?.trim())}
           onSave={saveProfile}
           onCancel={cancelEditing}

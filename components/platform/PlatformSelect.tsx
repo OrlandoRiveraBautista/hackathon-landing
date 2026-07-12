@@ -1,0 +1,65 @@
+import { montserrat, outfit } from "@/lib/theme";
+
+type PlatformSelectOption = {
+  value: string;
+  label: string;
+};
+
+type PlatformSelectProps = {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  options: PlatformSelectOption[];
+  placeholder?: string;
+  hint?: string;
+  required?: boolean;
+};
+
+export function PlatformSelect({
+  label,
+  value,
+  onChange,
+  options,
+  placeholder,
+  hint,
+  required = false,
+}: PlatformSelectProps) {
+  return (
+    <div className="group relative">
+      <label
+        className="block rounded-xl border border-white/[0.07] bg-white/[0.03] px-4 py-3.5 transition-all duration-200 focus-within:border-[#aaff00]/30 focus-within:bg-[#aaff00]/[0.02] focus-within:shadow-[0_0_0_3px_rgba(170,255,0,0.06)]"
+        style={{ backdropFilter: "blur(8px)" }}
+      >
+        <span
+          className="mb-2 block text-[9px] font-black tracking-[0.26em] text-white/30"
+          style={{ fontFamily: montserrat }}
+        >
+          {label}
+        </span>
+        <select
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+          required={required}
+          className="mt-1 w-full cursor-pointer bg-transparent text-sm text-white outline-none"
+          style={{ fontFamily: outfit }}
+        >
+          {placeholder && (
+            <option value="" disabled>
+              {placeholder}
+            </option>
+          )}
+          {options.map((option) => (
+            <option key={option.value} value={option.value} className="bg-black text-white">
+              {option.label}
+            </option>
+          ))}
+        </select>
+      </label>
+      {hint && (
+        <p className="mt-1.5 px-1 text-[11px] text-white/25" style={{ fontFamily: outfit }}>
+          {hint}
+        </p>
+      )}
+    </div>
+  );
+}

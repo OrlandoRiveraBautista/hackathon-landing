@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { authClient } from "@/lib/auth/client";
 import { getSponsorSignups, type SponsorSignup } from "@/lib/sponsors-admin";
-import { getWaitlistSignups, type WaitlistSignup } from "@/lib/waitlist-admin";
+import type { WaitlistSignup } from "@/lib/waitlist-admin";
 import { AdminOnsitePanel } from "@/components/admin/AdminOnsitePanel";
 
 const montserrat = "var(--font-montserrat), Montserrat, sans-serif";
@@ -19,12 +19,35 @@ function formatDate(date: Date | null) {
   }).format(date);
 }
 
-function firestoreErrorMessage(err: unknown) {
+function parseWaitlistSignup(raw: Omit<WaitlistSignup, "onSiteInterestedAt" | "onSiteSelectedAt" | "contactedAt" | "platformNotifiedAt" | "createdAt"> & {
+  onSiteInterestedAt: string | null;
+  onSiteSelectedAt: string | null;
+  contactedAt: string | null;
+  platformNotifiedAt: string | null;
+  createdAt: string | null;
+}): WaitlistSignup {
+  return {
+    ...raw,
+    onSiteInterestedAt: raw.onSiteInterestedAt
+      ? new Date(raw.onSiteInterestedAt)
+      : null,
+    onSiteSelectedAt: raw.onSiteSelectedAt
+      ? new Date(raw.onSiteSelectedAt)
+      : null,
+    contactedAt: raw.contactedAt ? new Date(raw.contactedAt) : null,
+    platformNotifiedAt: raw.platformNotifiedAt
+      ? new Date(raw.platformNotifiedAt)
+      : null,
+    createdAt: raw.createdAt ? new Date(raw.createdAt) : null,
+  };
+}
+
+function adminErrorMessage(err: unknown) {
   const code =
     err && typeof err === "object" && "code" in err ? String(err.code) : "";
 
   if (code === "permission-denied") {
-    return "Firestore blocked reads. Publish the updated rules in Firebase Console → Firestore → Rules.";
+    return "Could not load admin data. Check your session and try again.";
   }
 
   return err instanceof Error ? err.message : "Failed to load signups.";
@@ -44,16 +67,26 @@ export default function AdminPage() {
     setError("");
 
     try {
-      const [participantRows, sponsorRows] = await Promise.all([
-        getWaitlistSignups(),
+      const [participantRes, sponsorRows] = await Promise.all([
+        fetch("/api/admin/waitlist"),
         getSponsorSignups(),
       ]);
-      setParticipants(participantRows);
+
+      if (!participantRes.ok) {
+        const data = await participantRes.json().catch(() => ({}));
+        throw new Error(data.error ?? "Failed to load participants.");
+      }
+
+      const participantData = (await participantRes.json()) as {
+        signups: Array<Parameters<typeof parseWaitlistSignup>[0]>;
+      };
+
+      setParticipants(participantData.signups.map(parseWaitlistSignup));
       setSponsors(sponsorRows);
     } catch (err) {
       setParticipants([]);
       setSponsors([]);
-      setError(firestoreErrorMessage(err));
+      setError(adminErrorMessage(err));
     } finally {
       setLoading(false);
     }
@@ -181,6 +214,7 @@ export default function AdminPage() {
                   <th className="px-4 py-3 font-medium">Phone</th>
                   <th className="px-4 py-3 font-medium">Age</th>
                   <th className="px-4 py-3 font-medium">Sex</th>
+                  <th className="px-4 py-3 font-medium">Shirt</th>
                   <th className="px-4 py-3 font-medium">School</th>
                   <th className="px-4 py-3 font-medium">GitHub</th>
                   <th className="px-4 py-3 font-medium">Interests</th>
@@ -211,6 +245,9 @@ export default function AdminPage() {
                     </td>
                     <td className="px-4 py-3" style={{ fontFamily: outfit }}>
                       {signup.sex ?? "—"}
+                    </td>
+                    <td className="px-4 py-3" style={{ fontFamily: outfit }}>
+                      {signup.shirtSize ?? "—"}
                     </td>
                     <td className="px-4 py-3" style={{ fontFamily: outfit }}>
                       {signup.school}

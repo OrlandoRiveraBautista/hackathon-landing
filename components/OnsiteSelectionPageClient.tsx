@@ -12,6 +12,8 @@ import {
   OnsiteComingSoonList,
 } from "@/components/onsite/OnsiteList";
 import { OnsiteBoostPanel } from "@/components/onsite/OnsiteBoostPanel";
+import { HackathonShirtCard } from "@/components/shirt/HackathonShirtCard";
+import type { ShirtSize } from "@/lib/shirt-size";
 import { getDiscordUrl, getWhatsAppUrl } from "@/lib/community";
 import {
   localizedPath,
@@ -53,12 +55,17 @@ export function OnsiteSelectionPageClient() {
   const { locale } = useLocale();
   const dictionary = useDictionary();
   const copy = dictionary.onsiteSelection;
+  const shirtCopy = dictionary.shirt;
   const [selection, setSelection] = useState<SelectionResponse | null>(null);
   const [userStatus, setUserStatus] = useState<UserStatusResponse | null>(null);
   const [statusChecked, setStatusChecked] = useState(false);
   const [loading, setLoading] = useState(true);
   const [boostTapCount, setBoostTapCount] = useState(0);
   const [boostDone, setBoostDone] = useState(false);
+  const [shirtSize, setShirtSize] = useState<ShirtSize | null>(null);
+  const [selectedSize, setSelectedSize] = useState("");
+  const [shirtSaving, setShirtSaving] = useState(false);
+  const [shirtSaved, setShirtSaved] = useState(false);
   const [error, setError] = useState("");
 
   const discordUrl = getDiscordUrl();
@@ -96,6 +103,18 @@ export function OnsiteSelectionPageClient() {
           }
         } else {
           setUserStatus(null);
+        }
+
+        const shirtRes = await fetch("/api/profile/shirt-size", {
+          headers: { "x-locale": locale },
+        });
+
+        if (!cancelled && shirtRes.ok) {
+          const shirtData = (await shirtRes.json()) as {
+            shirtSize: ShirtSize | null;
+          };
+          setShirtSize(shirtData.shirtSize ?? null);
+          setSelectedSize(shirtData.shirtSize ?? "");
         }
       } catch {
         if (!cancelled) {
@@ -153,6 +172,39 @@ export function OnsiteSelectionPageClient() {
       .catch((err) => {
         setBoostTapCount((count) => Math.max(0, count - 1));
         setError(err instanceof Error ? err.message : copy.errors.generic);
+      });
+  }
+
+  function saveShirtSize() {
+    if (!selectedSize) return;
+
+    setShirtSaving(true);
+    setShirtSaved(false);
+    setError("");
+
+    void fetch("/api/profile/shirt-size", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        "x-locale": locale,
+      },
+      body: JSON.stringify({ shirtSize: selectedSize }),
+    })
+      .then(async (response) => {
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.error ?? copy.errors.generic);
+        }
+
+        const saved = selectedSize as ShirtSize;
+        setShirtSize(saved);
+        setShirtSaved(true);
+      })
+      .catch((err) => {
+        setError(err instanceof Error ? err.message : copy.errors.generic);
+      })
+      .finally(() => {
+        setShirtSaving(false);
       });
   }
 
@@ -266,6 +318,22 @@ export function OnsiteSelectionPageClient() {
               signedIn={statusChecked ? userStatus !== null : null}
               tapCount={boostTapCount}
               onBoost={recordBoostTap}
+            />
+
+            <HackathonShirtCard
+              copy={shirtCopy}
+              variant="boost"
+              shirtSize={shirtSize}
+              selectedSize={selectedSize}
+              onSelectSize={(size) => {
+                setSelectedSize(size);
+                setShirtSaved(false);
+              }}
+              onSave={saveShirtSize}
+              saving={shirtSaving}
+              saved={shirtSaved}
+              signedIn={statusChecked ? userStatus !== null : null}
+              loginHref={onsiteLoginPath}
             />
 
             {!loading && selection && (

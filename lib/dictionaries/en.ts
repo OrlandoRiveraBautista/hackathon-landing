@@ -22,6 +22,19 @@ const dictionary: Dictionary = {
     signIn: "SIGN IN",
     signInShort: "LOGIN",
     registerShort: "JOIN",
+    onsite: "ON-SITE",
+  },
+  onsiteBanner: {
+    label: "ON-SITE AT PLAZA 11-11",
+    title: "Who made it",
+    accentWord: "in person?",
+    body:
+      "We only have room for 30 builders on-site. See the list, check if you're in, or boost your odds before the draw closes.",
+    cta: "VIEW ON-SITE LIST",
+    capacityNote: "30 spots · random draw · remote welcome too",
+    announcedStat: "{count} builders confirmed on-site",
+    pendingStat: "{count} boosted their odds so far",
+    dismiss: "Dismiss banner",
   },
   hero: {
     tagline: "a 24h tech hackathon for young people",
@@ -607,6 +620,9 @@ const dictionary: Dictionary = {
     notRegistered:
       "This Google account isn't on the waitlist. Join the waitlist first, then sign in.",
     backToHome: "Back to home",
+    backToOnsite: "← Back to on-site selection",
+    onsiteSubtitle:
+      "Sign in to boost your odds for Plaza 11-11 — we'll bring you right back.",
   },
   members: {
     metaTitle: "Member Portal — Build Pa'l Norte",
@@ -873,6 +889,70 @@ const dictionary: Dictionary = {
       invalidGithubRepo: "Enter a valid GitHub repository URL (e.g. https://github.com/user/repo).",
       captainMustTransfer: "Transfer captain role to another member before leaving.",
       nameTooLong: "Team name must be under 80 characters.",
+    },
+  },
+  onsiteSelection: {
+    metaTitle: "On-Site Spots — Build Pa'l Norte",
+    metaDescription:
+      "Plaza 11-11 has room for 30 builders on-site. See who made the cut, boost your odds, or join remotely.",
+    label: "ON-SITE",
+    title: "Who's building",
+    accentWord: "in person",
+    subtitle:
+      "Plaza 11-11 has space for 30 people on-site. We'll draw names at random from the waitlist — show you're truly excited to improve your odds.",
+    capacityBadge: "30 on-site spots",
+    pendingTitle: "Selection coming soon",
+    pendingBody:
+      "We're preparing the random draw for on-site spots. Sign in and tap the button below if you really want to be there — interested builders get 3× weight in the lottery.",
+    pendingStatsInterested: "builders boosted their odds",
+    pendingStatsWaitlist: "on the waitlist",
+    boostTitle: "Triple your odds",
+    boostEyebrow: "ON-SITE LOTTERY",
+    boostMultiplier: "3×",
+    boostMultiplierLabel: "draw weight",
+    boostActionLine: "30 spots at Plaza 11-11. One tap puts you in the boosted pool.",
+    boostBody:
+      "Confirm you want to build on-site before the list drops. It takes one second.",
+    boostSteps: ["Sign in", "Tap boost", "Wait for the list"],
+    boostButton: "BOOST MY ODDS →",
+    boostButtonBoosted: "BOOSTED ✓ TAP AGAIN",
+    boostTapHint: "Tap as many times as you want — first tap locks in 3× weight, each extra tap adds +1",
+    boosting: "SAVING...",
+    boostDone: "Boost locked in — you're in the 3× pool.",
+    boostSignInPrompt: "Sign in with your waitlist Google account first.",
+    boostSignIn: "SIGN IN & BOOST →",
+    boostSignInReturn: "You'll return here automatically after sign-in.",
+    announcedTitle: "On-site builders",
+    announcedSubtitle:
+      "These {count} people will hack at Plaza 11-11. Everyone else is welcome to join remotely.",
+    tableRank: "#",
+    tableName: "Name",
+    tableSchool: "School",
+    tableGithub: "GitHub",
+    listComingSoonBadge: "COMING SOON",
+    listLoadingHint: "Finalizing the list — names will appear here after the draw",
+    emptySelected: "No on-site list published yet.",
+    yourStatusSelected: "You're in! See you at Plaza 11-11.",
+    yourStatusRemote:
+      "You weren't selected for an on-site spot this time — but you're still fully part of the hackathon remotely.",
+    yourStatusPending: "Your on-site status will appear here once results are announced.",
+    remoteTitle: "Still building with us — remotely",
+    remoteBody:
+      "The hackathon is open to everyone on the waitlist, whether you're on-site or remote. Same energy, same community, same chance to ship something great.",
+    remoteClubTitle: "Stay in the loop",
+    remoteClubBody:
+      "Join the member platform, hop in Discord, and get on the WhatsApp group so you don't miss updates, team formation, or demo day.",
+    remoteClubCta: "Join the member platform",
+    remoteDiscordCta: "Join Discord",
+    remoteWhatsappCta: "Join WhatsApp group",
+    back: "← BACK",
+    loading: "Loading selection...",
+    loadFailed: "Couldn't load on-site selection. Try again later.",
+    errors: {
+      unauthorized: "Sign in to continue.",
+      notRegistered: "Use the Google account that matches your waitlist email.",
+      selectionClosed: "On-site selection is already final.",
+      generic: "Something went wrong. Try again.",
     },
   },
   legal: {

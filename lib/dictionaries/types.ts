@@ -27,6 +27,18 @@ export type Dictionary = {
     signIn: string;
     signInShort: string;
     registerShort: string;
+    onsite: string;
+  };
+  onsiteBanner: {
+    label: string;
+    title: string;
+    accentWord: string;
+    body: string;
+    cta: string;
+    capacityNote: string;
+    announcedStat: string;
+    pendingStat: string;
+    dismiss: string;
   };
   hero: {
     tagline: string;
@@ -275,6 +287,8 @@ export type Dictionary = {
     signOutFailed: string;
     notRegistered: string;
     backToHome: string;
+    backToOnsite: string;
+    onsiteSubtitle: string;
   };
   members: {
     metaTitle: string;
@@ -512,6 +526,62 @@ export type Dictionary = {
       invalidGithubRepo: string;
       captainMustTransfer: string;
       nameTooLong: string;
+    };
+  };
+  onsiteSelection: {
+    metaTitle: string;
+    metaDescription: string;
+    label: string;
+    title: string;
+    accentWord: string;
+    subtitle: string;
+    capacityBadge: string;
+    pendingTitle: string;
+    pendingBody: string;
+    pendingStatsInterested: string;
+    pendingStatsWaitlist: string;
+    boostTitle: string;
+    boostEyebrow: string;
+    boostMultiplier: string;
+    boostMultiplierLabel: string;
+    boostActionLine: string;
+    boostBody: string;
+    boostSteps: [string, string, string];
+    boostButton: string;
+    boostButtonBoosted: string;
+    boostTapHint: string;
+    boosting: string;
+    boostDone: string;
+    boostSignInPrompt: string;
+    boostSignIn: string;
+    boostSignInReturn: string;
+    announcedTitle: string;
+    announcedSubtitle: string;
+    tableRank: string;
+    tableName: string;
+    tableSchool: string;
+    tableGithub: string;
+    listComingSoonBadge: string;
+    listLoadingHint: string;
+    emptySelected: string;
+    yourStatusSelected: string;
+    yourStatusRemote: string;
+    yourStatusPending: string;
+    remoteTitle: string;
+    remoteBody: string;
+    remoteClubTitle: string;
+    remoteClubBody: string;
+    remoteClubCta: string;
+    remoteDiscordCta: string;
+    remoteWhatsappCta: string;
+    back: string;
+    loading: string;
+    loadFailed: string;
+    errors: {
+      unauthorized: string;
+      notRegistered: string;
+      selectionClosed: string;
+      generic: string;
     };
   };
   legal: {

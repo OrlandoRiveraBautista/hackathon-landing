@@ -3,9 +3,10 @@ import { buildBrandEmailHtml } from "@/lib/emails/brand-email-layout";
 import { getDictionary } from "@/lib/dictionaries";
 import { getEventCopy } from "@/lib/event";
 import type { Locale } from "@/lib/i18n";
+import { localizedPath } from "@/lib/i18n";
 import { getSiteUrl } from "@/lib/site";
 
-type WaitlistConfirmationContent = {
+type PlatformAccessContent = {
   subject: string;
   html: string;
   text: string;
@@ -22,37 +23,39 @@ const emailCopy: Record<
   }
 > = {
   en: {
-    subject: (name) => `${name}, you're on the waitlist — Build Pa'l Norte`,
-    headline: (name) => `You're registered, ${name}!`,
+    subject: (name) => `${name}, your member portal is ready — Build Pa'l Norte`,
+    headline: (name) => `You're in, ${name}!`,
     greeting: (name) => `Hi ${name},`,
-    badge: "Waitlist",
-    cta: "Visit the site",
+    badge: "Member portal",
+    cta: "Sign in now",
   },
   es: {
-    subject: (name) => `${name}, estás en la lista de espera — Build Pa'l Norte`,
-    headline: (name) => `¡Registro completado, ${name}!`,
+    subject: (name) =>
+      `${name}, tu plataforma de miembro está lista — Build Pa'l Norte`,
+    headline: (name) => `¡Ya puedes entrar, ${name}!`,
     greeting: (name) => `Hola ${name},`,
-    badge: "Lista de espera",
-    cta: "Visitar el sitio",
+    badge: "Plataforma de miembros",
+    cta: "Iniciar sesión",
   },
 };
 
-export function buildWaitlistConfirmationEmail({
+export function buildPlatformAccessEmail({
   name,
   locale,
 }: {
   name: string;
   locale: Locale;
-}): WaitlistConfirmationContent {
+}): PlatformAccessContent {
   const dictionary = getDictionary(locale);
   const content = emailCopy[locale];
   const event = getEventCopy(locale);
   const siteUrl = getSiteUrl();
+  const loginUrl = `${siteUrl}${localizedPath(locale, "/login")}`;
   const logoUrl = `${siteUrl}${SITE_LOGO}`;
   const firstName = name.trim().split(/\s+/)[0] || name.trim();
   const greeting = content.greeting(firstName);
   const headline = content.headline(firstName);
-  const body = event.waitlistEmailBody;
+  const body = event.platformAccessEmailBody;
 
   const html = buildBrandEmailHtml({
     locale,
@@ -61,7 +64,7 @@ export function buildWaitlistConfirmationEmail({
     greeting,
     body,
     cta: content.cta,
-    ctaUrl: siteUrl,
+    ctaUrl: loginUrl,
     tagline: dictionary.hero.tagline,
     scheduleLine: event.scheduleLine,
     locationTag: dictionary.footer.locationTag,
@@ -75,7 +78,7 @@ ${greeting}
 
 ${body}
 
-${content.cta}: ${siteUrl}
+${content.cta}: ${loginUrl}
 
 ${dictionary.footer.copyright}
 ${dictionary.footer.locationTag}`;

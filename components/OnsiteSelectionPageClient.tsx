@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import Link from "next/link";
 import { ArrowUpRight, MapPin, Users } from "lucide-react";
@@ -64,45 +64,58 @@ export function OnsiteSelectionPageClient() {
   const discordUrl = getDiscordUrl();
   const whatsappUrl = getWhatsAppUrl();
 
-  const loadData = useCallback(async () => {
-    setLoading(true);
-    setError("");
-    setStatusChecked(false);
-
-    try {
-      const selectionRes = await fetch("/api/onsite/selection");
-      if (!selectionRes.ok) {
-        throw new Error("selection");
-      }
-
-      const selectionData = (await selectionRes.json()) as SelectionResponse;
-      setSelection(selectionData);
-
-      const statusRes = await fetch("/api/onsite/status", {
-        headers: { "x-locale": locale },
-      });
-
-      if (statusRes.ok) {
-        const statusData = (await statusRes.json()) as UserStatusResponse;
-        setUserStatus(statusData);
-        setBoostTapCount(statusData.onSiteBoostTapCount ?? 0);
-        if (statusData.onSiteInterested) {
-          setBoostDone(true);
-        }
-      } else {
-        setUserStatus(null);
-      }
-    } catch {
-      setError(copy.loadFailed);
-    } finally {
-      setLoading(false);
-      setStatusChecked(true);
-    }
-  }, [copy.loadFailed, locale]);
-
   useEffect(() => {
-    loadData();
-  }, [loadData]);
+    let cancelled = false;
+
+    async function load() {
+      setError("");
+
+      try {
+        const selectionRes = await fetch("/api/onsite/selection");
+        if (!selectionRes.ok) {
+          throw new Error("selection");
+        }
+
+        const selectionData = (await selectionRes.json()) as SelectionResponse;
+        if (cancelled) return;
+
+        setSelection(selectionData);
+
+        const statusRes = await fetch("/api/onsite/status", {
+          headers: { "x-locale": locale },
+        });
+
+        if (cancelled) return;
+
+        if (statusRes.ok) {
+          const statusData = (await statusRes.json()) as UserStatusResponse;
+          setUserStatus(statusData);
+          setBoostTapCount(statusData.onSiteBoostTapCount ?? 0);
+          if (statusData.onSiteInterested) {
+            setBoostDone(true);
+          }
+        } else {
+          setUserStatus(null);
+        }
+      } catch {
+        if (!cancelled) {
+          setError(copy.loadFailed);
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+          setStatusChecked(true);
+        }
+      }
+    }
+
+    setLoading(true);
+    void load();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [copy.loadFailed, locale]);
 
   function recordBoostTap() {
     setBoostTapCount((count) => count + 1);

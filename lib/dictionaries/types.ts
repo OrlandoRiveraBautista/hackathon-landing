@@ -301,6 +301,26 @@ export type Dictionary = {
     signOutFailed: string;
     backToHome: string;
     comingSoon: string;
+    onsitePromo: {
+      label: string;
+      titlePending: string;
+      titleBoosted: string;
+      titleSelected: string;
+      titleRemote: string;
+      titleAnnounced: string;
+      bodyPending: string;
+      bodyBoosted: string;
+      bodySelected: string;
+      bodyRemote: string;
+      bodyAnnounced: string;
+      statPending: string;
+      statAnnounced: string;
+      weightBadge: string;
+      selectedBadge: string;
+      ctaPending: string;
+      ctaBoosted: string;
+      ctaViewList: string;
+    };
     event: {
       label: string;
       title: string;

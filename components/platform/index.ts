@@ -13,6 +13,7 @@ export { PlatformBackground } from "./PlatformBackground";
 export { PlatformBadge } from "./PlatformBadge";
 export { PlatformButton } from "./PlatformButton";
 export { PlatformInput } from "./PlatformInput";
+export { PlatformLinkButton } from "./PlatformLinkButton";
 export { PlatformLinkChip } from "./PlatformLinkChip";
 export { PlatformPageFooter } from "./PlatformPageFooter";
 export { SectionLabel } from "./SectionLabel";

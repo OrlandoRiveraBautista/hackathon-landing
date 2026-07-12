@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import Image from "next/image";
 import Link from "next/link";
 import { useDictionary, useLocale } from "@/components/LocaleProvider";
+import { SITE_LOGO } from "@/lib/brand";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { localizedPath } from "@/lib/i18n";
 import { montserrat, outfit } from "@/lib/theme";
@@ -11,6 +13,22 @@ import { montserrat, outfit } from "@/lib/theme";
 type SiteNavProps = {
   onRegisterClick: () => void;
 };
+
+function NavLogo({ size }: { size: number }) {
+  return (
+    <div className="relative shrink-0">
+      <div className="absolute inset-0 rounded-xl bg-[#aaff00]/20 blur-md transition-all duration-300 group-hover:bg-[#aaff00]/35 group-hover:blur-lg" />
+      <Image
+        src={SITE_LOGO}
+        alt=""
+        width={size}
+        height={size}
+        className="relative rounded-xl"
+        aria-hidden
+      />
+    </div>
+  );
+}
 
 export function SiteNav({ onRegisterClick }: SiteNavProps) {
   const { locale } = useLocale();
@@ -117,30 +135,14 @@ export function SiteNav({ onRegisterClick }: SiteNavProps) {
           className="group flex shrink-0 items-center gap-2.5 rounded-full px-3 py-1.5"
           style={{ fontFamily: montserrat }}
         >
-          <svg
-            width="26"
-            height="26"
-            viewBox="0 0 32 32"
-            aria-hidden="true"
-            className="shrink-0 drop-shadow-[0_0_7px_rgba(170,255,0,0.55)] transition-all duration-300 group-hover:drop-shadow-[0_0_12px_rgba(170,255,0,0.85)]"
-          >
-            <rect width="32" height="32" rx="7" fill="#000" />
-            <polygon points="16,4 28,10.5 16,17 4,10.5" fill="#aaff00" />
-            <polygon points="4,10.5 16,17 16,28 4,21.5" fill="#55aa00" />
-            <polygon points="28,10.5 16,17 16,28 28,21.5" fill="#77cc00" />
-          </svg>
-          <span
-            className="text-sm font-black tracking-tight text-white transition-colors duration-300 group-hover:text-[#aaff00]"
-          >
+          <NavLogo size={32} />
+          <span className="text-sm font-black tracking-tight text-white transition-colors duration-300 group-hover:text-[#aaff00]">
             Build Pa&apos;l Norte
           </span>
         </Link>
 
         {/* Nav links */}
-        <div
-          className="flex items-center gap-1"
-          style={{ fontFamily: outfit }}
-        >
+        <div className="flex items-center gap-1" style={{ fontFamily: outfit }}>
           {links.map((link) => {
             const id = link.href.slice(1);
             const isActive = activeSection === id;
@@ -216,18 +218,7 @@ export function SiteNav({ onRegisterClick }: SiteNavProps) {
             className="group flex min-w-0 items-center gap-2 rounded-full py-1 pl-1 pr-2"
             style={{ fontFamily: montserrat }}
           >
-            <svg
-              width="22"
-              height="22"
-              viewBox="0 0 32 32"
-              aria-hidden="true"
-              className="shrink-0 drop-shadow-[0_0_6px_rgba(170,255,0,0.5)]"
-            >
-              <rect width="32" height="32" rx="7" fill="#000" />
-              <polygon points="16,4 28,10.5 16,17 4,10.5" fill="#aaff00" />
-              <polygon points="4,10.5 16,17 16,28 4,21.5" fill="#55aa00" />
-              <polygon points="28,10.5 16,17 16,28 28,21.5" fill="#77cc00" />
-            </svg>
+            <NavLogo size={26} />
             <span className="truncate text-xs font-black tracking-tight text-white group-hover:text-[#aaff00]">
               Build Pa&apos;l Norte
             </span>

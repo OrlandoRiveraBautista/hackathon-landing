@@ -3,11 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { motion } from "motion/react";
 import Link from "next/link";
-import {
-  ArrowUpRight,
-  MapPin,
-  Users,
-} from "lucide-react";
+import { ArrowUpRight, MapPin, Users } from "lucide-react";
 import { useDictionary, useLocale } from "@/components/LocaleProvider";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -17,7 +13,11 @@ import {
 } from "@/components/onsite/OnsiteList";
 import { OnsiteBoostPanel } from "@/components/onsite/OnsiteBoostPanel";
 import { getDiscordUrl, getWhatsAppUrl } from "@/lib/community";
-import { localizedPath, memberLoginPath, onsiteSelectionPath } from "@/lib/i18n";
+import {
+  localizedPath,
+  memberLoginPath,
+  onsiteSelectionPath,
+} from "@/lib/i18n";
 import { montserrat, outfit } from "@/lib/theme";
 
 type SelectionResponse = {
@@ -200,14 +200,6 @@ export function OnsiteSelectionPageClient() {
 
       <main className="mx-auto max-w-5xl px-4 py-12 sm:px-6 sm:py-16">
         <motion.div initial="hidden" animate="visible" variants={fadeUp}>
-          <span
-            className="inline-flex items-center gap-2 rounded-full border border-[#aaff00]/25 bg-[#aaff00]/[0.07] px-4 py-1.5 text-[10px] font-black tracking-[0.35em] text-[#aaff00]"
-            style={{ fontFamily: montserrat }}
-          >
-            <MapPin size={12} strokeWidth={2.5} />
-            {copy.label}
-          </span>
-
           <h1
             className="mt-6 text-4xl font-black tracking-tight sm:text-5xl"
             style={{ fontFamily: montserrat }}
@@ -230,7 +222,10 @@ export function OnsiteSelectionPageClient() {
         </motion.div>
 
         {error && (
-          <p className="mt-8 text-sm text-red-400" style={{ fontFamily: outfit }}>
+          <p
+            className="mt-8 text-sm text-red-400"
+            style={{ fontFamily: outfit }}
+          >
             {error}
           </p>
         )}
@@ -274,15 +269,24 @@ export function OnsiteSelectionPageClient() {
                   >
                     {selection.interestedCount}
                   </p>
-                  <p className="mt-1 text-xs text-white/50" style={{ fontFamily: outfit }}>
+                  <p
+                    className="mt-1 text-xs text-white/50"
+                    style={{ fontFamily: outfit }}
+                  >
                     {copy.pendingStatsInterested}
                   </p>
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-4">
-                  <p className="text-2xl font-black text-white" style={{ fontFamily: montserrat }}>
+                  <p
+                    className="text-2xl font-black text-white"
+                    style={{ fontFamily: montserrat }}
+                  >
                     {selection.waitlistCount}
                   </p>
-                  <p className="mt-1 text-xs text-white/50" style={{ fontFamily: outfit }}>
+                  <p
+                    className="mt-1 text-xs text-white/50"
+                    style={{ fontFamily: outfit }}
+                  >
                     {copy.pendingStatsWaitlist}
                   </p>
                 </div>
@@ -312,7 +316,10 @@ export function OnsiteSelectionPageClient() {
             variants={fadeUp}
           >
             <div className="mb-6">
-              <h2 className="text-2xl font-black" style={{ fontFamily: montserrat }}>
+              <h2
+                className="text-2xl font-black"
+                style={{ fontFamily: montserrat }}
+              >
                 {copy.announcedTitle}
               </h2>
             </div>
@@ -347,7 +354,10 @@ export function OnsiteSelectionPageClient() {
                 )}
               />
             ) : (
-              <p className="text-sm text-white/45" style={{ fontFamily: outfit }}>
+              <p
+                className="text-sm text-white/45"
+                style={{ fontFamily: outfit }}
+              >
                 {copy.emptySelected}
               </p>
             )}
@@ -362,7 +372,10 @@ export function OnsiteSelectionPageClient() {
             custom={2}
             variants={fadeUp}
           >
-            <h2 className="text-2xl font-black" style={{ fontFamily: montserrat }}>
+            <h2
+              className="text-2xl font-black"
+              style={{ fontFamily: montserrat }}
+            >
               {copy.remoteTitle}
             </h2>
             <p
@@ -373,10 +386,16 @@ export function OnsiteSelectionPageClient() {
             </p>
 
             <div className="mt-8 rounded-2xl border border-[#aaff00]/15 bg-[#aaff00]/[0.04] p-5 sm:p-6">
-              <h3 className="text-lg font-black text-[#aaff00]" style={{ fontFamily: montserrat }}>
+              <h3
+                className="text-lg font-black text-[#aaff00]"
+                style={{ fontFamily: montserrat }}
+              >
                 {copy.remoteClubTitle}
               </h3>
-              <p className="mt-2 text-sm text-white/55" style={{ fontFamily: outfit }}>
+              <p
+                className="mt-2 text-sm text-white/55"
+                style={{ fontFamily: outfit }}
+              >
                 {copy.remoteClubBody}
               </p>
               <div className="mt-5 flex flex-wrap gap-3">

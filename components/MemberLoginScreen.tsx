@@ -6,7 +6,7 @@ import { AuthCard, AuthShell } from "@/components/AuthShell";
 import { useDictionary, useLocale } from "@/components/LocaleProvider";
 import { GoogleIcon } from "@/components/GoogleIcon";
 import { authClient } from "@/lib/auth/client";
-import { localizedPath } from "@/lib/i18n";
+import { isOnsiteSelectionPath, localizedPath } from "@/lib/i18n";
 import { montserrat, outfit } from "@/lib/theme";
 
 type MemberLoginScreenProps = {
@@ -36,6 +36,8 @@ export function MemberLoginScreen({
   const [error, setError] = useState(() =>
     resolveInitialError(errorCode, login.notRegistered),
   );
+
+  const fromOnsite = isOnsiteSelectionPath(nextPath);
 
   async function signInWithGoogle() {
     setError("");
@@ -69,13 +71,24 @@ export function MemberLoginScreen({
     <AuthShell
       eyebrow={login.eyebrow}
       footer={
-        <Link
-          href={localizedPath(locale)}
-          className="mt-6 block text-center text-sm text-white/40 transition-colors duration-200 hover:text-[#aaff00]"
-          style={{ fontFamily: outfit }}
-        >
-          {login.backToHome}
-        </Link>
+        <div className="mt-6 space-y-3">
+          {fromOnsite && (
+            <Link
+              href={nextPath}
+              className="block text-center text-sm font-semibold text-[#aaff00] transition-colors duration-200 hover:text-[#c8ff40]"
+              style={{ fontFamily: outfit }}
+            >
+              {login.backToOnsite}
+            </Link>
+          )}
+          <Link
+            href={localizedPath(locale)}
+            className="block text-center text-sm text-white/40 transition-colors duration-200 hover:text-[#aaff00]"
+            style={{ fontFamily: outfit }}
+          >
+            {login.backToHome}
+          </Link>
+        </div>
       }
     >
       <AuthCard eyebrow={login.eyebrow}>
@@ -90,7 +103,7 @@ export function MemberLoginScreen({
           className="mt-2 text-sm leading-relaxed text-white/50"
           style={{ fontFamily: outfit }}
         >
-          {login.subtitle}
+          {fromOnsite ? login.onsiteSubtitle : login.subtitle}
         </p>
 
         {error && (

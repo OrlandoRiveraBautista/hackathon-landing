@@ -430,3 +430,150 @@ html {
     transform: translate3d(-33%, 0, 0);
   }
 }
+
+/* ── Boost button ─────────────────────────────────────────────────────── */
+
+.boost-button {
+  position: relative;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 16px;
+}
+
+.boost-button-face {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3.75rem;
+  padding: 0.95rem 1.5rem;
+  border-radius: 16px;
+  border: 2px solid rgba(0, 0, 0, 0.35);
+}
+
+.boost-button--idle .boost-button-face {
+  background: linear-gradient(180deg, #d4ff55 0%, #aaff00 45%, #8fd600 100%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.55) inset,
+    0 -4px 0 #5a9900 inset,
+    0 8px 0 #4a7f00,
+    0 12px 24px rgba(0, 0, 0, 0.45),
+    0 0 32px rgba(170, 255, 0, 0.25);
+}
+
+.boost-button--boosted .boost-button-face {
+  background: linear-gradient(180deg, #2a3d00 0%, #162200 55%, #0d1500 100%);
+  border-color: rgba(170, 255, 0, 0.45);
+  box-shadow:
+    0 1px 0 rgba(170, 255, 0, 0.25) inset,
+    0 -4px 0 rgba(85, 130, 0, 0.5) inset,
+    0 8px 0 #0a1200,
+    0 12px 24px rgba(0, 0, 0, 0.5),
+    0 0 36px rgba(170, 255, 0, 0.18);
+}
+
+.boost-button-shine {
+  position: absolute;
+  inset: 2px 2px auto 2px;
+  height: 42%;
+  border-radius: 12px 12px 20px 20px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.45) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+}
+
+.boost-button--boosted .boost-button-shine {
+  background: linear-gradient(
+    180deg,
+    rgba(170, 255, 0, 0.18) 0%,
+    rgba(170, 255, 0, 0) 100%
+  );
+}
+
+.boost-button-label {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.boost-button--idle .boost-button-label {
+  color: #0a0a0a;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.boost-button--boosted .boost-button-label {
+  color: #d8ff80;
+}
+
+.boost-button-arrow {
+  display: inline-block;
+  animation: boost-arrow-nudge 1.2s ease-in-out infinite;
+}
+
+.boost-button-count {
+  position: absolute;
+  top: 0.45rem;
+  right: 0.55rem;
+  z-index: 2;
+  border-radius: 9999px;
+  border: 1px solid rgba(170, 255, 0, 0.35);
+  background: rgba(0, 0, 0, 0.55);
+  padding: 0.15rem 0.45rem;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  color: #aaff00;
+}
+
+@keyframes boost-arrow-nudge {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .boost-button-arrow {
+    animation: none;
+  }
+
+  .boost-token {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+.boost-token {
+  position: fixed;
+  z-index: 200;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  will-change: transform, opacity;
+  animation: boost-token-fly var(--duration) ease-out forwards;
+}
+
+@keyframes boost-token-fly {
+  from {
+    transform: translate(-50%, -50%) translate(0, 0) rotate(0deg);
+    opacity: 1;
+  }
+
+  to {
+    transform: translate(-50%, -50%) translate(var(--dx), var(--dy))
+      rotate(var(--rotate));
+    opacity: 0;
+  }
+}

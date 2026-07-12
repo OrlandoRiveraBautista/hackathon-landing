@@ -22,6 +22,19 @@ const dictionary: Dictionary = {
     signIn: "INICIAR SESIÓN",
     signInShort: "ENTRAR",
     registerShort: "REGISTRO",
+    onsite: "PRESENCIAL",
+  },
+  onsiteBanner: {
+    label: "PRESENCIAL EN PLAZA 11-11",
+    title: "¿Quién entró",
+    accentWord: "en persona?",
+    body:
+      "Solo hay espacio para 30 personas presenciales. Mira la lista, revisa si entraste o mejora tus probabilidades antes de que cierre el sorteo.",
+    cta: "VER LISTA PRESENCIAL",
+    capacityNote: "30 cupos · sorteo aleatorio · remoto también bienvenido",
+    announcedStat: "{count} personas confirmadas presenciales",
+    pendingStat: "{count} mejoraron sus probabilidades hasta ahora",
+    dismiss: "Cerrar banner",
   },
   hero: {
     tagline: "un hackathon de tecnología de 24h para jóvenes",
@@ -617,6 +630,9 @@ const dictionary: Dictionary = {
     notRegistered:
       "Esta cuenta de Google no está en la lista de espera. Únete primero y luego inicia sesión.",
     backToHome: "Volver al inicio",
+    backToOnsite: "← Volver a la selección presencial",
+    onsiteSubtitle:
+      "Inicia sesión para mejorar tus probabilidades en Plaza 11-11 — te regresamos aquí al terminar.",
   },
   members: {
     metaTitle: "Portal de miembros — Build Pa'l Norte",
@@ -901,6 +917,73 @@ const dictionary: Dictionary = {
       captainMustTransfer:
         "Transfiere el rol de capitán antes de salir del equipo.",
       nameTooLong: "El nombre del equipo debe tener menos de 80 caracteres.",
+    },
+  },
+  onsiteSelection: {
+    metaTitle: "Cupos presenciales — Build Pa'l Norte",
+    metaDescription:
+      "Plaza 11-11 tiene espacio para 30 personas presenciales. Mira quién entró, mejora tus probabilidades o únete en remoto.",
+    label: "PRESENCIAL",
+    title: "Quién construye",
+    accentWord: "en persona",
+    subtitle:
+      "Plaza 11-11 tiene espacio para 30 personas presenciales. Sortearemos nombres al azar de la lista de espera — demuestra que de verdad quieres estar para mejorar tus probabilidades.",
+    capacityBadge: "30 cupos presenciales",
+    pendingTitle: "Selección próximamente",
+    pendingBody:
+      "Estamos preparando el sorteo para los cupos presenciales. Inicia sesión y pulsa el botón si de verdad quieres estar — quienes confirmen interés tienen 3× peso en el sorteo.",
+    pendingStatsInterested: "mejoraron sus probabilidades",
+    pendingStatsWaitlist: "en la lista de espera",
+    boostTitle: "Triplica tus probabilidades",
+    boostEyebrow: "SORTEO PRESENCIAL",
+    boostMultiplier: "3×",
+    boostMultiplierLabel: "peso en el sorteo",
+    boostActionLine:
+      "30 cupos en Plaza 11-11. Un toque te mete al grupo con boost.",
+    boostBody:
+      "Confirma que quieres ir presencial antes de que salga la lista. Toma un segundo.",
+    boostSteps: ["Inicia sesión", "Pulsa boost", "Espera la lista"],
+    boostButton: "MEJORAR MIS PROBABILIDADES →",
+    boostButtonBoosted: "BOOST ✓ TOCA OTRA VEZ",
+    boostTapHint: "Toca las veces que quieras — el primer toque da 3× peso, cada toque extra suma +1",
+    boosting: "GUARDANDO...",
+    boostDone: "Boost confirmado — estás en el grupo 3×.",
+    boostSignInPrompt: "Primero inicia sesión con tu cuenta de Google de la lista.",
+    boostSignIn: "INICIAR SESIÓN Y BOOST →",
+    boostSignInReturn: "Regresarás aquí automáticamente después de iniciar sesión.",
+    announcedTitle: "Constructores presenciales",
+    announcedSubtitle:
+      "Estas {count} personas hackearán en Plaza 11-11. Todos los demás son bienvenidos a unirse en remoto.",
+    tableRank: "#",
+    tableName: "Nombre",
+    tableSchool: "Escuela",
+    tableGithub: "GitHub",
+    listComingSoonBadge: "PRÓXIMAMENTE",
+    listLoadingHint: "Finalizando la lista — los nombres aparecerán aquí después del sorteo",
+    emptySelected: "Aún no hay lista presencial publicada.",
+    yourStatusSelected: "¡Entraste! Nos vemos en Plaza 11-11.",
+    yourStatusRemote:
+      "No fuiste seleccionado para un cupo presencial esta vez — pero sigues siendo parte del hackathon en remoto.",
+    yourStatusPending:
+      "Tu estatus presencial aparecerá aquí cuando anunciemos los resultados.",
+    remoteTitle: "Sigues construyendo con nosotros — en remoto",
+    remoteBody:
+      "El hackathon está abierto para todos en la lista de espera, presencial o remoto. La misma energía, la misma comunidad, la misma oportunidad de lanzar algo increíble.",
+    remoteClubTitle: "Mantente al día",
+    remoteClubBody:
+      "Únete a la plataforma de miembros, entra al Discord y al grupo de WhatsApp para no perderte actualizaciones, formación de equipos o demo day.",
+    remoteClubCta: "Unirme a la plataforma",
+    remoteDiscordCta: "Unirme a Discord",
+    remoteWhatsappCta: "Unirme al grupo de WhatsApp",
+    back: "← VOLVER",
+    loading: "Cargando selección...",
+    loadFailed: "No se pudo cargar la selección presencial. Intenta más tarde.",
+    errors: {
+      unauthorized: "Inicia sesión para continuar.",
+      notRegistered:
+        "Usa la cuenta de Google con la que te registraste en la lista de espera.",
+      selectionClosed: "La selección presencial ya está cerrada.",
+      generic: "Algo salió mal. Intenta de nuevo.",
     },
   },
   legal: {

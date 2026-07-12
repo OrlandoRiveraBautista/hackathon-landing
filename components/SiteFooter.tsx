@@ -4,7 +4,7 @@ import { ArrowUpRight, MapPin } from "lucide-react";
 import Link from "next/link";
 import { useDictionary, useLocale } from "@/components/LocaleProvider";
 import { PeserosCredit } from "@/components/PeserosCredit";
-import { localizedPath } from "@/lib/i18n";
+import { localizedPath, onsiteSelectionPath } from "@/lib/i18n";
 import { montserrat, outfit } from "@/lib/theme";
 
 type SiteFooterProps = {
@@ -69,10 +69,10 @@ export function SiteFooter({ onSponsorClick }: SiteFooterProps) {
 
   const eventLinks = [
     { href: localizedPath(locale, "/login"), label: dictionary.nav.signIn },
+    { href: onsiteSelectionPath(locale), label: dictionary.nav.onsite },
     { href: "#about", label: dictionary.nav.about },
     { href: "#highlights", label: dictionary.nav.whyJoin },
     { href: "#how-it-works", label: dictionary.nav.howItWorks },
-    { href: "#faq", label: dictionary.nav.faq },
   ];
 
   const legalLinks = [

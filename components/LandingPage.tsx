@@ -10,6 +10,7 @@ import { AboutSection } from "@/components/sections/AboutSection";
 import { HighlightsSection } from "@/components/sections/HighlightsSection";
 import { PrizesSection } from "@/components/sections/PrizesSection";
 import { HowItWorksSection } from "@/components/sections/HowItWorksSection";
+import { OnsiteFloatingBanner } from "@/components/OnsiteFloatingBanner";
 import { FaqSection } from "@/components/sections/FaqSection";
 import { CtaSection } from "@/components/sections/CtaSection";
 import { SponsorsSection } from "@/components/sections/SponsorsSection";
@@ -53,6 +54,7 @@ export function LandingPage() {
         onClose={() => setWaitlistOpen(false)}
       />
       <SponsorModal open={sponsorOpen} onClose={() => setSponsorOpen(false)} />
+      <OnsiteFloatingBanner visible={splashDone} />
     </WaitlistCountProvider>
   );
 }

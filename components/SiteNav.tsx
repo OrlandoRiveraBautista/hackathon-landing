@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useDictionary, useLocale } from "@/components/LocaleProvider";
 import { SITE_LOGO } from "@/lib/brand";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { localizedPath } from "@/lib/i18n";
+import { localizedPath, onsiteSelectionPath } from "@/lib/i18n";
 import { montserrat, outfit } from "@/lib/theme";
 
 type SiteNavProps = {
@@ -41,7 +41,6 @@ export function SiteNav({ onRegisterClick }: SiteNavProps) {
     { href: "#about", label: dictionary.nav.about },
     { href: "#highlights", label: dictionary.nav.whyJoin },
     { href: "#how-it-works", label: dictionary.nav.howItWorks },
-    { href: "#faq", label: dictionary.nav.faq },
   ];
 
   useEffect(() => {
@@ -170,6 +169,12 @@ export function SiteNav({ onRegisterClick }: SiteNavProps) {
               </a>
             );
           })}
+          <Link
+            href={onsiteSelectionPath(locale)}
+            className="relative rounded-full px-3.5 py-2 text-[11px] tracking-[0.1em] text-[#aaff00] transition-all duration-200 hover:bg-[#aaff00]/10"
+          >
+            {dictionary.nav.onsite}
+          </Link>
         </div>
 
         {/* Right side */}
@@ -316,6 +321,21 @@ export function SiteNav({ onRegisterClick }: SiteNavProps) {
                     {link.label}
                   </motion.a>
                 ))}
+
+                <motion.div
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.22, delay: links.length * 0.05 }}
+                >
+                  <Link
+                    href={onsiteSelectionPath(locale)}
+                    onClick={() => setMenuOpen(false)}
+                    className="flex items-center gap-2 rounded-xl px-2 py-3 text-sm tracking-[0.16em] text-white/55 transition-colors hover:bg-white/[0.03] hover:text-[#aaff00]"
+                  >
+                    <span className="h-px w-3 shrink-0 bg-[#aaff00]/30" />
+                    {dictionary.nav.onsite}
+                  </Link>
+                </motion.div>
               </div>
             </motion.div>
           )}

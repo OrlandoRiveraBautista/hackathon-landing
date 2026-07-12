@@ -48,6 +48,25 @@ export function membersDirectoryPath(
   return queryString ? `${base}?${queryString}` : base;
 }
 
+export function onsiteSelectionPath(locale: Locale): string {
+  return localizedPath(locale, "/onsite");
+}
+
+export function isOnsiteSelectionPath(path: string): boolean {
+  return /\/onsite(?:[/?#]|$)/.test(path);
+}
+
+export function memberLoginPath(locale: Locale, next?: string): string {
+  const base = localizedPath(locale, "/login");
+  const normalizedNext = next?.trim();
+  if (!normalizedNext) {
+    return base;
+  }
+
+  const params = new URLSearchParams({ next: normalizedNext });
+  return `${base}?${params.toString()}`;
+}
+
 export function parseMembersDirectorySearch(searchParams: {
   q?: string;
   openToTeams?: string;

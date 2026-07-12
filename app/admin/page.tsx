@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { authClient } from "@/lib/auth/client";
 import { getSponsorSignups, type SponsorSignup } from "@/lib/sponsors-admin";
 import { getWaitlistSignups, type WaitlistSignup } from "@/lib/waitlist-admin";
+import { AdminOnsitePanel } from "@/components/admin/AdminOnsitePanel";
 
 const montserrat = "var(--font-montserrat), Montserrat, sans-serif";
 const outfit = "var(--font-outfit), Outfit, sans-serif";
@@ -184,6 +185,9 @@ export default function AdminPage() {
                   <th className="px-4 py-3 font-medium">GitHub</th>
                   <th className="px-4 py-3 font-medium">Interests</th>
                   <th className="px-4 py-3 font-medium">Status</th>
+                  <th className="px-4 py-3 font-medium">On-site</th>
+                  <th className="px-4 py-3 font-medium">Boosted</th>
+                  <th className="px-4 py-3 font-medium">Boost taps</th>
                   <th className="px-4 py-3 font-medium">Signed up</th>
                 </tr>
               </thead>
@@ -227,6 +231,27 @@ export default function AdminPage() {
                       >
                         {signup.status}
                       </span>
+                    </td>
+                    <td className="px-4 py-3" style={{ fontFamily: outfit }}>
+                      <span
+                        className={
+                          signup.onSiteStatus === "selected"
+                            ? "text-[#aaff00]"
+                            : signup.onSiteStatus === "remote"
+                              ? "text-white/45"
+                              : "text-white/30"
+                        }
+                      >
+                        {signup.onSiteStatus}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3" style={{ fontFamily: outfit }}>
+                      {signup.onSiteInterested ? "Yes" : "—"}
+                    </td>
+                    <td className="px-4 py-3" style={{ fontFamily: outfit }}>
+                      {signup.onSiteBoostTapCount > 0
+                        ? signup.onSiteBoostTapCount
+                        : "—"}
                     </td>
                     <td
                       className="px-4 py-3 text-white/50"
@@ -301,6 +326,8 @@ export default function AdminPage() {
             No {tab} yet.
           </p>
         )}
+
+        {tab === "participants" && <AdminOnsitePanel />}
       </div>
     </main>
   );

@@ -19,6 +19,9 @@ const dictionary: Dictionary = {
     whyJoin: "PERKS",
     howItWorks: "PROCESS",
     faq: "FAQ",
+    signIn: "SIGN IN",
+    signInShort: "LOGIN",
+    registerShort: "JOIN",
   },
   hero: {
     tagline: "a 24h tech hackathon for young people",
@@ -26,6 +29,8 @@ const dictionary: Dictionary = {
     location: "Matamoros, Tamaulipas",
     waitlistLabel: "on the waitlist",
     registerNow: "REGISTER NOW",
+    signInPrompt: "Already on the waitlist?",
+    signIn: "Sign in to your member portal",
   },
   about: {
     label: "THE MISSION",

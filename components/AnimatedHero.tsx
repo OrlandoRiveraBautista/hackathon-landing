@@ -2,10 +2,12 @@
 
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
-import { useDictionary } from "@/components/LocaleProvider";
+import Link from "next/link";
+import { useDictionary, useLocale } from "@/components/LocaleProvider";
 import { WaitlistCounter } from "@/components/WaitlistCounter";
 import { PeserosCredit } from "@/components/PeserosCredit";
 import { HERO_EASE, prefersReducedMotion } from "@/lib/motion";
+import { localizedPath } from "@/lib/i18n";
 import { useIsMobile } from "@/lib/useMediaQuery";
 import { outfit } from "@/lib/theme";
 import StarBorder from "./reactbits/StarBorder";
@@ -24,6 +26,7 @@ type AnimatedHeroProps = {
    ───────────────────────────────────────────────────────────────────────── */
 export function AnimatedHero({ onRegisterClick, ready = true }: AnimatedHeroProps) {
   const dictionary = useDictionary();
+  const { locale } = useLocale();
   const isMobile = useIsMobile();
   const rootRef = useRef<HTMLDivElement>(null);
 
@@ -356,6 +359,19 @@ export function AnimatedHero({ onRegisterClick, ready = true }: AnimatedHeroProp
           </ClickSpark>
           <div className="hero-cta-line h-px flex-1 bg-[#aaff00]" />
         </div>
+
+        <p
+          className="hero-fade-item mt-5 text-center text-sm text-white/50"
+          style={{ fontFamily: outfit }}
+        >
+          {dictionary.hero.signInPrompt}{" "}
+          <Link
+            href={localizedPath(locale, "/login")}
+            className="font-medium text-[#aaff00] underline decoration-[#aaff00]/30 underline-offset-4 transition-colors hover:text-[#c8ff40] hover:decoration-[#c8ff40]/50"
+          >
+            {dictionary.hero.signIn}
+          </Link>
+        </p>
       </div>
 
       <style>{`

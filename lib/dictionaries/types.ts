@@ -24,6 +24,9 @@ export type Dictionary = {
     whyJoin: string;
     howItWorks: string;
     faq: string;
+    signIn: string;
+    signInShort: string;
+    registerShort: string;
   };
   hero: {
     tagline: string;
@@ -31,6 +34,8 @@ export type Dictionary = {
     location: string;
     waitlistLabel: string;
     registerNow: string;
+    signInPrompt: string;
+    signIn: string;
   };
   about: {
     label: string;

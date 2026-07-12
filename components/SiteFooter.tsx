@@ -68,6 +68,7 @@ export function SiteFooter({ onSponsorClick }: SiteFooterProps) {
   const year = new Date().getFullYear();
 
   const eventLinks = [
+    { href: localizedPath(locale, "/login"), label: dictionary.nav.signIn },
     { href: "#about", label: dictionary.nav.about },
     { href: "#highlights", label: dictionary.nav.whyJoin },
     { href: "#how-it-works", label: dictionary.nav.howItWorks },

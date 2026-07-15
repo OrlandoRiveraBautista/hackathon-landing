@@ -165,9 +165,12 @@ export function OnsiteSelectionPageClient() {
         if (!response.ok) {
           if (response.status === 429) {
             setDailyLimitReached(true);
+            setBoostTapCount((count) => Math.max(0, count - 1));
+            setDailyTapCount(dailyTapLimit);
             if (typeof data.cooldownUntil === "string") {
               setCooldownUntil(data.cooldownUntil);
             }
+            return;
           }
           throw new Error(data.error ?? copy.errors.generic);
         }
@@ -362,6 +365,7 @@ export function OnsiteSelectionPageClient() {
               boostTapHint={copy.boostTapHint}
               boostDailyProgress={copy.boostDailyProgress}
               boostCooldownHint={copy.boostCooldownHint}
+              boostLimitReached={copy.errors.boostLimitReached}
               boosting={copy.boosting}
               boostSignInPrompt={copy.boostSignInPrompt}
               boostSignIn={copy.boostSignIn}

@@ -51,6 +51,7 @@ type BoostButtonProps = {
   tapHint: string;
   dailyProgressLabel: string;
   cooldownHint: string;
+  limitReachedMessage: string;
   interested: boolean;
   loading: boolean;
   tapCount: number;
@@ -127,6 +128,7 @@ export function BoostButton({
   tapHint,
   dailyProgressLabel,
   cooldownHint,
+  limitReachedMessage,
   interested,
   loading,
   tapCount,
@@ -226,6 +228,15 @@ export function BoostButton({
       <BoostParticleOverlay bursts={bursts} onRemove={removeBurst} />
 
       <div className="relative w-full [&>div]:!block [&>div]:!w-full">
+        {limitReached && (
+          <p
+            className="mb-3 text-center text-xs leading-relaxed text-white/60 sm:text-sm"
+            style={{ fontFamily: montserrat }}
+          >
+            {limitReachedMessage}
+          </p>
+        )}
+
         <ClickSpark
           sparkColor="#aaff00"
           sparkCount={10}
@@ -254,7 +265,9 @@ export function BoostButton({
               <span className="boost-button-shine pointer-events-none" />
               <span className="boost-button-label">
                 {displayLabel}
-                {!loading && <span className="boost-button-arrow">→</span>}
+                {!loading && !limitReached && (
+                  <span className="boost-button-arrow">→</span>
+                )}
               </span>
               {tapCount > 0 && (
                 <span className="boost-button-count">×{tapCount}</span>
@@ -267,8 +280,8 @@ export function BoostButton({
           className="mt-3 text-center text-[10px] tracking-[0.14em] text-white/35"
           style={{ fontFamily: montserrat }}
         >
-          {limitReached && cooldownLabel
-            ? cooldownLabel
+          {limitReached
+            ? cooldownLabel ?? cooldownHint
             : dailyTapCount > 0
               ? dailyProgressLabel
               : tapHint}

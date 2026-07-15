@@ -20,6 +20,7 @@ type OnsiteBoostPanelProps = {
   boostTapHint: string;
   boostDailyProgress: string;
   boostCooldownHint: string;
+  boostLimitReached: string;
   boosting: string;
   boostSignInPrompt: string;
   boostSignIn: string;
@@ -95,6 +96,7 @@ export function OnsiteBoostPanel({
   boostTapHint,
   boostDailyProgress,
   boostCooldownHint,
+  boostLimitReached,
   boosting,
   boostSignInPrompt,
   boostSignIn,
@@ -204,6 +206,7 @@ export function OnsiteBoostPanel({
               tapHint={boostTapHint}
               dailyProgressLabel={dailyProgressLabel}
               cooldownHint={boostCooldownHint}
+              limitReachedMessage={boostLimitReached}
               interested={interested}
               loading={false}
               tapCount={effectiveTapCount}

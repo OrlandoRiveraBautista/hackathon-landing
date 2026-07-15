@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { motion, useAnimation } from "motion/react";
 import ClickSpark from "@/components/reactbits/ClickSpark";
@@ -49,12 +49,35 @@ type BoostButtonProps = {
   boostedLabel: string;
   maxedLabel: string;
   tapHint: string;
+  dailyProgressLabel: string;
+  cooldownHint: string;
   interested: boolean;
   loading: boolean;
   tapCount: number;
+  dailyTapCount: number;
+  dailyTapLimit: number;
   limitReached: boolean;
+  cooldownUntil: string | null;
   onPress: () => void;
 };
+
+function formatCooldownRemaining(until: string): string | null {
+  const target = new Date(until).getTime();
+  const remainingMs = target - Date.now();
+  if (remainingMs <= 0) {
+    return null;
+  }
+
+  const totalMinutes = Math.ceil(remainingMs / 60000);
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+
+  if (hours > 0) {
+    return `${hours}h ${minutes}m`;
+  }
+
+  return `${minutes}m`;
+}
 
 function vibrate() {
   if (typeof navigator !== "undefined" && "vibrate" in navigator) {
@@ -102,13 +125,19 @@ export function BoostButton({
   boostedLabel,
   maxedLabel,
   tapHint,
+  dailyProgressLabel,
+  cooldownHint,
   interested,
   loading,
   tapCount,
+  dailyTapCount,
+  dailyTapLimit,
   limitReached,
+  cooldownUntil,
   onPress,
 }: BoostButtonProps) {
   const [bursts, setBursts] = useState<ViewportBurst[]>([]);
+  const [cooldownLabel, setCooldownLabel] = useState<string | null>(null);
   const burstId = useRef(0);
   const lastSpawnAt = useRef(0);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -117,6 +146,24 @@ export function BoostButton({
   const removeBurst = useCallback((id: number) => {
     setBursts((current) => current.filter((burst) => burst.id !== id));
   }, []);
+
+  useEffect(() => {
+    if (!limitReached || !cooldownUntil) {
+      setCooldownLabel(null);
+      return;
+    }
+
+    const until = cooldownUntil;
+
+    function updateCooldown() {
+      const remaining = formatCooldownRemaining(until);
+      setCooldownLabel(remaining ? `${cooldownHint} (${remaining})` : null);
+    }
+
+    updateCooldown();
+    const interval = window.setInterval(updateCooldown, 30_000);
+    return () => window.clearInterval(interval);
+  }, [cooldownHint, cooldownUntil, limitReached]);
 
   const spawnBursts = useCallback(() => {
     const now = performance.now();
@@ -220,7 +267,11 @@ export function BoostButton({
           className="mt-3 text-center text-[10px] tracking-[0.14em] text-white/35"
           style={{ fontFamily: montserrat }}
         >
-          {tapHint}
+          {limitReached && cooldownLabel
+            ? cooldownLabel
+            : dailyTapCount > 0
+              ? dailyProgressLabel
+              : tapHint}
         </p>
       </div>
     </>

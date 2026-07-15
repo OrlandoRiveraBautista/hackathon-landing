@@ -5,7 +5,7 @@ import { defaultLocale, isLocale } from "@/lib/i18n";
 import {
   getOnsiteSelectionConfig,
   getOnsiteStatusForDocId,
-  OnsiteBoostTapLimitError,
+  OnsiteBoostDailyLimitError,
   recordOnsiteBoostTap,
 } from "@/lib/onsite-selection";
 import { getWaitlistSignupByEmail } from "@/lib/waitlist-admin";
@@ -50,6 +50,10 @@ export async function GET(request: Request) {
     onSiteInterestedAt: status.onSiteInterestedAt?.toISOString() ?? null,
     onSiteStatus: status.onSiteStatus,
     onSiteBoostTapCount: status.onSiteBoostTapCount,
+    dailyTapCount: status.boostDaily.dailyTapCount,
+    dailyTapLimit: status.boostDaily.dailyTapLimit,
+    dailyLimitReached: status.boostDaily.dailyLimitReached,
+    cooldownUntil: status.boostDaily.cooldownUntil?.toISOString() ?? null,
     name: signup.name,
   });
 }
@@ -87,12 +91,19 @@ export async function POST(request: Request) {
     return NextResponse.json({
       onSiteInterested: true,
       tapCount: result.tapCount,
+      dailyTapCount: result.dailyTapCount,
+      dailyTapLimit: result.dailyTapLimit,
+      dailyLimitReached: result.dailyLimitReached,
+      cooldownUntil: result.cooldownUntil?.toISOString() ?? null,
       alreadyInterested: result.wasAlreadyInterested,
     });
   } catch (error) {
-    if (error instanceof OnsiteBoostTapLimitError) {
+    if (error instanceof OnsiteBoostDailyLimitError) {
       return NextResponse.json(
-        { error: dictionary.onsiteSelection.errors.boostLimitReached },
+        {
+          error: dictionary.onsiteSelection.errors.boostLimitReached,
+          cooldownUntil: error.resetsAt.toISOString(),
+        },
         { status: 429 },
       );
     }

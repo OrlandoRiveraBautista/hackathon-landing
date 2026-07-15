@@ -39,18 +39,112 @@ service cloud.firestore {
         : 0;
     }
 
+    function onsiteDailyCountBefore() {
+      return ('onSiteBoostDailyCount' in resource.data && resource.data.onSiteBoostDailyCount is int)
+        ? resource.data.onSiteBoostDailyCount
+        : 0;
+    }
+
+    function onsiteDayIndexBefore() {
+      return ('onSiteBoostDayIndex' in resource.data && resource.data.onSiteBoostDayIndex is int)
+        ? resource.data.onSiteBoostDayIndex
+        : -1;
+    }
+
+    function onsiteCooldownActive() {
+      return ('onSiteBoostCooldownUntil' in resource.data)
+        && resource.data.onSiteBoostCooldownUntil > request.time;
+    }
+
+    function canResetBoostDay() {
+      return !('onSiteBoostCooldownUntil' in resource.data)
+        || resource.data.onSiteBoostCooldownUntil <= request.time;
+    }
+
+    function isFirstBoostTap() {
+      return !('onSiteBoostDayIndex' in resource.data)
+        && request.resource.data.onSiteBoostDailyCount == 1
+        && !('onSiteBoostCooldownUntil' in request.resource.data);
+    }
+
+    function isSameBoostDayIncrement() {
+      return 'onSiteBoostDayIndex' in resource.data
+        && resource.data.onSiteBoostDayIndex == request.resource.data.onSiteBoostDayIndex
+        && resource.data.onSiteBoostDailyKey == request.resource.data.onSiteBoostDailyKey
+        && onsiteDailyCountBefore() < 99
+        && request.resource.data.onSiteBoostDailyCount == onsiteDailyCountBefore() + 1
+        && (
+          !('onSiteBoostCooldownUntil' in request.resource.data)
+          || request.resource.data.onSiteBoostCooldownUntil == resource.data.onSiteBoostCooldownUntil
+        );
+    }
+
+    function isSameBoostDayLimitReached() {
+      return 'onSiteBoostDayIndex' in resource.data
+        && resource.data.onSiteBoostDayIndex == request.resource.data.onSiteBoostDayIndex
+        && resource.data.onSiteBoostDailyKey == request.resource.data.onSiteBoostDailyKey
+        && onsiteDailyCountBefore() == 99
+        && request.resource.data.onSiteBoostDailyCount == 100
+        && 'onSiteBoostCooldownUntil' in request.resource.data
+        && request.resource.data.onSiteBoostCooldownUntil > request.time;
+    }
+
+    function isNewBoostDayReset() {
+      return 'onSiteBoostDayIndex' in resource.data
+        && resource.data.onSiteBoostDayIndex != request.resource.data.onSiteBoostDayIndex
+        && resource.data.onSiteBoostDailyKey != request.resource.data.onSiteBoostDailyKey
+        && onsiteDailyCountBefore() == 100
+        && request.resource.data.onSiteBoostDailyCount == 1
+        && !('onSiteBoostCooldownUntil' in request.resource.data)
+        && canResetBoostDay();
+    }
+
+    function isBoostTapShapeValid() {
+      return request.resource.data.onSiteBoostTapCount is int
+        && request.resource.data.onSiteBoostTapCount == onsiteTapCountBefore() + 1
+        && request.resource.data.onSiteBoostDailyKey is string
+        && request.resource.data.onSiteBoostDailyCount is int
+        && request.resource.data.onSiteBoostDayIndex is int
+        && (
+          isFirstBoostTap()
+          || isSameBoostDayIncrement()
+          || isSameBoostDayLimitReached()
+          || isNewBoostDayReset()
+        );
+    }
+
     function isOnSiteTapUpdate() {
       return waitlistCoreFieldsUnchanged()
-          && request.resource.data.onSiteBoostTapCount is int
-          && onsiteTapCountBefore() < 1000
-          && request.resource.data.onSiteBoostTapCount == onsiteTapCountBefore() + 1
+          && !onsiteCooldownActive()
+          && isBoostTapShapeValid()
           && (
-            request.resource.data.diff(resource.data).affectedKeys().hasOnly(['onSiteBoostTapCount'])
+            request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+              'onSiteBoostTapCount',
+              'onSiteBoostDailyKey',
+              'onSiteBoostDailyCount',
+              'onSiteBoostDayIndex'
+            ])
+            ||
+            request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+              'onSiteBoostTapCount',
+              'onSiteBoostDailyKey',
+              'onSiteBoostDailyCount',
+              'onSiteBoostDayIndex',
+              'onSiteBoostCooldownUntil'
+            ])
             ||
             (
-              request.resource.data.diff(resource.data).affectedKeys().hasOnly(['onSiteInterested', 'onSiteInterestedAt', 'onSiteBoostTapCount'])
+              request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+                'onSiteInterested',
+                'onSiteInterestedAt',
+                'onSiteBoostTapCount',
+                'onSiteBoostDailyKey',
+                'onSiteBoostDailyCount',
+                'onSiteBoostDayIndex'
+              ])
               && request.resource.data.onSiteInterested == true
               && (!('onSiteInterested' in resource.data) || resource.data.onSiteInterested != true)
+              && isFirstBoostTap()
             )
           );
     }

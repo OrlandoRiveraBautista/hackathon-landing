@@ -3,10 +3,7 @@
 import Link from "next/link";
 import { ArrowRight, Zap } from "lucide-react";
 import { BoostButton } from "@/components/onsite/BoostButton";
-import {
-  clampOnsiteBoostTapCount,
-  ONSITE_BOOST_TAP_LIMIT,
-} from "@/lib/onsite-selection";
+import { clampOnsiteBoostTapCount } from "@/lib/onsite-selection";
 import { montserrat, outfit } from "@/lib/theme";
 
 type OnsiteBoostPanelProps = {
@@ -21,6 +18,8 @@ type OnsiteBoostPanelProps = {
   boostButtonBoosted: string;
   boostButtonMaxed: string;
   boostTapHint: string;
+  boostDailyProgress: string;
+  boostCooldownHint: string;
   boosting: string;
   boostSignInPrompt: string;
   boostSignIn: string;
@@ -30,6 +29,10 @@ type OnsiteBoostPanelProps = {
   interested: boolean;
   signedIn: boolean | null;
   tapCount: number;
+  dailyTapCount: number;
+  dailyTapLimit: number;
+  dailyLimitReached: boolean;
+  cooldownUntil: string | null;
   onBoost: () => void;
 };
 
@@ -90,6 +93,8 @@ export function OnsiteBoostPanel({
   boostButtonBoosted,
   boostButtonMaxed,
   boostTapHint,
+  boostDailyProgress,
+  boostCooldownHint,
   boosting,
   boostSignInPrompt,
   boostSignIn,
@@ -99,9 +104,16 @@ export function OnsiteBoostPanel({
   interested,
   signedIn,
   tapCount,
+  dailyTapCount,
+  dailyTapLimit,
+  dailyLimitReached,
+  cooldownUntil,
   onBoost,
 }: OnsiteBoostPanelProps) {
   const effectiveTapCount = clampOnsiteBoostTapCount(tapCount);
+  const dailyProgressLabel = boostDailyProgress
+    .replace("{count}", String(dailyTapCount))
+    .replace("{limit}", String(dailyTapLimit));
   const stepStates: [boolean, boolean, boolean] = interested
     ? [true, true, false]
     : signedIn
@@ -190,10 +202,15 @@ export function OnsiteBoostPanel({
               maxedLabel={boostButtonMaxed}
               boostingLabel={boosting}
               tapHint={boostTapHint}
+              dailyProgressLabel={dailyProgressLabel}
+              cooldownHint={boostCooldownHint}
               interested={interested}
               loading={false}
               tapCount={effectiveTapCount}
-              limitReached={tapCount >= ONSITE_BOOST_TAP_LIMIT}
+              dailyTapCount={dailyTapCount}
+              dailyTapLimit={dailyTapLimit}
+              limitReached={dailyLimitReached}
+              cooldownUntil={cooldownUntil}
               onPress={onBoost}
             />
           ) : (

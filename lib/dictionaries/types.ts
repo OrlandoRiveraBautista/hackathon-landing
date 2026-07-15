@@ -596,6 +596,8 @@ export type Dictionary = {
     boostButtonBoosted: string;
     boostButtonMaxed: string;
     boostTapHint: string;
+    boostDailyProgress: string;
+    boostCooldownHint: string;
     boosting: string;
     boostDone: string;
     boostSignInPrompt: string;

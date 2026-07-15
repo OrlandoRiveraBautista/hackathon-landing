@@ -15,17 +15,154 @@ import { getDb } from "./firebase";
 
 export const ONSITE_CAPACITY = 30;
 export const ONSITE_INTEREST_WEIGHT = 3;
-export const ONSITE_BOOST_TAP_LIMIT = 1000;
+export const ONSITE_BOOST_DAILY_TAP_LIMIT = 100;
+export const ONSITE_BOOST_LOTTERY_TAP_CAP = 1000;
+export const ONSITE_BOOST_TIMEZONE = "America/Matamoros";
 
-export class OnsiteBoostTapLimitError extends Error {
-  constructor() {
-    super("On-site boost tap limit reached.");
-    this.name = "OnsiteBoostTapLimitError";
+export class OnsiteBoostDailyLimitError extends Error {
+  readonly resetsAt: Date;
+
+  constructor(resetsAt: Date) {
+    super("On-site boost daily tap limit reached.");
+    this.name = "OnsiteBoostDailyLimitError";
+    this.resetsAt = resetsAt;
   }
 }
 
 export function clampOnsiteBoostTapCount(tapCount: number): number {
-  return Math.min(Math.max(0, tapCount), ONSITE_BOOST_TAP_LIMIT);
+  return Math.min(Math.max(0, tapCount), ONSITE_BOOST_LOTTERY_TAP_CAP);
+}
+
+type BoostDayParts = {
+  year: number;
+  month: number;
+  day: number;
+  hour: number;
+  minute: number;
+};
+
+function getBoostDayParts(date: Date): BoostDayParts {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: ONSITE_BOOST_TIMEZONE,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).formatToParts(date);
+
+  const read = (type: string) =>
+    Number(parts.find((part) => part.type === type)?.value ?? 0);
+
+  return {
+    year: read("year"),
+    month: read("month"),
+    day: read("day"),
+    hour: read("hour"),
+    minute: read("minute"),
+  };
+}
+
+export function getBoostDayKey(now = new Date()): string {
+  const parts = getBoostDayParts(now);
+  const month = String(parts.month).padStart(2, "0");
+  const day = String(parts.day).padStart(2, "0");
+  return `${parts.year}-${month}-${day}`;
+}
+
+export function getBoostDayIndex(now = new Date()): number {
+  const parts = getBoostDayParts(now);
+  return parts.year * 10000 + parts.month * 100 + parts.day;
+}
+
+export function getBoostCooldownUntil(now = new Date()): Date {
+  const todayKey = getBoostDayKey(now);
+
+  for (let hours = 1; hours <= 30; hours += 1) {
+    const candidate = new Date(now.getTime() + hours * 3600 * 1000);
+    if (getBoostDayKey(candidate) === todayKey) {
+      continue;
+    }
+
+    for (let minutes = 0; minutes < 60; minutes += 1) {
+      const precise = new Date(candidate.getTime() - minutes * 60 * 1000);
+      const parts = getBoostDayParts(precise);
+      if (
+        getBoostDayKey(precise) !== todayKey &&
+        parts.hour === 0 &&
+        parts.minute === 0
+      ) {
+        return precise;
+      }
+    }
+
+    return candidate;
+  }
+
+  return new Date(now.getTime() + 24 * 3600 * 1000);
+}
+
+export type OnsiteBoostDailyStatus = {
+  dayKey: string;
+  dailyTapCount: number;
+  dailyTapLimit: number;
+  dailyLimitReached: boolean;
+  cooldownUntil: Date | null;
+  totalTapCount: number;
+};
+
+type BoostDailySource = {
+  onSiteBoostTapCount?: unknown;
+  onSiteBoostDailyKey?: unknown;
+  onSiteBoostDailyCount?: unknown;
+  onSiteBoostCooldownUntil?: { toDate?: () => Date } | Date | null;
+};
+
+function readBoostCooldownUntil(
+  value: BoostDailySource["onSiteBoostCooldownUntil"],
+): Date | null {
+  if (!value) {
+    return null;
+  }
+
+  if (value instanceof Date) {
+    return value;
+  }
+
+  return value.toDate?.() ?? null;
+}
+
+export function getBoostDailyStatus(
+  data: BoostDailySource,
+  now = new Date(),
+): OnsiteBoostDailyStatus {
+  const todayKey = getBoostDayKey(now);
+  const totalTapCount =
+    typeof data.onSiteBoostTapCount === "number" ? data.onSiteBoostTapCount : 0;
+  const storedKey =
+    typeof data.onSiteBoostDailyKey === "string" ? data.onSiteBoostDailyKey : null;
+  const storedCount =
+    typeof data.onSiteBoostDailyCount === "number" ? data.onSiteBoostDailyCount : 0;
+  const storedCooldown = readBoostCooldownUntil(data.onSiteBoostCooldownUntil);
+
+  const dailyTapCount = storedKey === todayKey ? storedCount : 0;
+  const dailyLimitReached = dailyTapCount >= ONSITE_BOOST_DAILY_TAP_LIMIT;
+  const cooldownUntil =
+    dailyLimitReached || (storedCooldown && storedCooldown > now)
+      ? storedCooldown && storedCooldown > now
+        ? storedCooldown
+        : getBoostCooldownUntil(now)
+      : null;
+
+  return {
+    dayKey: todayKey,
+    dailyTapCount,
+    dailyTapLimit: ONSITE_BOOST_DAILY_TAP_LIMIT,
+    dailyLimitReached,
+    cooldownUntil,
+    totalTapCount,
+  };
 }
 
 export const ONSITE_STATUSES = ["pending", "selected", "remote"] as const;
@@ -149,6 +286,7 @@ export async function getOnsiteStatusForDocId(docId: string): Promise<{
   onSiteInterestedAt: Date | null;
   onSiteStatus: OnsiteStatus;
   onSiteBoostTapCount: number;
+  boostDaily: OnsiteBoostDailyStatus;
 }> {
   const snapshot = await getDoc(doc(getDb(), "waitlist", docId));
   if (!snapshot.exists()) {
@@ -157,6 +295,7 @@ export async function getOnsiteStatusForDocId(docId: string): Promise<{
       onSiteInterestedAt: null,
       onSiteStatus: "pending",
       onSiteBoostTapCount: 0,
+      boostDaily: getBoostDailyStatus({}),
     };
   }
 
@@ -167,6 +306,7 @@ export async function getOnsiteStatusForDocId(docId: string): Promise<{
     onSiteStatus: normalizeOnsiteStatus(data.onSiteStatus),
     onSiteBoostTapCount:
       typeof data.onSiteBoostTapCount === "number" ? data.onSiteBoostTapCount : 0,
+    boostDaily: getBoostDailyStatus(data),
   };
 }
 
@@ -180,17 +320,27 @@ export async function recordOnsiteBoostTap(docId: string) {
 
   const data = snapshot.data();
   const wasAlreadyInterested = data.onSiteInterested === true;
-  const currentTapCount = clampOnsiteBoostTapCount(
-    typeof data.onSiteBoostTapCount === "number" ? data.onSiteBoostTapCount : 0,
-  );
+  const dailyStatus = getBoostDailyStatus(data);
 
-  if (currentTapCount >= ONSITE_BOOST_TAP_LIMIT) {
-    throw new OnsiteBoostTapLimitError();
+  if (dailyStatus.dailyLimitReached) {
+    throw new OnsiteBoostDailyLimitError(
+      dailyStatus.cooldownUntil ?? getBoostCooldownUntil(),
+    );
   }
 
+  const nextDailyCount = dailyStatus.dailyTapCount + 1;
   const payload: Record<string, unknown> = {
     onSiteBoostTapCount: increment(1),
+    onSiteBoostDailyKey: dailyStatus.dayKey,
+    onSiteBoostDailyCount: nextDailyCount,
+    onSiteBoostDayIndex: getBoostDayIndex(),
   };
+
+  if (nextDailyCount >= ONSITE_BOOST_DAILY_TAP_LIMIT) {
+    payload.onSiteBoostCooldownUntil = getBoostCooldownUntil();
+  } else if ("onSiteBoostCooldownUntil" in data) {
+    payload.onSiteBoostCooldownUntil = deleteField();
+  }
 
   if (!wasAlreadyInterested) {
     payload.onSiteInterested = true;
@@ -200,7 +350,14 @@ export async function recordOnsiteBoostTap(docId: string) {
   await updateDoc(ref, payload);
 
   return {
-    tapCount: currentTapCount + 1,
+    tapCount: dailyStatus.totalTapCount + 1,
+    dailyTapCount: nextDailyCount,
+    dailyTapLimit: ONSITE_BOOST_DAILY_TAP_LIMIT,
+    dailyLimitReached: nextDailyCount >= ONSITE_BOOST_DAILY_TAP_LIMIT,
+    cooldownUntil:
+      nextDailyCount >= ONSITE_BOOST_DAILY_TAP_LIMIT
+        ? (payload.onSiteBoostCooldownUntil as Date)
+        : null,
     wasAlreadyInterested,
   };
 }
@@ -307,6 +464,10 @@ export async function resetOnsiteSelection() {
         onSiteStatus: "pending",
         onSiteSelectedAt: deleteField(),
         onSiteBoostTapCount: deleteField(),
+        onSiteBoostDailyKey: deleteField(),
+        onSiteBoostDailyCount: deleteField(),
+        onSiteBoostDayIndex: deleteField(),
+        onSiteBoostCooldownUntil: deleteField(),
         onSiteInterested: deleteField(),
         onSiteInterestedAt: deleteField(),
       }),

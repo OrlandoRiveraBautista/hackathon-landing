@@ -20,7 +20,7 @@ import {
   memberLoginPath,
   onsiteSelectionPath,
 } from "@/lib/i18n";
-import { ONSITE_BOOST_TAP_LIMIT } from "@/lib/onsite-selection";
+import { ONSITE_BOOST_DAILY_TAP_LIMIT } from "@/lib/onsite-selection";
 import { montserrat, outfit } from "@/lib/theme";
 
 type SelectionResponse = {
@@ -39,6 +39,10 @@ type UserStatusResponse = {
   announced: boolean;
   onSiteInterested: boolean;
   onSiteBoostTapCount: number;
+  dailyTapCount: number;
+  dailyTapLimit: number;
+  dailyLimitReached: boolean;
+  cooldownUntil: string | null;
   onSiteStatus: "pending" | "selected" | "remote";
   name: string;
 };
@@ -62,6 +66,10 @@ export function OnsiteSelectionPageClient() {
   const [statusChecked, setStatusChecked] = useState(false);
   const [loading, setLoading] = useState(true);
   const [boostTapCount, setBoostTapCount] = useState(0);
+  const [dailyTapCount, setDailyTapCount] = useState(0);
+  const [dailyTapLimit, setDailyTapLimit] = useState(ONSITE_BOOST_DAILY_TAP_LIMIT);
+  const [dailyLimitReached, setDailyLimitReached] = useState(false);
+  const [cooldownUntil, setCooldownUntil] = useState<string | null>(null);
   const [boostDone, setBoostDone] = useState(false);
   const [shirtSize, setShirtSize] = useState<ShirtSize | null>(null);
   const [selectedSize, setSelectedSize] = useState("");
@@ -99,6 +107,10 @@ export function OnsiteSelectionPageClient() {
           const statusData = (await statusRes.json()) as UserStatusResponse;
           setUserStatus(statusData);
           setBoostTapCount(statusData.onSiteBoostTapCount ?? 0);
+          setDailyTapCount(statusData.dailyTapCount ?? 0);
+          setDailyTapLimit(statusData.dailyTapLimit ?? ONSITE_BOOST_DAILY_TAP_LIMIT);
+          setDailyLimitReached(statusData.dailyLimitReached === true);
+          setCooldownUntil(statusData.cooldownUntil ?? null);
           if (statusData.onSiteInterested) {
             setBoostDone(true);
           }
@@ -138,9 +150,10 @@ export function OnsiteSelectionPageClient() {
   }, [copy.loadFailed, locale]);
 
   function recordBoostTap() {
-    if (boostTapCount >= ONSITE_BOOST_TAP_LIMIT) return;
+    if (dailyLimitReached) return;
 
     setBoostTapCount((count) => count + 1);
+    setDailyTapCount((count) => count + 1);
     setError("");
 
     void fetch("/api/onsite/status", {
@@ -150,11 +163,29 @@ export function OnsiteSelectionPageClient() {
       .then(async (response) => {
         const data = await response.json();
         if (!response.ok) {
+          if (response.status === 429) {
+            setDailyLimitReached(true);
+            if (typeof data.cooldownUntil === "string") {
+              setCooldownUntil(data.cooldownUntil);
+            }
+          }
           throw new Error(data.error ?? copy.errors.generic);
         }
 
         if (typeof data.tapCount === "number") {
           setBoostTapCount(data.tapCount);
+        }
+        if (typeof data.dailyTapCount === "number") {
+          setDailyTapCount(data.dailyTapCount);
+        }
+        if (typeof data.dailyTapLimit === "number") {
+          setDailyTapLimit(data.dailyTapLimit);
+        }
+        if (typeof data.dailyLimitReached === "boolean") {
+          setDailyLimitReached(data.dailyLimitReached);
+        }
+        if (typeof data.cooldownUntil === "string" || data.cooldownUntil === null) {
+          setCooldownUntil(data.cooldownUntil ?? null);
         }
         if (data.onSiteInterested) {
           setBoostDone(true);
@@ -167,6 +198,22 @@ export function OnsiteSelectionPageClient() {
                     typeof data.tapCount === "number"
                       ? data.tapCount
                       : current.onSiteBoostTapCount,
+                  dailyTapCount:
+                    typeof data.dailyTapCount === "number"
+                      ? data.dailyTapCount
+                      : current.dailyTapCount,
+                  dailyTapLimit:
+                    typeof data.dailyTapLimit === "number"
+                      ? data.dailyTapLimit
+                      : current.dailyTapLimit,
+                  dailyLimitReached:
+                    typeof data.dailyLimitReached === "boolean"
+                      ? data.dailyLimitReached
+                      : current.dailyLimitReached,
+                  cooldownUntil:
+                    typeof data.cooldownUntil === "string" || data.cooldownUntil === null
+                      ? (data.cooldownUntil ?? null)
+                      : current.cooldownUntil,
                 }
               : current,
           );
@@ -174,6 +221,7 @@ export function OnsiteSelectionPageClient() {
       })
       .catch((err) => {
         setBoostTapCount((count) => Math.max(0, count - 1));
+        setDailyTapCount((count) => Math.max(0, count - 1));
         setError(err instanceof Error ? err.message : copy.errors.generic);
       });
   }
@@ -312,6 +360,8 @@ export function OnsiteSelectionPageClient() {
               boostButtonBoosted={copy.boostButtonBoosted}
               boostButtonMaxed={copy.boostButtonMaxed}
               boostTapHint={copy.boostTapHint}
+              boostDailyProgress={copy.boostDailyProgress}
+              boostCooldownHint={copy.boostCooldownHint}
               boosting={copy.boosting}
               boostSignInPrompt={copy.boostSignInPrompt}
               boostSignIn={copy.boostSignIn}
@@ -321,6 +371,10 @@ export function OnsiteSelectionPageClient() {
               interested={interested}
               signedIn={statusChecked ? userStatus !== null : null}
               tapCount={boostTapCount}
+              dailyTapCount={dailyTapCount}
+              dailyTapLimit={dailyTapLimit}
+              dailyLimitReached={dailyLimitReached}
+              cooldownUntil={cooldownUntil}
               onBoost={recordBoostTap}
             />
 

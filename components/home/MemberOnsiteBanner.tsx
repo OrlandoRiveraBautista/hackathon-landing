@@ -5,6 +5,11 @@ import { OnsitePromoCard } from "@/components/onsite/OnsitePromoCard";
 import { useDictionary, useLocale } from "@/components/LocaleProvider";
 import { GlassCard } from "@/components/platform";
 import { onsiteSelectionPath } from "@/lib/i18n";
+import {
+  clampOnsiteBoostTapCount,
+  getOnsiteLotteryWeight,
+  type OnsiteParticipant,
+} from "@/lib/onsite-selection";
 
 type SelectionPreview = {
   announced: boolean;
@@ -20,9 +25,17 @@ type UserOnsiteStatus = {
 };
 
 function getDrawWeight(taps: number, interested: boolean): number {
-  const effectiveTaps = taps > 0 ? taps : interested ? 1 : 0;
-  if (effectiveTaps <= 0) return 1;
-  return 3 + effectiveTaps - 1;
+  const participant: OnsiteParticipant = {
+    id: "",
+    name: "",
+    school: "",
+    github: "",
+    onSiteInterested: interested,
+    onSiteBoostTapCount: clampOnsiteBoostTapCount(taps),
+    onSiteStatus: "pending",
+  };
+
+  return getOnsiteLotteryWeight(participant);
 }
 
 export function MemberOnsiteBanner() {

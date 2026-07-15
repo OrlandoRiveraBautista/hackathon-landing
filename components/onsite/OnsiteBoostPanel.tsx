@@ -3,6 +3,10 @@
 import Link from "next/link";
 import { ArrowRight, Zap } from "lucide-react";
 import { BoostButton } from "@/components/onsite/BoostButton";
+import {
+  clampOnsiteBoostTapCount,
+  ONSITE_BOOST_TAP_LIMIT,
+} from "@/lib/onsite-selection";
 import { montserrat, outfit } from "@/lib/theme";
 
 type OnsiteBoostPanelProps = {
@@ -15,6 +19,7 @@ type OnsiteBoostPanelProps = {
   steps: [string, string, string];
   boostButton: string;
   boostButtonBoosted: string;
+  boostButtonMaxed: string;
   boostTapHint: string;
   boosting: string;
   boostSignInPrompt: string;
@@ -83,6 +88,7 @@ export function OnsiteBoostPanel({
   steps,
   boostButton,
   boostButtonBoosted,
+  boostButtonMaxed,
   boostTapHint,
   boosting,
   boostSignInPrompt,
@@ -95,6 +101,7 @@ export function OnsiteBoostPanel({
   tapCount,
   onBoost,
 }: OnsiteBoostPanelProps) {
+  const effectiveTapCount = clampOnsiteBoostTapCount(tapCount);
   const stepStates: [boolean, boolean, boolean] = interested
     ? [true, true, false]
     : signedIn
@@ -180,11 +187,13 @@ export function OnsiteBoostPanel({
             <BoostButton
               label={boostButton}
               boostedLabel={boostButtonBoosted}
+              maxedLabel={boostButtonMaxed}
               boostingLabel={boosting}
               tapHint={boostTapHint}
               interested={interested}
               loading={false}
-              tapCount={tapCount}
+              tapCount={effectiveTapCount}
+              limitReached={tapCount >= ONSITE_BOOST_TAP_LIMIT}
               onPress={onBoost}
             />
           ) : (

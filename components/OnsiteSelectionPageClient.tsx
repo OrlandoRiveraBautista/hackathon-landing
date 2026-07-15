@@ -20,6 +20,7 @@ import {
   memberLoginPath,
   onsiteSelectionPath,
 } from "@/lib/i18n";
+import { ONSITE_BOOST_TAP_LIMIT } from "@/lib/onsite-selection";
 import { montserrat, outfit } from "@/lib/theme";
 
 type SelectionResponse = {
@@ -137,6 +138,8 @@ export function OnsiteSelectionPageClient() {
   }, [copy.loadFailed, locale]);
 
   function recordBoostTap() {
+    if (boostTapCount >= ONSITE_BOOST_TAP_LIMIT) return;
+
     setBoostTapCount((count) => count + 1);
     setError("");
 
@@ -307,6 +310,7 @@ export function OnsiteSelectionPageClient() {
               steps={copy.boostSteps}
               boostButton={copy.boostButton}
               boostButtonBoosted={copy.boostButtonBoosted}
+              boostButtonMaxed={copy.boostButtonMaxed}
               boostTapHint={copy.boostTapHint}
               boosting={copy.boosting}
               boostSignInPrompt={copy.boostSignInPrompt}

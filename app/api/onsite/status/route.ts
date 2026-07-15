@@ -5,6 +5,7 @@ import { defaultLocale, isLocale } from "@/lib/i18n";
 import {
   getOnsiteSelectionConfig,
   getOnsiteStatusForDocId,
+  OnsiteBoostTapLimitError,
   recordOnsiteBoostTap,
 } from "@/lib/onsite-selection";
 import { getWaitlistSignupByEmail } from "@/lib/waitlist-admin";
@@ -89,6 +90,13 @@ export async function POST(request: Request) {
       alreadyInterested: result.wasAlreadyInterested,
     });
   } catch (error) {
+    if (error instanceof OnsiteBoostTapLimitError) {
+      return NextResponse.json(
+        { error: dictionary.onsiteSelection.errors.boostLimitReached },
+        { status: 429 },
+      );
+    }
+
     console.error("On-site boost tap failed:", error);
     return NextResponse.json(
       { error: dictionary.onsiteSelection.errors.generic },

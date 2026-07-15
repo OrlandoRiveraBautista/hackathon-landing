@@ -42,6 +42,7 @@ service cloud.firestore {
     function isOnSiteTapUpdate() {
       return waitlistCoreFieldsUnchanged()
           && request.resource.data.onSiteBoostTapCount is int
+          && onsiteTapCountBefore() < 1000
           && request.resource.data.onSiteBoostTapCount == onsiteTapCountBefore() + 1
           && (
             request.resource.data.diff(resource.data).affectedKeys().hasOnly(['onSiteBoostTapCount'])

@@ -995,7 +995,8 @@ const dictionary: Dictionary = {
     boostSteps: ["Inicia sesión", "Pulsa boost", "Espera la lista"],
     boostButton: "MEJORAR MIS PROBABILIDADES",
     boostButtonBoosted: "BOOST ✓ TOCA OTRA VEZ",
-    boostTapHint: "Toca las veces que quieras — el primer toque da 3× peso, cada toque extra suma +1",
+    boostButtonMaxed: "BOOST MÁXIMO ALCANZADO",
+    boostTapHint: "El primer toque da 3× peso, cada toque extra suma +1 — máximo 1,000 toques",
     boosting: "GUARDANDO...",
     boostDone: "Boost confirmado — estás en el grupo 3×.",
     boostSignInPrompt: "Primero inicia sesión con tu cuenta de Google de la lista.",
@@ -1033,6 +1034,7 @@ const dictionary: Dictionary = {
       notRegistered:
         "Usa la cuenta de Google con la que te registraste en la lista de espera.",
       selectionClosed: "La selección presencial ya está cerrada.",
+      boostLimitReached: "Ya alcanzaste el máximo de toques de boost.",
       generic: "Algo salió mal. Intenta de nuevo.",
     },
   },

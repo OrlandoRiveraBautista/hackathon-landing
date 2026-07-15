@@ -594,6 +594,7 @@ export type Dictionary = {
     boostSteps: [string, string, string];
     boostButton: string;
     boostButtonBoosted: string;
+    boostButtonMaxed: string;
     boostTapHint: string;
     boosting: string;
     boostDone: string;
@@ -626,6 +627,7 @@ export type Dictionary = {
       unauthorized: string;
       notRegistered: string;
       selectionClosed: string;
+      boostLimitReached: string;
       generic: string;
     };
   };

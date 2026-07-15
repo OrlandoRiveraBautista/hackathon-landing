@@ -15,6 +15,18 @@ import { getDb } from "./firebase";
 
 export const ONSITE_CAPACITY = 30;
 export const ONSITE_INTEREST_WEIGHT = 3;
+export const ONSITE_BOOST_TAP_LIMIT = 1000;
+
+export class OnsiteBoostTapLimitError extends Error {
+  constructor() {
+    super("On-site boost tap limit reached.");
+    this.name = "OnsiteBoostTapLimitError";
+  }
+}
+
+export function clampOnsiteBoostTapCount(tapCount: number): number {
+  return Math.min(Math.max(0, tapCount), ONSITE_BOOST_TAP_LIMIT);
+}
 
 export const ONSITE_STATUSES = ["pending", "selected", "remote"] as const;
 export type OnsiteStatus = (typeof ONSITE_STATUSES)[number];
@@ -69,7 +81,7 @@ function mapParticipant(id: string, data: DocumentData): OnsiteParticipant {
 export function getOnsiteLotteryWeight(participant: OnsiteParticipant): number {
   const taps =
     participant.onSiteBoostTapCount > 0
-      ? participant.onSiteBoostTapCount
+      ? clampOnsiteBoostTapCount(participant.onSiteBoostTapCount)
       : participant.onSiteInterested
         ? 1
         : 0;
@@ -168,8 +180,13 @@ export async function recordOnsiteBoostTap(docId: string) {
 
   const data = snapshot.data();
   const wasAlreadyInterested = data.onSiteInterested === true;
-  const currentTapCount =
-    typeof data.onSiteBoostTapCount === "number" ? data.onSiteBoostTapCount : 0;
+  const currentTapCount = clampOnsiteBoostTapCount(
+    typeof data.onSiteBoostTapCount === "number" ? data.onSiteBoostTapCount : 0,
+  );
+
+  if (currentTapCount >= ONSITE_BOOST_TAP_LIMIT) {
+    throw new OnsiteBoostTapLimitError();
+  }
 
   const payload: Record<string, unknown> = {
     onSiteBoostTapCount: increment(1),

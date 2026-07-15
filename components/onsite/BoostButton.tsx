@@ -47,10 +47,12 @@ type BoostButtonProps = {
   label: string;
   boostingLabel: string;
   boostedLabel: string;
+  maxedLabel: string;
   tapHint: string;
   interested: boolean;
   loading: boolean;
   tapCount: number;
+  limitReached: boolean;
   onPress: () => void;
 };
 
@@ -98,10 +100,12 @@ export function BoostButton({
   label,
   boostingLabel,
   boostedLabel,
+  maxedLabel,
   tapHint,
   interested,
   loading,
   tapCount,
+  limitReached,
   onPress,
 }: BoostButtonProps) {
   const [bursts, setBursts] = useState<ViewportBurst[]>([]);
@@ -151,7 +155,7 @@ export function BoostButton({
   }, []);
 
   const handlePress = () => {
-    if (loading) return;
+    if (loading || limitReached) return;
 
     spawnBursts();
     vibrate();
@@ -164,9 +168,11 @@ export function BoostButton({
 
   const displayLabel = loading
     ? boostingLabel
-    : interested
-      ? boostedLabel
-      : label;
+    : limitReached
+      ? maxedLabel
+      : interested
+        ? boostedLabel
+        : label;
 
   return (
     <>
@@ -185,13 +191,17 @@ export function BoostButton({
             type="button"
             animate={controls}
             onClick={handlePress}
-            disabled={loading}
-            className={`boost-button w-full disabled:cursor-wait disabled:opacity-60 ${
-              interested ? "boost-button--boosted" : "boost-button--idle"
+            disabled={loading || limitReached}
+            className={`boost-button w-full disabled:cursor-not-allowed disabled:opacity-60 ${
+              limitReached
+                ? "boost-button--boosted"
+                : interested
+                  ? "boost-button--boosted"
+                  : "boost-button--idle"
             }`}
             style={{ fontFamily: montserrat }}
-            whileHover={loading ? undefined : { scale: 1.01 }}
-            whileTap={loading ? undefined : { scale: 0.97 }}
+            whileHover={loading || limitReached ? undefined : { scale: 1.01 }}
+            whileTap={loading || limitReached ? undefined : { scale: 0.97 }}
           >
             <span className="boost-button-face">
               <span className="boost-button-shine pointer-events-none" />

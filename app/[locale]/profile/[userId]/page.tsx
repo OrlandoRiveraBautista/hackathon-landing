@@ -4,7 +4,7 @@ import { MemberProfileScreen } from "@/components/MemberProfileScreen";
 import { getSession } from "@/lib/auth/session";
 import { getDictionary } from "@/lib/dictionaries";
 import { isLocale, localizedPath } from "@/lib/i18n";
-import { getMemberByUserId, getOrCreateMember } from "@/lib/members";
+import { getMemberByUserId, getOrCreateMemberForUser } from "@/lib/members";
 import { toPublicMemberProfile } from "@/lib/members/shared";
 import { getTeamByUserId } from "@/lib/teams";
 import { getPendingInviteUserIdsForTeam } from "@/lib/teams/invites";
@@ -67,20 +67,20 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
   }
 
   const signup = await getWaitlistSignupByEmail(email);
-  if (!signup) {
-    redirect(`${localizedPath(locale, "/login")}?error=not_registered`);
-  }
 
   const isOwnProfile = viewerId === userId;
 
   if (isOwnProfile) {
-    const member = await getOrCreateMember(viewerId, signup);
+    const member = await getOrCreateMemberForUser(viewerId, {
+      email,
+      name: session.user.name,
+    });
     return (
       <MemberProfileScreen
         isOwnProfile
         member={member}
         userImage={session.user.image}
-        shirtSize={signup.shirtSize}
+        shirtSize={signup?.shirtSize ?? null}
       />
     );
   }

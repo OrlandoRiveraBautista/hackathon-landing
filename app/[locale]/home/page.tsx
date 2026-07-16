@@ -4,8 +4,7 @@ import { MemberHomeScreen } from "@/components/MemberHomeScreen";
 import { getSession } from "@/lib/auth/session";
 import { getDictionary } from "@/lib/dictionaries";
 import { isLocale, localizedPath } from "@/lib/i18n";
-import { getOrCreateMember } from "@/lib/members";
-import { getWaitlistSignupByEmail } from "@/lib/waitlist-admin";
+import { getOrCreateMemberForUser } from "@/lib/members";
 
 type HomePageProps = {
   params: Promise<{ locale: string }>;
@@ -40,12 +39,10 @@ export default async function HomePage({ params }: HomePageProps) {
     redirect(localizedPath(locale, "/login"));
   }
 
-  const signup = await getWaitlistSignupByEmail(email);
-  if (!signup) {
-    redirect(`${localizedPath(locale, "/login")}?error=not_registered`);
-  }
-
-  const member = await getOrCreateMember(userId, signup);
+  const member = await getOrCreateMemberForUser(userId, {
+    email,
+    name: session.user.name,
+  });
 
   return (
     <MemberHomeScreen member={member} userImage={session.user.image} />

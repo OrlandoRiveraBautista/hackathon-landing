@@ -4,7 +4,7 @@ import { getDictionary } from "@/lib/dictionaries";
 import { defaultLocale, isLocale } from "@/lib/i18n";
 import {
   getMemberByUserId,
-  getOrCreateMember,
+  getOrCreateMemberForUser,
   parseMemberProfileUpdate,
   updateMemberProfile,
 } from "@/lib/members";
@@ -54,14 +54,6 @@ export async function PATCH(request: Request) {
     });
   }
 
-  const signup = await getWaitlistSignupByEmail(session.user.email);
-  if (!signup) {
-    return NextResponse.json(
-      { error: dictionary.profile.errors.notRegistered },
-      { status: 403 },
-    );
-  }
-
   let body: Record<string, unknown>;
 
   try {
@@ -87,7 +79,10 @@ export async function PATCH(request: Request) {
 
   let member = await getMemberByUserId(session.user.id);
   if (!member) {
-    member = await getOrCreateMember(session.user.id, signup);
+    member = await getOrCreateMemberForUser(session.user.id, {
+      email: session.user.email,
+      name: session.user.name,
+    });
   }
 
   const updated = await updateMemberProfile(session.user.id, update);
@@ -99,6 +94,14 @@ export async function PATCH(request: Request) {
   }
 
   if (body.shirtSize !== undefined) {
+    const signup = await getWaitlistSignupByEmail(session.user.email);
+    if (!signup) {
+      return NextResponse.json(
+        { error: dictionary.profile.errors.notRegistered },
+        { status: 403 },
+      );
+    }
+
     const shirtSize = String(body.shirtSize);
     if (!isValidShirtSize(shirtSize)) {
       return NextResponse.json(

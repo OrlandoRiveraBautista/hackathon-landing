@@ -28,14 +28,7 @@ export async function GET(request: Request) {
   }
 
   const signup = await getWaitlistSignupByEmail(session.user.email);
-  if (!signup) {
-    return NextResponse.json(
-      { error: dictionary.profile.errors.notRegistered },
-      { status: 403 },
-    );
-  }
-
-  return NextResponse.json({ shirtSize: signup.shirtSize });
+  return NextResponse.json({ shirtSize: signup?.shirtSize ?? null });
 }
 
 export async function PATCH(request: Request) {

@@ -4,7 +4,6 @@ import { getDictionary } from "@/lib/dictionaries";
 import { defaultLocale, isLocale } from "@/lib/i18n";
 import { searchMembers } from "@/lib/members";
 import { toPublicMemberProfile } from "@/lib/members/shared";
-import { getWaitlistSignupByEmail } from "@/lib/waitlist-admin";
 
 function resolveLocale(request: Request) {
   const header = request.headers.get("x-locale");
@@ -38,14 +37,6 @@ export async function GET(request: Request) {
     return NextResponse.json(
       { error: dictionary.profile.errors.unauthorized },
       { status: 401 },
-    );
-  }
-
-  const signup = await getWaitlistSignupByEmail(session.user.email);
-  if (!signup) {
-    return NextResponse.json(
-      { error: dictionary.profile.errors.notRegistered },
-      { status: 403 },
     );
   }
 

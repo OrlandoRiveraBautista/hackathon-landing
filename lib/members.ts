@@ -2,7 +2,10 @@ import type { Pool, PoolClient } from "pg";
 import { getPool } from "@/lib/db";
 import type { MemberProfile, MemberProfileUpdate } from "@/lib/members/types";
 import { normalizeGithub } from "@/lib/waitlist";
-import type { WaitlistSignup } from "@/lib/waitlist-admin";
+import {
+  getWaitlistSignupByEmail,
+  type WaitlistSignup,
+} from "@/lib/waitlist-admin";
 
 export type {
   MemberProfile,
@@ -70,7 +73,19 @@ function mapMemberRow(row: MemberRow): MemberProfile {
   };
 }
 
-function seedFromWaitlist(signup: WaitlistSignup) {
+type MemberSeed = {
+  name: string;
+  email: string;
+  phone: string | null;
+  age: number | null;
+  sex: MemberProfile["sex"];
+  school: string | null;
+  github: string | null;
+  interests: string | null;
+  waitlistId: string | null;
+};
+
+function seedFromWaitlist(signup: WaitlistSignup): MemberSeed {
   return {
     name: signup.name,
     email: signup.email.trim().toLowerCase(),
@@ -81,6 +96,26 @@ function seedFromWaitlist(signup: WaitlistSignup) {
     github: emptyToNull(signup.github),
     interests: emptyToNull(signup.interests),
     waitlistId: signup.id,
+  };
+}
+
+function seedFromAuthUser(user: {
+  email: string;
+  name?: string | null;
+}): MemberSeed {
+  const email = user.email.trim().toLowerCase();
+  const name = user.name?.trim() || email.split("@")[0] || "Member";
+
+  return {
+    name,
+    email,
+    phone: null,
+    age: null,
+    sex: null,
+    school: null,
+    github: null,
+    interests: null,
+    waitlistId: null,
   };
 }
 
@@ -98,16 +133,10 @@ export async function getMemberByUserId(
   return row ? mapMemberRow(row) : null;
 }
 
-export async function getOrCreateMember(
+async function insertMemberFromSeed(
   userId: string,
-  signup: WaitlistSignup,
+  seed: MemberSeed,
 ): Promise<MemberProfile> {
-  const existing = await getMemberByUserId(userId);
-  if (existing) {
-    return existing;
-  }
-
-  const seed = seedFromWaitlist(signup);
   const pool = getPool();
 
   const result = await pool.query<MemberRow>(
@@ -154,6 +183,32 @@ export async function getOrCreateMember(
   }
 
   return created;
+}
+
+export async function getOrCreateMember(
+  userId: string,
+  signup: WaitlistSignup,
+): Promise<MemberProfile> {
+  const existing = await getMemberByUserId(userId);
+  if (existing) {
+    return existing;
+  }
+
+  return insertMemberFromSeed(userId, seedFromWaitlist(signup));
+}
+
+export async function getOrCreateMemberForUser(
+  userId: string,
+  user: { email: string; name?: string | null },
+): Promise<MemberProfile> {
+  const existing = await getMemberByUserId(userId);
+  if (existing) {
+    return existing;
+  }
+
+  const signup = await getWaitlistSignupByEmail(user.email);
+  const seed = signup ? seedFromWaitlist(signup) : seedFromAuthUser(user);
+  return insertMemberFromSeed(userId, seed);
 }
 
 function parseSkillsInput(raw: unknown): string[] | undefined {

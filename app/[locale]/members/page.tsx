@@ -9,7 +9,6 @@ import { searchMembers } from "@/lib/members";
 import { toPublicMemberProfile } from "@/lib/members/shared";
 import { getTeamByUserId } from "@/lib/teams";
 import { getPendingInviteUserIdsForTeam } from "@/lib/teams/invites";
-import { getWaitlistSignupByEmail } from "@/lib/waitlist-admin";
 
 type MembersPageProps = {
   params: Promise<{ locale: string }>;
@@ -46,11 +45,6 @@ export default async function MembersPage({ params, searchParams }: MembersPageP
 
   if (!email || !userId) {
     redirect(localizedPath(locale, "/login"));
-  }
-
-  const signup = await getWaitlistSignupByEmail(email);
-  if (!signup) {
-    redirect(`${localizedPath(locale, "/login")}?error=not_registered`);
   }
 
   const [result, myTeam] = await Promise.all([

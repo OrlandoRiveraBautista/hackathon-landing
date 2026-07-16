@@ -4,9 +4,8 @@ import { TeamScreen } from "@/components/TeamScreen";
 import { getSession } from "@/lib/auth/session";
 import { getDictionary } from "@/lib/dictionaries";
 import { isLocale, localizedPath } from "@/lib/i18n";
-import { getOrCreateMember } from "@/lib/members";
+import { getOrCreateMemberForUser } from "@/lib/members";
 import { getTeamByUserId } from "@/lib/teams";
-import { getWaitlistSignupByEmail } from "@/lib/waitlist-admin";
 
 type TeamPageProps = {
   params: Promise<{ locale: string }>;
@@ -41,13 +40,11 @@ export default async function TeamPage({ params }: TeamPageProps) {
     redirect(localizedPath(locale, "/login"));
   }
 
-  const signup = await getWaitlistSignupByEmail(email);
-  if (!signup) {
-    redirect(`${localizedPath(locale, "/login")}?error=not_registered`);
-  }
-
   const [member, team] = await Promise.all([
-    getOrCreateMember(userId, signup),
+    getOrCreateMemberForUser(userId, {
+      email,
+      name: session.user.name,
+    }),
     getTeamByUserId(userId),
   ]);
 

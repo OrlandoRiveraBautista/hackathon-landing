@@ -5,7 +5,6 @@ import { getSession } from "@/lib/auth/session";
 import { getDictionary } from "@/lib/dictionaries";
 import { isLocale, localizedPath } from "@/lib/i18n";
 import { getPendingInvitesForUser } from "@/lib/teams/invites";
-import { getWaitlistSignupByEmail } from "@/lib/waitlist-admin";
 
 type NotificationsPageProps = {
   params: Promise<{ locale: string }>;
@@ -38,11 +37,6 @@ export default async function NotificationsPage({ params }: NotificationsPagePro
 
   if (!email || !userId) {
     redirect(localizedPath(locale, "/login"));
-  }
-
-  const signup = await getWaitlistSignupByEmail(email);
-  if (!signup) {
-    redirect(`${localizedPath(locale, "/login")}?error=not_registered`);
   }
 
   const invites = await getPendingInvitesForUser(userId);

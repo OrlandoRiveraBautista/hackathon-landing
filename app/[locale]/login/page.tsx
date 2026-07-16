@@ -6,7 +6,6 @@ import { resolveSafeRedirect } from "@/lib/auth/redirect";
 import { getSession } from "@/lib/auth/session";
 import { getDictionary } from "@/lib/dictionaries";
 import { isLocale, localizedPath, memberHomePath } from "@/lib/i18n";
-import { getWaitlistSignupByEmail } from "@/lib/waitlist-admin";
 
 type LoginPageProps = {
   params: Promise<{ locale: string }>;
@@ -58,10 +57,7 @@ async function LoginPageInner({ params, searchParams }: LoginPageProps) {
   const nextPath = resolveSafeRedirect(next, defaultNext);
 
   if (!error && session?.user?.email) {
-    const signup = await getWaitlistSignupByEmail(session.user.email);
-    if (signup) {
-      redirect(nextPath);
-    }
+    redirect(nextPath);
   }
 
   return (

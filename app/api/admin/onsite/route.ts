@@ -3,6 +3,7 @@ import { getSession } from "@/lib/auth/session";
 import { canAccessAdmin } from "@/lib/auth/roles";
 import {
   announceOnsiteSelection,
+  getOnsiteAdminSnapshot,
   ONSITE_CAPACITY,
   resetOnsiteSelection,
   runOnsiteLottery,
@@ -15,6 +16,29 @@ async function requireAdmin() {
   }
 
   return session;
+}
+
+export async function GET() {
+  const session = await requireAdmin();
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
+  }
+
+  try {
+    const snapshot = await getOnsiteAdminSnapshot();
+    return NextResponse.json(snapshot);
+  } catch (error) {
+    console.error("On-site admin read failed:", error);
+    return NextResponse.json(
+      {
+        error:
+          error instanceof Error
+            ? error.message
+            : "Failed to load on-site admin snapshot.",
+      },
+      { status: 500 },
+    );
+  }
 }
 
 export async function POST(request: Request) {
@@ -56,7 +80,12 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("On-site admin action failed:", error);
     return NextResponse.json(
-      { error: "On-site admin action failed." },
+      {
+        error:
+          error instanceof Error
+            ? error.message
+            : "On-site admin action failed.",
+      },
       { status: 500 },
     );
   }

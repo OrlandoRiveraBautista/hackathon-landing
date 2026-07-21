@@ -93,10 +93,56 @@ service cloud.firestore {
       return 'onSiteBoostDayIndex' in resource.data
         && resource.data.onSiteBoostDayIndex != request.resource.data.onSiteBoostDayIndex
         && resource.data.onSiteBoostDailyKey != request.resource.data.onSiteBoostDailyKey
-        && onsiteDailyCountBefore() == 100
         && request.resource.data.onSiteBoostDailyCount == 1
-        && !('onSiteBoostCooldownUntil' in request.resource.data)
         && canResetBoostDay();
+    }
+
+    function allowedOnsiteTapFields() {
+      return [
+        'onSiteBoostTapCount',
+        'onSiteBoostDailyKey',
+        'onSiteBoostDailyCount',
+        'onSiteBoostDayIndex',
+        'onSiteBoostCooldownUntil',
+        'onSiteInterested',
+        'onSiteInterestedAt',
+      ];
+    }
+
+    function onsiteCooldownBlocksTap() {
+      return ('onSiteBoostCooldownUntil' in resource.data)
+        && resource.data.onSiteBoostCooldownUntil > request.time
+        && (
+          !('onSiteBoostDailyKey' in resource.data)
+          || !('onSiteBoostDailyKey' in request.resource.data)
+          || resource.data.onSiteBoostDailyKey == request.resource.data.onSiteBoostDailyKey
+        );
+    }
+
+    function isOnsiteInterestClaimValid() {
+      return !request.resource.data.diff(resource.data).affectedKeys().hasAny([
+        'onSiteInterested',
+        'onSiteInterestedAt',
+      ])
+        || (
+          request.resource.data.onSiteInterested == true
+          && (!('onSiteInterested' in resource.data) || resource.data.onSiteInterested != true)
+        );
+    }
+
+    function isOnsiteCooldownChangeValid() {
+      return !request.resource.data.diff(resource.data).affectedKeys().hasAny(['onSiteBoostCooldownUntil'])
+        || (
+          'onSiteBoostCooldownUntil' in request.resource.data
+          && request.resource.data.onSiteBoostCooldownUntil > request.time
+        )
+        || (
+          !('onSiteBoostCooldownUntil' in request.resource.data)
+          && (
+            !('onSiteBoostCooldownUntil' in resource.data)
+            || resource.data.onSiteBoostCooldownUntil <= request.time
+          )
+        );
     }
 
     function isBoostTapShapeValid() {
@@ -115,38 +161,11 @@ service cloud.firestore {
 
     function isOnSiteTapUpdate() {
       return waitlistCoreFieldsUnchanged()
-          && !onsiteCooldownActive()
+          && !onsiteCooldownBlocksTap()
           && isBoostTapShapeValid()
-          && (
-            request.resource.data.diff(resource.data).affectedKeys().hasOnly([
-              'onSiteBoostTapCount',
-              'onSiteBoostDailyKey',
-              'onSiteBoostDailyCount',
-              'onSiteBoostDayIndex'
-            ])
-            ||
-            request.resource.data.diff(resource.data).affectedKeys().hasOnly([
-              'onSiteBoostTapCount',
-              'onSiteBoostDailyKey',
-              'onSiteBoostDailyCount',
-              'onSiteBoostDayIndex',
-              'onSiteBoostCooldownUntil'
-            ])
-            ||
-            (
-              request.resource.data.diff(resource.data).affectedKeys().hasOnly([
-                'onSiteInterested',
-                'onSiteInterestedAt',
-                'onSiteBoostTapCount',
-                'onSiteBoostDailyKey',
-                'onSiteBoostDailyCount',
-                'onSiteBoostDayIndex'
-              ])
-              && request.resource.data.onSiteInterested == true
-              && (!('onSiteInterested' in resource.data) || resource.data.onSiteInterested != true)
-              && isFirstBoostTap()
-            )
-          );
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(allowedOnsiteTapFields())
+          && isOnsiteInterestClaimValid()
+          && isOnsiteCooldownChangeValid();
     }
 
     function isShirtSizeUpdate() {

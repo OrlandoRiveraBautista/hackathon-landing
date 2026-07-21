@@ -12,12 +12,29 @@ import {
   type DocumentData,
 } from "firebase/firestore";
 import { getDb } from "./firebase";
+import {
+  ONSITE_BOOST_DAILY_TAP_LIMIT,
+  ONSITE_CAPACITY,
+  normalizeOnsiteStatus,
+  pickOnsiteLotteryParticipants,
+  type OnsiteParticipant,
+  type OnsiteStatus,
+} from "./onsite/shared";
 
-export const ONSITE_CAPACITY = 30;
-export const ONSITE_INTEREST_WEIGHT = 3;
-export const ONSITE_BOOST_DAILY_TAP_LIMIT = 100;
-export const ONSITE_BOOST_LOTTERY_TAP_CAP = 1000;
-export const ONSITE_BOOST_TIMEZONE = "America/Matamoros";
+export {
+  clampOnsiteBoostTapCount,
+  getOnsiteLotteryWeight,
+  isOnsiteBoostOpen,
+  normalizeOnsiteStatus,
+  ONSITE_BOOST_DAILY_TAP_LIMIT,
+  ONSITE_BOOST_LOTTERY_TAP_CAP,
+  ONSITE_CAPACITY,
+  ONSITE_INTEREST_WEIGHT,
+  ONSITE_STATUSES,
+  pickOnsiteLotteryParticipants,
+  type OnsiteParticipant,
+  type OnsiteStatus,
+} from "./onsite/shared";
 
 export class OnsiteBoostDailyLimitError extends Error {
   readonly resetsAt: Date;
@@ -29,9 +46,7 @@ export class OnsiteBoostDailyLimitError extends Error {
   }
 }
 
-export function clampOnsiteBoostTapCount(tapCount: number): number {
-  return Math.min(Math.max(0, tapCount), ONSITE_BOOST_LOTTERY_TAP_CAP);
-}
+const ONSITE_BOOST_TIMEZONE = "America/Matamoros";
 
 type BoostDayParts = {
   year: number;
@@ -165,38 +180,46 @@ export function getBoostDailyStatus(
   };
 }
 
-export const ONSITE_STATUSES = ["pending", "selected", "remote"] as const;
-export type OnsiteStatus = (typeof ONSITE_STATUSES)[number];
-
-export function normalizeOnsiteStatus(value: unknown): OnsiteStatus {
-  return typeof value === "string" &&
-    ONSITE_STATUSES.includes(value as OnsiteStatus)
-    ? (value as OnsiteStatus)
-    : "pending";
-}
-
 export type OnsiteSelectionConfig = {
   announced: boolean;
   capacity: number;
   selectedAt: Date | null;
   lotteryRunAt: Date | null;
+  lotteryPreview: OnsiteLotteryPreview | null;
 };
 
-export type OnsiteParticipant = {
+export type OnsiteLotteryPreviewParticipant = {
   id: string;
   name: string;
+  email: string;
   school: string;
   github: string;
-  onSiteInterested: boolean;
+  isPlatformMember: boolean;
   onSiteBoostTapCount: number;
-  onSiteStatus: OnsiteStatus;
+  onSiteInterested: boolean;
+  hasWaitlistDoc: boolean;
 };
 
-export type OnsiteSelectionSnapshot = {
-  config: OnsiteSelectionConfig;
-  selected: OnsiteParticipant[];
+export type OnsiteLotteryPreview = {
+  selected: OnsiteLotteryPreviewParticipant[];
+  remote: OnsiteLotteryPreviewParticipant[];
+  guaranteedMemberCount: number;
+  lotteryWinnerCount: number;
+  platformMemberInPool: number;
+  platformMemberTotal: number;
+  waitlistOnlyInPool: number;
+  duplicateMembersExcluded: string[];
+  shadowWaitlistDropped: Array<{ email: string; memberEmail: string }>;
+};
+
+export type OnsiteAdminSnapshot = {
+  announced: boolean;
+  capacity: number;
+  selectedAt: string | null;
+  lotteryRunAt: string | null;
   interestedCount: number;
   waitlistCount: number;
+  preview: OnsiteLotteryPreview | null;
 };
 
 const CONFIG_PATH = ["config", "onsite-selection"] as const;
@@ -214,21 +237,12 @@ function mapParticipant(id: string, data: DocumentData): OnsiteParticipant {
   };
 }
 
-/** Lottery weight: 1 for everyone else; boosted users start at 3× and gain +1 per extra tap. */
-export function getOnsiteLotteryWeight(participant: OnsiteParticipant): number {
-  const taps =
-    participant.onSiteBoostTapCount > 0
-      ? clampOnsiteBoostTapCount(participant.onSiteBoostTapCount)
-      : participant.onSiteInterested
-        ? 1
-        : 0;
-
-  if (taps <= 0) {
-    return 1;
-  }
-
-  return ONSITE_INTEREST_WEIGHT + taps - 1;
-}
+export type OnsiteSelectionSnapshot = {
+  config: OnsiteSelectionConfig;
+  selected: OnsiteParticipant[];
+  interestedCount: number;
+  waitlistCount: number;
+};
 
 function defaultConfig(): OnsiteSelectionConfig {
   return {
@@ -236,6 +250,114 @@ function defaultConfig(): OnsiteSelectionConfig {
     capacity: ONSITE_CAPACITY,
     selectedAt: null,
     lotteryRunAt: null,
+    lotteryPreview: null,
+  };
+}
+
+function mapPreviewParticipant(
+  value: unknown,
+): OnsiteLotteryPreviewParticipant | null {
+  if (!value || typeof value !== "object") {
+    return null;
+  }
+
+  const data = value as Record<string, unknown>;
+  if (typeof data.id !== "string" || typeof data.name !== "string") {
+    return null;
+  }
+
+  return {
+    id: data.id,
+    name: data.name,
+    email: typeof data.email === "string" ? data.email : "",
+    school: typeof data.school === "string" ? data.school : "",
+    github: typeof data.github === "string" ? data.github : "",
+    isPlatformMember: data.isPlatformMember === true,
+    onSiteBoostTapCount:
+      typeof data.onSiteBoostTapCount === "number" ? data.onSiteBoostTapCount : 0,
+    onSiteInterested: data.onSiteInterested === true,
+    hasWaitlistDoc: data.hasWaitlistDoc === true,
+  };
+}
+
+function mapLotteryPreview(value: unknown): OnsiteLotteryPreview | null {
+  if (!value || typeof value !== "object") {
+    return null;
+  }
+
+  const data = value as Record<string, unknown>;
+  const selected = Array.isArray(data.selected)
+    ? data.selected
+        .map(mapPreviewParticipant)
+        .filter((participant): participant is OnsiteLotteryPreviewParticipant =>
+          participant !== null,
+        )
+    : [];
+  const remote = Array.isArray(data.remote)
+    ? data.remote
+        .map(mapPreviewParticipant)
+        .filter((participant): participant is OnsiteLotteryPreviewParticipant =>
+          participant !== null,
+        )
+    : [];
+
+  if (selected.length === 0) {
+    return null;
+  }
+
+  return {
+    selected,
+    remote,
+    guaranteedMemberCount:
+      typeof data.guaranteedMemberCount === "number" ? data.guaranteedMemberCount : 0,
+    lotteryWinnerCount:
+      typeof data.lotteryWinnerCount === "number" ? data.lotteryWinnerCount : 0,
+    platformMemberInPool:
+      typeof data.platformMemberInPool === "number" ? data.platformMemberInPool : 0,
+    platformMemberTotal:
+      typeof data.platformMemberTotal === "number" ? data.platformMemberTotal : 0,
+    waitlistOnlyInPool:
+      typeof data.waitlistOnlyInPool === "number" ? data.waitlistOnlyInPool : 0,
+    duplicateMembersExcluded: Array.isArray(data.duplicateMembersExcluded)
+      ? data.duplicateMembersExcluded.filter(
+          (email): email is string => typeof email === "string",
+        )
+      : [],
+    shadowWaitlistDropped: Array.isArray(data.shadowWaitlistDropped)
+      ? data.shadowWaitlistDropped
+          .map((entry) => {
+            if (!entry || typeof entry !== "object") {
+              return null;
+            }
+
+            const record = entry as Record<string, unknown>;
+            if (
+              typeof record.email !== "string" ||
+              typeof record.memberEmail !== "string"
+            ) {
+              return null;
+            }
+
+            return {
+              email: record.email,
+              memberEmail: record.memberEmail,
+            };
+          })
+          .filter((entry): entry is { email: string; memberEmail: string } => entry !== null)
+      : [],
+  };
+}
+
+function mapConfig(data: DocumentData): OnsiteSelectionConfig {
+  return {
+    announced: data.announced === true,
+    capacity:
+      typeof data.capacity === "number" && data.capacity > 0
+        ? data.capacity
+        : ONSITE_CAPACITY,
+    selectedAt: data.selectedAt?.toDate?.() ?? null,
+    lotteryRunAt: data.lotteryRunAt?.toDate?.() ?? null,
+    lotteryPreview: mapLotteryPreview(data.lotteryPreview),
   };
 }
 
@@ -247,14 +369,23 @@ export async function getOnsiteSelectionConfig(): Promise<OnsiteSelectionConfig>
   }
 
   const data = snapshot.data();
+  return mapConfig(data);
+}
+
+export async function getOnsiteAdminSnapshot(): Promise<OnsiteAdminSnapshot> {
+  const [config, snapshot] = await Promise.all([
+    getOnsiteSelectionConfig(),
+    getOnsiteSelectionSnapshot(),
+  ]);
+
   return {
-    announced: data.announced === true,
-    capacity:
-      typeof data.capacity === "number" && data.capacity > 0
-        ? data.capacity
-        : ONSITE_CAPACITY,
-    selectedAt: data.selectedAt?.toDate?.() ?? null,
-    lotteryRunAt: data.lotteryRunAt?.toDate?.() ?? null,
+    announced: config.announced,
+    capacity: config.capacity,
+    selectedAt: config.selectedAt?.toISOString() ?? null,
+    lotteryRunAt: config.lotteryRunAt?.toISOString() ?? null,
+    interestedCount: snapshot.interestedCount,
+    waitlistCount: snapshot.waitlistCount,
+    preview: config.lotteryPreview,
   };
 }
 
@@ -268,9 +399,16 @@ export async function getOnsiteSelectionSnapshot(): Promise<OnsiteSelectionSnaps
     mapParticipant(entry.id, entry.data()),
   );
 
-  const selected = participants
+  const waitlistSelected = participants
     .filter((participant) => participant.onSiteStatus === "selected")
     .sort((a, b) => a.name.localeCompare(b.name, "es"));
+
+  const selected =
+    config.announced && config.lotteryPreview
+      ? config.lotteryPreview.selected
+          .map((preview) => participantFromPreview(preview))
+          .sort((a, b) => a.name.localeCompare(b.name, "es"))
+      : waitlistSelected;
 
   return {
     config,
@@ -369,49 +507,11 @@ export async function markOnsiteInterested(docId: string) {
   });
 }
 
-export function pickWeightedOnsiteParticipants(
-  participants: OnsiteParticipant[],
-  capacity: number,
-  random: () => number = Math.random,
-): { selected: OnsiteParticipant[]; remote: OnsiteParticipant[] } {
-  const pool = [...participants];
-  const selected: OnsiteParticipant[] = [];
-
-  while (selected.length < capacity && pool.length > 0) {
-    const weights = pool.map((participant) => getOnsiteLotteryWeight(participant));
-    const totalWeight = weights.reduce((sum, weight) => sum + weight, 0);
-    let threshold = random() * totalWeight;
-
-    let index = 0;
-    for (let i = 0; i < pool.length; i += 1) {
-      threshold -= weights[i];
-      if (threshold <= 0) {
-        index = i;
-        break;
-      }
-    }
-
-    selected.push(pool[index]);
-    pool.splice(index, 1);
-  }
-
-  const selectedIds = new Set(selected.map((participant) => participant.id));
-  const remote = participants.filter((participant) => !selectedIds.has(participant.id));
-
-  return { selected, remote };
-}
-
-export async function runOnsiteLottery(capacity = ONSITE_CAPACITY) {
-  const snapshot = await getDocs(query(collection(getDb(), "waitlist")));
-  const participants = snapshot.docs.map((entry) =>
-    mapParticipant(entry.id, entry.data()),
-  );
-
-  const { selected, remote } = pickWeightedOnsiteParticipants(
-    participants,
-    capacity,
-  );
-
+export async function persistOnsiteLotteryResult(
+  selected: OnsiteParticipant[],
+  remote: OnsiteParticipant[],
+  capacity = ONSITE_CAPACITY,
+) {
   await Promise.all([
     ...selected.map((participant) =>
       updateDoc(doc(getDb(), "waitlist", participant.id), {
@@ -428,23 +528,134 @@ export async function runOnsiteLottery(capacity = ONSITE_CAPACITY) {
     setDoc(
       doc(getDb(), ...CONFIG_PATH),
       {
-        announced: false,
         capacity,
-        lotteryRunAt: serverTimestamp(),
       },
       { merge: true },
     ),
   ]);
+}
+
+function previewParticipantFromCandidate(
+  candidate: Awaited<
+    ReturnType<
+      typeof import("./onsite-lottery-pool.server").buildOnsiteLotteryPool
+    >
+  >["eligible"][number],
+): OnsiteLotteryPreviewParticipant {
+  return {
+    id: candidate.id,
+    name: candidate.name,
+    email: candidate.email,
+    school: candidate.school,
+    github: candidate.github,
+    isPlatformMember: candidate.isPlatformMember,
+    onSiteBoostTapCount: candidate.onSiteBoostTapCount,
+    onSiteInterested: candidate.onSiteInterested,
+    hasWaitlistDoc: candidate.hasWaitlistDoc,
+  };
+}
+
+function participantFromPreview(
+  preview: OnsiteLotteryPreviewParticipant,
+): OnsiteParticipant {
+  return {
+    id: preview.id,
+    name: preview.name,
+    school: preview.school,
+    github: preview.github,
+    onSiteInterested: preview.onSiteInterested,
+    onSiteBoostTapCount: preview.onSiteBoostTapCount,
+    onSiteStatus: "pending",
+  };
+}
+
+function candidateFromPreview(
+  preview: OnsiteLotteryPreviewParticipant,
+): import("./onsite-lottery-pool.server").OnsiteLotteryCandidate {
+  return {
+    ...participantFromPreview(preview),
+    email: preview.email,
+    hasWaitlistDoc: preview.hasWaitlistDoc,
+    isPlatformMember: preview.isPlatformMember,
+    phone: null,
+    age: null,
+    sex: null,
+  };
+}
+
+async function saveOnsiteLotteryPreview(
+  preview: OnsiteLotteryPreview,
+  capacity: number,
+) {
+  await setDoc(
+    doc(getDb(), ...CONFIG_PATH),
+    {
+      announced: false,
+      capacity,
+      lotteryRunAt: serverTimestamp(),
+      lotteryPreview: preview,
+    },
+    { merge: true },
+  );
+}
+
+export async function runOnsiteLottery(capacity = ONSITE_CAPACITY) {
+  const { buildOnsiteLotteryPool } = await import("./onsite-lottery-pool.server");
+
+  const pool = await buildOnsiteLotteryPool();
+  const { selected, remote, guaranteedMembers, lotterySelected } =
+    pickOnsiteLotteryParticipants(pool.eligible, capacity);
+
+  const preview: OnsiteLotteryPreview = {
+    selected: selected.map(previewParticipantFromCandidate),
+    remote: remote.map(previewParticipantFromCandidate),
+    guaranteedMemberCount: guaranteedMembers.length,
+    lotteryWinnerCount: lotterySelected.length,
+    platformMemberInPool: pool.stats.platformMemberInPool,
+    platformMemberTotal: pool.stats.platformMemberTotal,
+    waitlistOnlyInPool:
+      pool.stats.eligibleTotal - pool.stats.platformMemberInPool,
+    duplicateMembersExcluded: pool.duplicateMembersExcluded.map(
+      (entry) => entry.email,
+    ),
+    shadowWaitlistDropped: pool.shadowWaitlistDropped.map((entry) => ({
+      email: entry.email,
+      memberEmail: entry.memberEmail,
+    })),
+  };
+
+  await saveOnsiteLotteryPreview(preview, capacity);
 
   return {
-    selectedCount: selected.length,
-    remoteCount: remote.length,
-    interestedSelected: selected.filter((participant) => participant.onSiteInterested)
+    selectedCount: preview.selected.length,
+    remoteCount: preview.remote.length,
+    interestedSelected: preview.selected.filter((participant) => participant.onSiteInterested)
       .length,
+    guaranteedMemberCount: preview.guaranteedMemberCount,
+    lotteryWinnerCount: preview.lotteryWinnerCount,
+    platformMemberInPool: preview.platformMemberInPool,
+    platformMemberTotal: preview.platformMemberTotal,
+    selected: preview.selected,
+    preview,
   };
 }
 
 export async function announceOnsiteSelection() {
+  const config = await getOnsiteSelectionConfig();
+  if (!config.lotteryPreview) {
+    throw new Error("Run the lottery before announcing results.");
+  }
+
+  const { ensureWaitlistDocsForCandidates } = await import(
+    "./onsite-lottery-pool.server"
+  );
+  const preview = config.lotteryPreview;
+  const selected = preview.selected.map(participantFromPreview);
+  const remote = preview.remote.map(participantFromPreview);
+  const candidates = [...preview.selected, ...preview.remote].map(candidateFromPreview);
+
+  await ensureWaitlistDocsForCandidates(candidates);
+  await persistOnsiteLotteryResult(selected, remote, config.capacity);
   await setDoc(
     doc(getDb(), ...CONFIG_PATH),
     {
@@ -479,6 +690,7 @@ export async function resetOnsiteSelection() {
         capacity: ONSITE_CAPACITY,
         selectedAt: null,
         lotteryRunAt: null,
+        lotteryPreview: deleteField(),
       },
       { merge: true },
     ),

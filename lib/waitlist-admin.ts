@@ -9,7 +9,7 @@ import {
 } from "firebase/firestore";
 import { getDb } from "./firebase";
 import { waitlistDocIdForEmail } from "./waitlist";
-import { normalizeOnsiteStatus, type OnsiteStatus } from "./onsite-selection";
+import { normalizeOnsiteStatus, type OnsiteStatus } from "./onsite/shared";
 import { normalizeWaitlistStatus, type WaitlistStatus } from "./waitlist-status";
 import type { SexOption } from "./waitlist";
 import type { ShirtSize } from "./shirt-size";

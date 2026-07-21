@@ -2,7 +2,7 @@
 
 import { motion } from "motion/react";
 import { Loader2 } from "lucide-react";
-import { ONSITE_CAPACITY } from "@/lib/onsite-selection";
+import { ONSITE_CAPACITY } from "@/lib/onsite/shared";
 import { montserrat, outfit } from "@/lib/theme";
 
 type OnsiteListLabels = {
@@ -18,8 +18,6 @@ type OnsiteListLabels = {
 
 type OnsiteParticipantRow = {
   name: string;
-  school: string | null;
-  github: string | null;
 };
 
 const SKELETON_WIDTHS = [
@@ -41,8 +39,6 @@ function shimmerClass(delayMs: number) {
 
 function SkeletonRow({ index }: { index: number }) {
   const nameWidth = SKELETON_WIDTHS[index % SKELETON_WIDTHS.length];
-  const schoolWidth = SKELETON_WIDTHS[(index + 3) % SKELETON_WIDTHS.length];
-  const githubWidth = SKELETON_WIDTHS[(index + 5) % SKELETON_WIDTHS.length];
   const delay = index * 45;
 
   return (
@@ -67,18 +63,6 @@ function SkeletonRow({ index }: { index: number }) {
           />
         </div>
       </td>
-      <td className="hidden px-5 py-3.5 sm:table-cell">
-        <div
-          className={`platform-skeleton h-3 rounded-full ${schoolWidth}`}
-          style={shimmerClass(delay + 120)}
-        />
-      </td>
-      <td className="hidden px-5 py-3.5 md:table-cell">
-        <div
-          className={`platform-skeleton h-3 rounded-full ${githubWidth}`}
-          style={shimmerClass(delay + 160)}
-        />
-      </td>
     </tr>
   );
 }
@@ -99,22 +83,10 @@ function ListHeader({
         <th className="px-5 py-3.5 text-left" style={{ fontFamily: montserrat }}>
           {labels.tableName}
         </th>
-        <th
-          className="hidden px-5 py-3.5 text-left sm:table-cell"
-          style={{ fontFamily: montserrat }}
-        >
-          {labels.tableSchool}
-        </th>
-        <th
-          className="hidden px-5 py-3.5 text-left md:table-cell"
-          style={{ fontFamily: montserrat }}
-        >
-          {labels.tableGithub}
-        </th>
       </tr>
       {comingSoon && (
         <tr>
-          <td colSpan={4} className="border-b border-[#aaff00]/15 bg-[#aaff00]/[0.04] px-5 py-3">
+          <td colSpan={2} className="border-b border-[#aaff00]/15 bg-[#aaff00]/[0.04] px-5 py-3">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div className="flex items-center gap-3">
                 <span
@@ -167,7 +139,7 @@ export function OnsiteComingSoonList({ labels }: { labels: OnsiteListLabels }) {
       />
 
       <div className="relative max-h-[min(70vh,640px)] overflow-y-auto overflow-x-auto">
-        <table className="w-full min-w-[480px] text-left text-sm">
+        <table className="w-full min-w-[320px] text-left text-sm">
           <ListHeader labels={labels} comingSoon />
           <tbody>
             {Array.from({ length: ONSITE_CAPACITY }, (_, index) => (
@@ -197,10 +169,7 @@ export function OnsiteAnnouncedList({
   participants,
   subtitle,
 }: {
-  labels: Pick<
-    OnsiteListLabels,
-    "tableRank" | "tableName" | "tableSchool" | "tableGithub"
-  >;
+  labels: Pick<OnsiteListLabels, "tableRank" | "tableName">;
   participants: OnsiteParticipantRow[];
   subtitle: string;
 }) {
@@ -218,10 +187,12 @@ export function OnsiteAnnouncedList({
       </div>
 
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[480px] text-left text-sm">
+        <table className="w-full min-w-[320px] text-left text-sm">
           <ListHeader
             labels={{
               ...labels,
+              tableSchool: "",
+              tableGithub: "",
               listComingSoonBadge: "",
               pendingTitle: "",
               listLoadingHint: "",
@@ -258,26 +229,6 @@ export function OnsiteAnnouncedList({
                       {participant.name}
                     </span>
                   </div>
-                </td>
-                <td
-                  className="hidden px-5 py-4 text-white/55 sm:table-cell"
-                  style={{ fontFamily: outfit }}
-                >
-                  {participant.school || "—"}
-                </td>
-                <td className="hidden px-5 py-4 md:table-cell" style={{ fontFamily: outfit }}>
-                  {participant.github ? (
-                    <a
-                      href={`https://github.com/${participant.github}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-[#aaff00] transition-opacity hover:opacity-80"
-                    >
-                      @{participant.github}
-                    </a>
-                  ) : (
-                    "—"
-                  )}
                 </td>
               </tr>
             ))}

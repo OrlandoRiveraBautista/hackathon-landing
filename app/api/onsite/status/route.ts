@@ -5,6 +5,7 @@ import { defaultLocale, isLocale } from "@/lib/i18n";
 import {
   getOnsiteSelectionConfig,
   getOnsiteStatusForDocId,
+  isOnsiteBoostOpen,
   OnsiteBoostDailyLimitError,
   recordOnsiteBoostTap,
 } from "@/lib/onsite-selection";
@@ -46,9 +47,10 @@ export async function GET(request: Request) {
 
   return NextResponse.json({
     announced: config.announced,
+    boostOpen: isOnsiteBoostOpen(config),
     onSiteInterested: status.onSiteInterested,
     onSiteInterestedAt: status.onSiteInterestedAt?.toISOString() ?? null,
-    onSiteStatus: status.onSiteStatus,
+    onSiteStatus: config.announced ? status.onSiteStatus : "pending",
     onSiteBoostTapCount: status.onSiteBoostTapCount,
     dailyTapCount: status.boostDaily.dailyTapCount,
     dailyTapLimit: status.boostDaily.dailyTapLimit,
@@ -79,7 +81,7 @@ export async function POST(request: Request) {
   }
 
   const config = await getOnsiteSelectionConfig();
-  if (config.announced) {
+  if (!isOnsiteBoostOpen(config)) {
     return NextResponse.json(
       { error: dictionary.onsiteSelection.errors.selectionClosed },
       { status: 409 },

@@ -9,10 +9,11 @@ import {
   clampOnsiteBoostTapCount,
   getOnsiteLotteryWeight,
   type OnsiteParticipant,
-} from "@/lib/onsite-selection";
+} from "@/lib/onsite/shared";
 
 type SelectionPreview = {
   announced: boolean;
+  boostOpen: boolean;
   selectedCount: number;
   interestedCount: number;
   waitlistCount: number;
@@ -63,6 +64,7 @@ export function MemberOnsiteBanner() {
           const data = await selectionRes.json();
           setSelection({
             announced: data.announced === true,
+            boostOpen: data.boostOpen === true,
             selectedCount:
               typeof data.selectedCount === "number"
                 ? data.selectedCount
@@ -123,6 +125,7 @@ export function MemberOnsiteBanner() {
   const taps = userStatus?.onSiteBoostTapCount ?? 0;
   const weight = getDrawWeight(taps, boosted);
   const announced = selection.announced;
+  const boostOpen = selection.boostOpen;
   const selected = userStatus?.onSiteStatus === "selected";
   const remote = userStatus?.onSiteStatus === "remote";
 
@@ -154,7 +157,7 @@ export function MemberOnsiteBanner() {
       .replace("{count}", String(selection.selectedCount))
       .replace("{waitlist}", String(selection.waitlistCount));
     accent = selected || !remote;
-  } else if (boosted) {
+  } else if (boosted && boostOpen) {
     title = copy.titleBoosted;
     body = copy.bodyBoosted
       .replace("{taps}", String(taps))

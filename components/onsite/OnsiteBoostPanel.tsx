@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { ArrowRight, Zap } from "lucide-react";
 import { BoostButton } from "@/components/onsite/BoostButton";
-import { clampOnsiteBoostTapCount } from "@/lib/onsite-selection";
+import { clampOnsiteBoostTapCount } from "@/lib/onsite/shared";
 import { montserrat, outfit } from "@/lib/theme";
 
 type OnsiteBoostPanelProps = {

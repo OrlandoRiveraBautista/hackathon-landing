@@ -11,8 +11,12 @@ export function getPool() {
       );
     }
 
-    globalForDb.pool = new Pool({ connectionString });
+    globalForDb.pool = new Pool({
+      connectionString,
+      connectionTimeoutMillis: 10_000,
+    });
   }
 
   return globalForDb.pool;
 }
+

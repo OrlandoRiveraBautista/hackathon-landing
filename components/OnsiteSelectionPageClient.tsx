@@ -20,18 +20,17 @@ import {
   memberLoginPath,
   onsiteSelectionPath,
 } from "@/lib/i18n";
-import { ONSITE_BOOST_DAILY_TAP_LIMIT } from "@/lib/onsite-selection";
+import { ONSITE_BOOST_DAILY_TAP_LIMIT } from "@/lib/onsite/shared";
 import { montserrat, outfit } from "@/lib/theme";
 
 type SelectionResponse = {
   announced: boolean;
+  boostOpen: boolean;
   capacity: number;
   interestedCount: number;
   waitlistCount: number;
   selected: Array<{
     name: string;
-    school: string | null;
-    github: string | null;
   }>;
 };
 
@@ -150,7 +149,7 @@ export function OnsiteSelectionPageClient() {
   }, [copy.loadFailed, locale]);
 
   function recordBoostTap() {
-    if (dailyLimitReached) return;
+    if (!selection?.boostOpen || dailyLimitReached) return;
 
     setBoostTapCount((count) => count + 1);
     setDailyTapCount((count) => count + 1);
@@ -170,6 +169,12 @@ export function OnsiteSelectionPageClient() {
             if (typeof data.cooldownUntil === "string") {
               setCooldownUntil(data.cooldownUntil);
             }
+            return;
+          }
+          if (response.status === 409) {
+            setBoostTapCount((count) => Math.max(0, count - 1));
+            setDailyTapCount((count) => Math.max(0, count - 1));
+            setError(data.error ?? copy.errors.selectionClosed);
             return;
           }
           throw new Error(data.error ?? copy.errors.generic);
@@ -263,6 +268,7 @@ export function OnsiteSelectionPageClient() {
   }
 
   const announced = selection?.announced ?? false;
+  const boostOpen = selection?.boostOpen ?? false;
   const interested = userStatus?.onSiteInterested || boostDone;
 
   const listLabels = {
@@ -351,6 +357,8 @@ export function OnsiteSelectionPageClient() {
 
         {!announced && (
           <section className="mt-10 space-y-6 sm:mt-12">
+            {boostOpen && (
+              <>
             <OnsiteBoostPanel
               eyebrow={copy.boostEyebrow}
               title={copy.boostTitle}
@@ -397,8 +405,10 @@ export function OnsiteSelectionPageClient() {
               signedIn={statusChecked ? userStatus !== null : null}
               loginHref={onsiteLoginPath}
             />
+              </>
+            )}
 
-            {!loading && selection && (
+            {!loading && selection && boostOpen && (
               <motion.div
                 className="grid gap-4 sm:grid-cols-2"
                 initial={{ opacity: 0, y: 12 }}

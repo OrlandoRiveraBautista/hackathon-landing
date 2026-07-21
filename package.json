@@ -13,7 +13,8 @@
     "lint": "eslint",
     "auth:migrate": "better-auth migrate --config lib/auth.ts --yes",
     "db:migrate": "tsx scripts/migrate-db.ts",
-    "email:bulk": "tsx scripts/bulk-email.ts"
+    "email:bulk": "tsx scripts/bulk-email.ts",
+    "onsite:lottery": "tsx scripts/onsite-lottery.ts"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",

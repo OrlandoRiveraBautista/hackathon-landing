@@ -1,4 +1,4 @@
-import type { Pool, PoolClient } from "pg";
+import { Pool, type PoolClient } from "pg";
 import { getPool } from "@/lib/db";
 import type { MemberProfile, MemberProfileUpdate } from "@/lib/members/types";
 import { normalizeGithub } from "@/lib/waitlist";
@@ -479,4 +479,101 @@ export async function searchMembers(
     limit,
     totalPages,
   };
+}
+
+export async function getAllMembers(): Promise<MemberProfile[]> {
+  const pool = getPool();
+  const result = await pool.query<MemberRow>(
+    `${memberSelect}
+     ORDER BY m.name ASC`,
+  );
+
+  return result.rows.map(mapMemberRow);
+}
+
+const LOTTERY_MEMBERS_CONNECTION_TIMEOUT_MS = 15_000;
+const LOTTERY_MEMBERS_MAX_ATTEMPTS = 3;
+
+export type LoadAllMembersResult = {
+  members: MemberProfile[];
+};
+
+function lotteryMemberConnectionStrings(): string[] {
+  const candidates = [
+    process.env.DATABASE_URL,
+    process.env.DATABASE_URL_POOLED,
+  ].filter((value): value is string => Boolean(value?.trim()));
+
+  return [...new Set(candidates)];
+}
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function queryAllMembers(connectionString: string, timeoutMs: number) {
+  const pool = new Pool({
+    connectionString,
+    connectionTimeoutMillis: timeoutMs,
+    max: 1,
+  });
+
+  try {
+    const result = await pool.query<MemberRow>(
+      `${memberSelect}
+       ORDER BY m.name ASC`,
+    );
+
+    return result.rows.map(mapMemberRow);
+  } finally {
+    await pool.end();
+  }
+}
+
+export async function loadAllMembersForLottery(options?: {
+  skip?: boolean;
+  connectionTimeoutMs?: number;
+  maxAttempts?: number;
+}): Promise<LoadAllMembersResult> {
+  if (options?.skip) {
+    return { members: [] };
+  }
+
+  const connectionStrings = lotteryMemberConnectionStrings();
+  if (connectionStrings.length === 0) {
+    throw new Error(
+      "DATABASE_URL is not set. Add your Neon Postgres connection string to .env before running the lottery.",
+    );
+  }
+
+  const timeoutMs =
+    options?.connectionTimeoutMs ?? LOTTERY_MEMBERS_CONNECTION_TIMEOUT_MS;
+  const maxAttempts = options?.maxAttempts ?? LOTTERY_MEMBERS_MAX_ATTEMPTS;
+  const errors: string[] = [];
+
+  for (const connectionString of connectionStrings) {
+    for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+      try {
+        const members = await queryAllMembers(connectionString, timeoutMs);
+        return { members };
+      } catch (error) {
+        const detail =
+          error instanceof Error ? error.message : "Unknown Postgres error";
+        errors.push(`attempt ${attempt}: ${detail}`);
+
+        if (attempt < maxAttempts) {
+          await sleep(attempt * 1_000);
+        }
+      }
+    }
+  }
+
+  throw new Error(
+    [
+      "Could not load platform members from Postgres.",
+      errors.join(" | "),
+      "Check DATABASE_URL (Neon pooled connection string recommended) and network access to port 5432.",
+      "Use --waitlist-only only if you intentionally want to skip platform members.",
+    ].join(" "),
+  );
 }

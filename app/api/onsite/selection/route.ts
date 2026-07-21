@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
-import { getOnsiteSelectionSnapshot } from "@/lib/onsite-selection";
+import {
+  getOnsiteSelectionSnapshot,
+  isOnsiteBoostOpen,
+} from "@/lib/onsite-selection";
 
 export async function GET() {
   try {
@@ -7,6 +10,7 @@ export async function GET() {
 
     return NextResponse.json({
       announced: snapshot.config.announced,
+      boostOpen: isOnsiteBoostOpen(snapshot.config),
       capacity: snapshot.config.capacity,
       selectedAt: snapshot.config.selectedAt?.toISOString() ?? null,
       lotteryRunAt: snapshot.config.lotteryRunAt?.toISOString() ?? null,
@@ -16,8 +20,6 @@ export async function GET() {
       selected: snapshot.config.announced
         ? snapshot.selected.map((participant) => ({
             name: participant.name,
-            school: participant.school || null,
-            github: participant.github || null,
           }))
         : [],
     });

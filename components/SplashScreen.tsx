@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { montserrat, accent } from "@/lib/theme";
 import { prefersReducedMotion } from "@/lib/motion";
 import { PeserosCredit } from "@/components/PeserosCredit";
+import { BrandLogo } from "@/components/BrandLogo";
 
 type SplashScreenProps = {
   /** Called once wipe panels start sliding away — triggers hero animation */
@@ -52,34 +53,6 @@ function LoadingBar({ progress }: { progress: number }) {
         }}
       />
     </div>
-  );
-}
-
-/* ── isometric cube ──────────────────────────────────────────── */
-function IsoCube({ size = 56 }: { size?: number }) {
-  const w = size,
-    h = size * 0.5;
-  return (
-    <svg
-      width={w}
-      height={size * 2}
-      viewBox={`0 0 ${w} ${size * 2}`}
-      fill="none"
-      className="drop-shadow-[0_0_18px_rgba(170,255,0,0.65)]"
-    >
-      <polygon
-        points={`${w / 2},0 ${w},${h / 2} ${w / 2},${h} 0,${h / 2}`}
-        fill="#aaff00"
-      />
-      <polygon
-        points={`${w / 2},${h} ${w},${h / 2} ${w},${h * 1.5} ${w / 2},${h * 2}`}
-        fill="#77cc00"
-      />
-      <polygon
-        points={`0,${h / 2} ${w / 2},${h} ${w / 2},${h * 2} 0,${h * 1.5}`}
-        fill="#55aa00"
-      />
-    </svg>
   );
 }
 
@@ -253,7 +226,11 @@ export function SplashScreen({ onReady, onComplete }: SplashScreenProps) {
       >
         {/* cube */}
         <div ref={cubeRef} className="mb-7" style={{ opacity: 0 }}>
-          <IsoCube size={56} />
+          <BrandLogo
+            size={56}
+            priority
+            imageClassName="shadow-[0_0_18px_rgba(170,255,0,0.65)]"
+          />
         </div>
 
         {/* title */}

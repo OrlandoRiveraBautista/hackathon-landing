@@ -120,10 +120,20 @@ function ListHeader({
   );
 }
 
-export function OnsiteComingSoonList({ labels }: { labels: OnsiteListLabels }) {
+export function OnsiteComingSoonList({
+  labels,
+  embedded = false,
+}: {
+  labels: OnsiteListLabels;
+  embedded?: boolean;
+}) {
   return (
     <motion.div
-      className="relative overflow-hidden rounded-3xl border border-white/10 bg-[#060606]"
+      className={
+        embedded
+          ? "relative overflow-hidden bg-[#060606]"
+          : "relative overflow-hidden rounded-3xl border border-white/10 bg-[#060606]"
+      }
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
@@ -168,14 +178,20 @@ export function OnsiteAnnouncedList({
   labels,
   participants,
   subtitle,
+  embedded = false,
 }: {
   labels: Pick<OnsiteListLabels, "tableRank" | "tableName">;
   participants: OnsiteParticipantRow[];
   subtitle: string;
+  embedded?: boolean;
 }) {
   return (
     <motion.div
-      className="overflow-hidden rounded-3xl border border-white/10 bg-[#060606]"
+      className={
+        embedded
+          ? "overflow-hidden bg-[#060606]"
+          : "overflow-hidden rounded-3xl border border-white/10 bg-[#060606]"
+      }
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}

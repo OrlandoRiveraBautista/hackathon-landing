@@ -622,6 +622,22 @@ export type Dictionary = {
     remoteClubCta: string;
     remoteDiscordCta: string;
     remoteWhatsappCta: string;
+    schedule: {
+      title: string;
+      buildingExitNote: string;
+      buildingExitLabel: string;
+      tableTime: string;
+      tableActivity: string;
+      saturday: {
+        dayLabel: string;
+        rows: Array<{ time: string; activity: string }>;
+      };
+      sunday: {
+        dayLabel: string;
+        rows: Array<{ time: string; activity: string }>;
+      };
+    };
+    waitlistSectionTitle: string;
     back: string;
     loading: string;
     loadFailed: string;

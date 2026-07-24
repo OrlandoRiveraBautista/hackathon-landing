@@ -23,6 +23,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { useDictionary, useLocale } from "@/components/LocaleProvider";
+import { BrandLogo } from "@/components/BrandLogo";
 import { PeserosCredit } from "@/components/PeserosCredit";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -72,21 +73,10 @@ export function SponsorsPageClient() {
         <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 sm:gap-4">
           <Link
             href={localizedPath(locale)}
-            className="flex items-center gap-2.5 transition-opacity hover:opacity-80"
+            className="group flex items-center gap-2.5 transition-opacity hover:opacity-80"
             style={{ fontFamily: montserrat }}
           >
-            <svg
-              width="26"
-              height="26"
-              viewBox="0 0 32 32"
-              aria-hidden="true"
-              className="shrink-0 drop-shadow-[0_0_7px_rgba(170,255,0,0.55)]"
-            >
-              <rect width="32" height="32" rx="7" fill="#000" />
-              <polygon points="16,4 28,10.5 16,17 4,10.5" fill="#aaff00" />
-              <polygon points="4,10.5 16,17 16,28 4,21.5" fill="#55aa00" />
-              <polygon points="28,10.5 16,17 16,28 28,21.5" fill="#77cc00" />
-            </svg>
+            <BrandLogo size={26} />
             <span className="text-sm font-black tracking-tight text-white">
               Build Pa&apos;l Norte
             </span>

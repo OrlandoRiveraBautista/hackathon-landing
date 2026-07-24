@@ -2,10 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import Image from "next/image";
 import Link from "next/link";
 import { useDictionary, useLocale } from "@/components/LocaleProvider";
-import { SITE_LOGO } from "@/lib/brand";
+import { BrandLogo } from "@/components/BrandLogo";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { localizedPath, onsiteSelectionPath } from "@/lib/i18n";
 import { montserrat, outfit } from "@/lib/theme";
@@ -13,22 +12,6 @@ import { montserrat, outfit } from "@/lib/theme";
 type SiteNavProps = {
   onRegisterClick: () => void;
 };
-
-function NavLogo({ size }: { size: number }) {
-  return (
-    <div className="relative shrink-0">
-      <div className="absolute inset-0 rounded-xl bg-[#aaff00]/20 blur-md transition-all duration-300 group-hover:bg-[#aaff00]/35 group-hover:blur-lg" />
-      <Image
-        src={SITE_LOGO}
-        alt=""
-        width={size}
-        height={size}
-        className="relative rounded-xl"
-        aria-hidden
-      />
-    </div>
-  );
-}
 
 export function SiteNav({ onRegisterClick }: SiteNavProps) {
   const { locale } = useLocale();
@@ -134,7 +117,7 @@ export function SiteNav({ onRegisterClick }: SiteNavProps) {
           className="group flex shrink-0 items-center gap-2.5 rounded-full px-3 py-1.5"
           style={{ fontFamily: montserrat }}
         >
-          <NavLogo size={32} />
+          <BrandLogo size={32} />
           <span className="text-sm font-black tracking-tight text-white transition-colors duration-300 group-hover:text-[#aaff00]">
             Build Pa&apos;l Norte
           </span>
@@ -238,7 +221,7 @@ export function SiteNav({ onRegisterClick }: SiteNavProps) {
             className="group flex min-w-0 items-center gap-2 rounded-full py-1 pl-1 pr-2"
             style={{ fontFamily: montserrat }}
           >
-            <NavLogo size={26} />
+            <BrandLogo size={26} />
             <span className="truncate text-xs font-black tracking-tight text-white group-hover:text-[#aaff00]">
               Build Pa&apos;l Norte
             </span>

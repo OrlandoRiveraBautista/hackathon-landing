@@ -1,10 +1,9 @@
 "use client";
 
 import { ArrowUpRight } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { useDictionary } from "@/components/LocaleProvider";
-import { SITE_LOGO } from "@/lib/brand";
+import { BrandLogo } from "@/components/BrandLogo";
 import {
   localizedPath,
   memberHomePath,
@@ -104,13 +103,7 @@ export function PlatformAppFooter({ locale }: PlatformAppFooterProps) {
               href={memberHomePath(locale)}
               className="group inline-flex items-center gap-3.5 self-start transition-opacity hover:opacity-75"
             >
-              <Image
-                src={SITE_LOGO}
-                alt="Build Pa'l Norte"
-                width={38}
-                height={38}
-                className="rounded-xl"
-              />
+              <BrandLogo size={38} />
               <div>
                 <p
                   className="text-lg font-black leading-none tracking-tight text-white"

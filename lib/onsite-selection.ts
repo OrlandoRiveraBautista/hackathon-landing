@@ -240,6 +240,7 @@ function mapParticipant(id: string, data: DocumentData): OnsiteParticipant {
 export type OnsiteSelectionSnapshot = {
   config: OnsiteSelectionConfig;
   selected: OnsiteParticipant[];
+  remote: OnsiteParticipant[];
   interestedCount: number;
   waitlistCount: number;
 };
@@ -403,6 +404,10 @@ export async function getOnsiteSelectionSnapshot(): Promise<OnsiteSelectionSnaps
     .filter((participant) => participant.onSiteStatus === "selected")
     .sort((a, b) => a.name.localeCompare(b.name, "es"));
 
+  const waitlistRemote = participants
+    .filter((participant) => participant.onSiteStatus === "remote")
+    .sort((a, b) => a.name.localeCompare(b.name, "es"));
+
   const selected =
     config.announced && config.lotteryPreview
       ? config.lotteryPreview.selected
@@ -410,9 +415,17 @@ export async function getOnsiteSelectionSnapshot(): Promise<OnsiteSelectionSnaps
           .sort((a, b) => a.name.localeCompare(b.name, "es"))
       : waitlistSelected;
 
+  const remote =
+    config.announced && config.lotteryPreview
+      ? config.lotteryPreview.remote
+          .map((preview) => participantFromPreview(preview))
+          .sort((a, b) => a.name.localeCompare(b.name, "es"))
+      : waitlistRemote;
+
   return {
     config,
     selected,
+    remote,
     interestedCount: participants.filter((participant) => participant.onSiteInterested)
       .length,
     waitlistCount: participants.length,

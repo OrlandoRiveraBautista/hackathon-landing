@@ -615,6 +615,11 @@ export type Dictionary = {
     yourStatusSelected: string;
     yourStatusRemote: string;
     yourStatusPending: string;
+    remoteListTitle: string;
+    remoteListSubtitle: string;
+    emptyRemote: string;
+    remoteDiscordVirtualTitle: string;
+    remoteDiscordVirtualBody: string;
     remoteTitle: string;
     remoteBody: string;
     remoteClubTitle: string;

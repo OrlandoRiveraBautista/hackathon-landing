@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import Link from "next/link";
-import { ArrowUpRight, MapPin, Users } from "lucide-react";
+import { ArrowUpRight, Users } from "lucide-react";
 import { useDictionary, useLocale } from "@/components/LocaleProvider";
 import { BrandLogo } from "@/components/BrandLogo";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
@@ -33,6 +33,9 @@ type SelectionResponse = {
   interestedCount: number;
   waitlistCount: number;
   selected: Array<{
+    name: string;
+  }>;
+  remote: Array<{
     name: string;
   }>;
 };
@@ -270,8 +273,9 @@ export function OnsiteSelectionPageClient() {
       });
   }
 
-  const announced = selection?.announced ?? false;
-  const boostOpen = selection?.boostOpen ?? false;
+  const selectionReady = selection !== null;
+  const announced = selection?.announced === true;
+  const boostOpen = selection?.boostOpen === true;
   const interested = userStatus?.onSiteInterested || boostDone;
 
   const listLabels = {
@@ -347,7 +351,17 @@ export function OnsiteSelectionPageClient() {
           </p>
         )}
 
-        {!announced && (
+        {!selectionReady && !error && (
+          <p
+            className="mt-10 text-sm tracking-wide text-white/40 sm:mt-12"
+            style={{ fontFamily: outfit }}
+            aria-live="polite"
+          >
+            {copy.loading}
+          </p>
+        )}
+
+        {selectionReady && !announced && (
           <section className="mt-10 space-y-6 sm:mt-12">
             {boostOpen && (
               <>
@@ -466,7 +480,7 @@ export function OnsiteSelectionPageClient() {
           </section>
         )}
 
-        {!loading && selection && announced && (
+        {selectionReady && announced && (
           <motion.div
             className="mt-12"
             initial="hidden"
@@ -518,6 +532,59 @@ export function OnsiteSelectionPageClient() {
             </OnsiteCollapsibleSection>
 
             <OnsiteCollapsibleSection
+              title={copy.remoteListTitle}
+              defaultOpen={false}
+              className="mt-6"
+            >
+              <div className="px-5 py-5 sm:px-6 sm:py-6">
+                {selection.remote.length > 0 ? (
+                  <OnsiteAnnouncedList
+                    labels={listLabels}
+                    participants={selection.remote}
+                    variant="remote"
+                    subtitle={copy.remoteListSubtitle.replace(
+                      "{count}",
+                      String(selection.remote.length),
+                    )}
+                    embedded
+                  />
+                ) : (
+                  <p
+                    className="text-sm text-white/45"
+                    style={{ fontFamily: outfit }}
+                  >
+                    {copy.emptyRemote}
+                  </p>
+                )}
+
+                <div className="mt-6 rounded-2xl border border-[#aaff00]/25 bg-[#aaff00]/[0.07] p-5 sm:p-6">
+                  <h3
+                    className="text-base font-black text-[#aaff00] sm:text-lg"
+                    style={{ fontFamily: montserrat }}
+                  >
+                    {copy.remoteDiscordVirtualTitle}
+                  </h3>
+                  <p
+                    className="mt-2 text-sm leading-relaxed text-white/60"
+                    style={{ fontFamily: outfit }}
+                  >
+                    {copy.remoteDiscordVirtualBody}
+                  </p>
+                  <a
+                    href={discordUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="mt-5 inline-flex items-center gap-2 rounded-full border border-[#aaff00]/45 bg-[#aaff00]/12 px-5 py-2.5 text-xs font-black tracking-[0.14em] text-[#aaff00] transition-all hover:border-[#aaff00]/70 hover:bg-[#aaff00]/18"
+                    style={{ fontFamily: montserrat }}
+                  >
+                    {copy.remoteDiscordCta}
+                    <ArrowUpRight size={14} />
+                  </a>
+                </div>
+              </div>
+            </OnsiteCollapsibleSection>
+
+            <OnsiteCollapsibleSection
               title={copy.schedule.title}
               defaultOpen={false}
               className="mt-6"
@@ -527,7 +594,7 @@ export function OnsiteSelectionPageClient() {
           </motion.div>
         )}
 
-        {announced && (
+        {selectionReady && announced && (
           <motion.section
             className="mt-12 rounded-3xl border border-white/10 bg-white/[0.03] p-6 sm:p-8"
             initial="hidden"
@@ -570,7 +637,7 @@ export function OnsiteSelectionPageClient() {
                   {copy.remoteClubCta}
                   <ArrowUpRight size={14} />
                 </Link>
-                {discordUrl && (
+                {discordUrl ? (
                   <a
                     href={discordUrl}
                     target="_blank"
@@ -581,7 +648,7 @@ export function OnsiteSelectionPageClient() {
                     {copy.remoteDiscordCta}
                     <ArrowUpRight size={14} />
                   </a>
-                )}
+                ) : null}
                 {whatsappUrl && (
                   <a
                     href={whatsappUrl}

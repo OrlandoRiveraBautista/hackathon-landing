@@ -1019,12 +1019,19 @@ const dictionary: Dictionary = {
       "No fuiste seleccionado para un cupo presencial esta vez — pero sigues siendo parte del hackathon en remoto.",
     yourStatusPending:
       "Tu estatus presencial aparecerá aquí cuando anunciemos los resultados.",
+    remoteListTitle: "Constructores en remoto",
+    remoteListSubtitle:
+      "Estas {count} personas hackearán en remoto. Únete a Discord para las salas virtuales y las actualizaciones en vivo.",
+    emptyRemote: "Aún no hay lista remota publicada.",
+    remoteDiscordVirtualTitle: "Salas virtuales en Discord",
+    remoteDiscordVirtualBody:
+      "Los participantes remotos se coordinan en Discord — canales de voz, formación de equipos y novedades del hackathon. Únete antes del inicio para no perderte nada.",
     remoteTitle: "Sigues construyendo con nosotros — en remoto",
     remoteBody:
       "El hackathon está abierto para todos en la lista de espera, presencial o remoto. La misma energía, la misma comunidad, la misma oportunidad de lanzar algo increíble.",
     remoteClubTitle: "Mantente al día",
     remoteClubBody:
-      "Únete a la plataforma de miembros, entra al Discord y al grupo de WhatsApp para no perderte actualizaciones, formación de equipos o demo day.",
+      "Únete a la plataforma de miembros, entra a Discord para las salas virtuales y al grupo de WhatsApp para no perderte actualizaciones, formación de equipos o demo day.",
     remoteClubCta: "Unirme a la plataforma",
     remoteDiscordCta: "Unirme a Discord",
     remoteWhatsappCta: "Unirme al grupo de WhatsApp",

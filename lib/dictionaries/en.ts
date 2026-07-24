@@ -989,12 +989,19 @@ const dictionary: Dictionary = {
     yourStatusRemote:
       "You weren't selected for an on-site spot this time — but you're still fully part of the hackathon remotely.",
     yourStatusPending: "Your on-site status will appear here once results are announced.",
+    remoteListTitle: "Remote builders",
+    remoteListSubtitle:
+      "These {count} people will hack remotely. Join Discord for virtual rooms and live updates.",
+    emptyRemote: "No remote list published yet.",
+    remoteDiscordVirtualTitle: "Virtual rooms on Discord",
+    remoteDiscordVirtualBody:
+      "Remote participants coordinate in Discord — voice channels, team formation, and hackathon updates. Join before kickoff so you do not miss anything.",
     remoteTitle: "Still building with us — remotely",
     remoteBody:
       "The hackathon is open to everyone on the waitlist, whether you're on-site or remote. Same energy, same community, same chance to ship something great.",
     remoteClubTitle: "Stay in the loop",
     remoteClubBody:
-      "Join the member platform, hop in Discord, and get on the WhatsApp group so you don't miss updates, team formation, or demo day.",
+      "Join the member platform, hop in Discord for virtual rooms, and get on the WhatsApp group so you don't miss updates, team formation, or demo day.",
     remoteClubCta: "Join the member platform",
     remoteDiscordCta: "Join Discord",
     remoteWhatsappCta: "Join WhatsApp group",

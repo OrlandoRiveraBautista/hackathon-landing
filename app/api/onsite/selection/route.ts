@@ -17,8 +17,14 @@ export async function GET() {
       interestedCount: snapshot.interestedCount,
       waitlistCount: snapshot.waitlistCount,
       selectedCount: snapshot.selected.length,
+      remoteCount: snapshot.remote.length,
       selected: snapshot.config.announced
         ? snapshot.selected.map((participant) => ({
+            name: participant.name,
+          }))
+        : [],
+      remote: snapshot.config.announced
+        ? snapshot.remote.map((participant) => ({
             name: participant.name,
           }))
         : [],

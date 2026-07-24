@@ -1,6 +1,5 @@
-import Image from "next/image";
 import type { ReactNode } from "react";
-import { SITE_LOGO } from "@/lib/brand";
+import { BrandLogo } from "@/components/BrandLogo";
 import { montserrat, outfit } from "@/lib/theme";
 
 type AuthShellProps = {
@@ -73,13 +72,10 @@ export function AuthShell({
           {/* Logo row */}
           <div className="flex items-center gap-3">
             <div className="auth-logo-float">
-              <Image
-                src={SITE_LOGO}
-                alt="Build Pa'l Norte"
-                width={40}
-                height={40}
-                className="rounded-xl shadow-[0_0_24px_rgba(170,255,0,0.35)]"
+              <BrandLogo
+                size={40}
                 priority
+                imageClassName="shadow-[0_0_24px_rgba(170,255,0,0.35)]"
               />
             </div>
             <div>

@@ -1,7 +1,6 @@
-import Image from "next/image";
 import Link from "next/link";
 import { Suspense, type ReactNode } from "react";
-import { SITE_LOGO } from "@/lib/brand";
+import { BrandLogo } from "@/components/BrandLogo";
 import { memberHomePath, type Locale } from "@/lib/i18n";
 import { montserrat } from "@/lib/theme";
 import { MemberHeaderSearch } from "./MemberHeaderSearch";
@@ -36,16 +35,7 @@ export function MemberAppHeader({
           href={memberHomePath(locale)}
           className="group flex shrink-0 items-center gap-3 transition-opacity hover:opacity-75"
         >
-          <div className="relative">
-            <div className="absolute inset-0 rounded-xl bg-[#aaff00]/20 blur-md transition-all duration-300 group-hover:bg-[#aaff00]/35 group-hover:blur-lg" />
-            <Image
-              src={SITE_LOGO}
-              alt="Build Pa'l Norte"
-              width={34}
-              height={34}
-              className="relative rounded-xl"
-            />
-          </div>
+          <BrandLogo size={34} />
           <div className="hidden sm:block">
             <p
               className="text-[13px] font-black tracking-tight text-white"

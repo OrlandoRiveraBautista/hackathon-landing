@@ -120,10 +120,20 @@ function ListHeader({
   );
 }
 
-export function OnsiteComingSoonList({ labels }: { labels: OnsiteListLabels }) {
+export function OnsiteComingSoonList({
+  labels,
+  embedded = false,
+}: {
+  labels: OnsiteListLabels;
+  embedded?: boolean;
+}) {
   return (
     <motion.div
-      className="relative overflow-hidden rounded-3xl border border-white/10 bg-[#060606]"
+      className={
+        embedded
+          ? "relative overflow-hidden bg-[#060606]"
+          : "relative overflow-hidden rounded-3xl border border-white/10 bg-[#060606]"
+      }
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
@@ -168,14 +178,30 @@ export function OnsiteAnnouncedList({
   labels,
   participants,
   subtitle,
+  embedded = false,
+  variant = "selected",
 }: {
   labels: Pick<OnsiteListLabels, "tableRank" | "tableName">;
   participants: OnsiteParticipantRow[];
   subtitle: string;
+  embedded?: boolean;
+  variant?: "selected" | "remote";
 }) {
+  const isRemote = variant === "remote";
+  const rankClass = isRemote
+    ? "text-[11px] font-black tracking-[0.2em] text-white/35"
+    : "text-[11px] font-black tracking-[0.2em] text-[#aaff00]/70";
+  const avatarClass = isRemote
+    ? "flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 bg-white/[0.06] text-xs font-black text-white/70"
+    : "flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#aaff00]/20 bg-[#aaff00]/10 text-xs font-black text-[#aaff00]";
+
   return (
     <motion.div
-      className="overflow-hidden rounded-3xl border border-white/10 bg-[#060606]"
+      className={
+        embedded
+          ? "overflow-hidden bg-[#060606]"
+          : "overflow-hidden rounded-3xl border border-white/10 bg-[#060606]"
+      }
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
@@ -208,7 +234,7 @@ export function OnsiteAnnouncedList({
               >
                 <td className="px-5 py-4">
                   <span
-                    className="text-[11px] font-black tracking-[0.2em] text-[#aaff00]/70"
+                    className={rankClass}
                     style={{ fontFamily: montserrat }}
                   >
                     {String(index + 1).padStart(2, "0")}
@@ -216,10 +242,7 @@ export function OnsiteAnnouncedList({
                 </td>
                 <td className="px-5 py-4">
                   <div className="flex items-center gap-3">
-                    <div
-                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#aaff00]/20 bg-[#aaff00]/10 text-xs font-black text-[#aaff00]"
-                      style={{ fontFamily: montserrat }}
-                    >
+                    <div className={avatarClass} style={{ fontFamily: montserrat }}>
                       {participant.name.trim().charAt(0).toUpperCase()}
                     </div>
                     <span

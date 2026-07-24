@@ -989,15 +989,62 @@ const dictionary: Dictionary = {
     yourStatusRemote:
       "You weren't selected for an on-site spot this time — but you're still fully part of the hackathon remotely.",
     yourStatusPending: "Your on-site status will appear here once results are announced.",
+    remoteListTitle: "Remote builders",
+    remoteListSubtitle:
+      "These {count} people will hack remotely. Join Discord for virtual rooms and live updates.",
+    emptyRemote: "No remote list published yet.",
+    remoteDiscordVirtualTitle: "Virtual rooms on Discord",
+    remoteDiscordVirtualBody:
+      "Remote participants coordinate in Discord — voice channels, team formation, and hackathon updates. Join before kickoff so you do not miss anything.",
     remoteTitle: "Still building with us — remotely",
     remoteBody:
       "The hackathon is open to everyone on the waitlist, whether you're on-site or remote. Same energy, same community, same chance to ship something great.",
     remoteClubTitle: "Stay in the loop",
     remoteClubBody:
-      "Join the member platform, hop in Discord, and get on the WhatsApp group so you don't miss updates, team formation, or demo day.",
+      "Join the member platform, hop in Discord for virtual rooms, and get on the WhatsApp group so you don't miss updates, team formation, or demo day.",
     remoteClubCta: "Join the member platform",
     remoteDiscordCta: "Join Discord",
     remoteWhatsappCta: "Join WhatsApp group",
+    schedule: {
+      title: "Schedule",
+      buildingExitNote:
+        "After 1:00 a.m., no one may leave the building.",
+      buildingExitLabel: "Important",
+      tableTime: "Time",
+      tableActivity: "Activity",
+      saturday: {
+        dayLabel: "Saturday, July 25",
+        rows: [
+          { time: "10:00", activity: "Registration" },
+          { time: "10:30", activity: "Welcome" },
+          { time: "11:00", activity: "Challenge presentation" },
+          { time: "11:30", activity: "Networking and team formation" },
+          { time: "12:00", activity: "Official hackathon start" },
+          { time: "2:00", activity: "Meal 1" },
+          { time: "5:00", activity: "Ricardo Rivera workshop" },
+          { time: "6:00", activity: "Continue building" },
+          { time: "9:00", activity: "Dinner" },
+          { time: "10:00", activity: "Night Stack" },
+          { time: "12:00 am", activity: "General checkpoint" },
+        ],
+      },
+      sunday: {
+        dayLabel: "Sunday, July 26",
+        rows: [
+          { time: "8:00", activity: "Breakfast" },
+          { time: "9:00", activity: "Resume work" },
+          { time: "11:30", activity: "Final checkpoint" },
+          { time: "12:30", activity: "Project submission" },
+          { time: "1:00", activity: "Pitch prep" },
+          { time: "2:00", activity: "Presentations" },
+          { time: "3:30", activity: "Judging" },
+          { time: "4:00", activity: "Closing ceremony" },
+          { time: "4:30", activity: "Awards" },
+          { time: "5:00", activity: "Networking and photos" },
+        ],
+      },
+    },
+    waitlistSectionTitle: "On-site waitlist",
     back: "← BACK",
     loading: "Loading selection...",
     loadFailed: "Couldn't load on-site selection. Try again later.",

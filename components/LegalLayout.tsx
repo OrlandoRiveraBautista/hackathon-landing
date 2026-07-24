@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useDictionary, useLocale } from "@/components/LocaleProvider";
+import { BrandLogo } from "@/components/BrandLogo";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { PeserosCredit } from "@/components/PeserosCredit";
 import { localizedPath } from "@/lib/i18n";
@@ -30,10 +31,13 @@ export function LegalLayout({
         <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-3 sm:gap-4">
           <Link
             href={localizedPath(locale)}
-            className="min-w-0 truncate text-base font-black tracking-tight transition-colors hover:text-[#aaff00] sm:text-lg"
+            className="group flex min-w-0 items-center gap-2.5 transition-opacity hover:opacity-80"
             style={{ fontFamily: montserrat }}
           >
-            Build Pa&apos;l Norte
+            <BrandLogo size={28} />
+            <span className="truncate text-base font-black tracking-tight text-white group-hover:text-[#aaff00] sm:text-lg">
+              Build Pa&apos;l Norte
+            </span>
           </Link>
           <div className="flex shrink-0 items-center gap-3 sm:gap-4">
             <LanguageSwitcher />

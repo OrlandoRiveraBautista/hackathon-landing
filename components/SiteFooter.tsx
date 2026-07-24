@@ -3,6 +3,7 @@
 import { ArrowUpRight, MapPin } from "lucide-react";
 import Link from "next/link";
 import { useDictionary, useLocale } from "@/components/LocaleProvider";
+import { BrandLogo } from "@/components/BrandLogo";
 import { PeserosCredit } from "@/components/PeserosCredit";
 import { localizedPath, onsiteSelectionPath } from "@/lib/i18n";
 import { montserrat, outfit } from "@/lib/theme";
@@ -152,22 +153,11 @@ export function SiteFooter({ onSponsorClick }: SiteFooterProps) {
 
         <div className="grid gap-12 md:grid-cols-12 md:gap-8 lg:gap-12">
           <div className="md:col-span-5 lg:col-span-6">
-            <div className="flex items-center gap-3">
-              <div className="relative">
-                <div className="absolute -inset-2 rounded-xl bg-[#aaff00]/20 blur-xl" />
-                <svg
-                  width="36"
-                  height="36"
-                  viewBox="0 0 32 32"
-                  aria-hidden="true"
-                  className="relative shrink-0 drop-shadow-[0_0_16px_rgba(170,255,0,0.45)]"
-                >
-                  <rect width="32" height="32" rx="6" fill="#000" />
-                  <polygon points="16,5 27,11 16,17 5,11" fill="#aaff00" />
-                  <polygon points="5,11 16,17 16,27 5,21" fill="#55aa00" />
-                  <polygon points="27,11 16,17 16,27 27,21" fill="#77cc00" />
-                </svg>
-              </div>
+            <Link
+              href={localizedPath(locale)}
+              className="group flex items-center gap-3 transition-opacity hover:opacity-90"
+            >
+              <BrandLogo size={36} />
               <div>
                 <p
                   className="text-xl font-black tracking-tight text-white sm:text-2xl"
@@ -183,7 +173,7 @@ export function SiteFooter({ onSponsorClick }: SiteFooterProps) {
                   2026
                 </p>
               </div>
-            </div>
+            </Link>
 
             <div className="mt-8">
               <PeserosCredit variant="banner" className="w-full sm:max-w-md" />

@@ -3,14 +3,17 @@
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import Link from "next/link";
-import { ArrowUpRight, MapPin, Users } from "lucide-react";
+import { ArrowUpRight, Users } from "lucide-react";
 import { useDictionary, useLocale } from "@/components/LocaleProvider";
+import { BrandLogo } from "@/components/BrandLogo";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { SiteFooter } from "@/components/SiteFooter";
 import {
   OnsiteAnnouncedList,
   OnsiteComingSoonList,
 } from "@/components/onsite/OnsiteList";
+import { OnsiteCollapsibleSection } from "@/components/onsite/OnsiteCollapsibleSection";
+import { OnsiteSchedule } from "@/components/onsite/OnsiteSchedule";
 import { OnsiteBoostPanel } from "@/components/onsite/OnsiteBoostPanel";
 import { HackathonShirtCard } from "@/components/shirt/HackathonShirtCard";
 import type { ShirtSize } from "@/lib/shirt-size";
@@ -30,6 +33,9 @@ type SelectionResponse = {
   interestedCount: number;
   waitlistCount: number;
   selected: Array<{
+    name: string;
+  }>;
+  remote: Array<{
     name: string;
   }>;
 };
@@ -267,8 +273,9 @@ export function OnsiteSelectionPageClient() {
       });
   }
 
-  const announced = selection?.announced ?? false;
-  const boostOpen = selection?.boostOpen ?? false;
+  const selectionReady = selection !== null;
+  const announced = selection?.announced === true;
+  const boostOpen = selection?.boostOpen === true;
   const interested = userStatus?.onSiteInterested || boostDone;
 
   const listLabels = {
@@ -291,21 +298,10 @@ export function OnsiteSelectionPageClient() {
         <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 sm:gap-4">
           <Link
             href={localizedPath(locale)}
-            className="flex items-center gap-2.5 transition-opacity hover:opacity-80"
+            className="group flex items-center gap-2.5 transition-opacity hover:opacity-80"
             style={{ fontFamily: montserrat }}
           >
-            <svg
-              width="26"
-              height="26"
-              viewBox="0 0 32 32"
-              aria-hidden="true"
-              className="shrink-0 drop-shadow-[0_0_7px_rgba(170,255,0,0.55)]"
-            >
-              <rect width="32" height="32" rx="7" fill="#000" />
-              <polygon points="16,4 28,10.5 16,17 4,10.5" fill="#aaff00" />
-              <polygon points="4,10.5 16,17 16,28 4,21.5" fill="#55aa00" />
-              <polygon points="28,10.5 16,17 16,28 28,21.5" fill="#77cc00" />
-            </svg>
+            <BrandLogo size={26} />
             <span className="text-sm font-black tracking-tight text-white">
               Build Pa&apos;l Norte
             </span>
@@ -355,7 +351,17 @@ export function OnsiteSelectionPageClient() {
           </p>
         )}
 
-        {!announced && (
+        {!selectionReady && !error && (
+          <p
+            className="mt-10 text-sm tracking-wide text-white/40 sm:mt-12"
+            style={{ fontFamily: outfit }}
+            aria-live="polite"
+          >
+            {copy.loading}
+          </p>
+        )}
+
+        {selectionReady && !announced && (
           <section className="mt-10 space-y-6 sm:mt-12">
             {boostOpen && (
               <>
@@ -446,7 +452,21 @@ export function OnsiteSelectionPageClient() {
               </motion.div>
             )}
 
-            <OnsiteComingSoonList labels={listLabels} />
+            <OnsiteCollapsibleSection
+              title={copy.waitlistSectionTitle}
+              defaultOpen={false}
+              className="mt-6"
+            >
+              <OnsiteComingSoonList labels={listLabels} embedded />
+            </OnsiteCollapsibleSection>
+
+            <OnsiteCollapsibleSection
+              title={copy.schedule.title}
+              defaultOpen={false}
+              className="mt-6"
+            >
+              <OnsiteSchedule />
+            </OnsiteCollapsibleSection>
 
             <motion.p
               className="max-w-2xl text-sm leading-relaxed text-white/45"
@@ -460,64 +480,121 @@ export function OnsiteSelectionPageClient() {
           </section>
         )}
 
-        {!loading && selection && announced && (
-          <motion.section
+        {selectionReady && announced && (
+          <motion.div
             className="mt-12"
             initial="hidden"
             animate="visible"
             custom={1}
             variants={fadeUp}
           >
-            <div className="mb-6">
-              <h2
-                className="text-2xl font-black"
-                style={{ fontFamily: montserrat }}
-              >
-                {copy.announcedTitle}
-              </h2>
-            </div>
-
-            {userStatus && (
-              <div
-                className={`mb-6 rounded-2xl border px-5 py-4 ${
-                  userStatus.onSiteStatus === "selected"
-                    ? "border-[#aaff00]/30 bg-[#aaff00]/10 text-[#d8ff80]"
-                    : userStatus.onSiteStatus === "remote"
-                      ? "border-white/10 bg-white/[0.03] text-white/70"
-                      : "border-white/10 bg-white/[0.03] text-white/60"
-                }`}
-              >
-                <p className="text-sm" style={{ fontFamily: outfit }}>
-                  {userStatus.onSiteStatus === "selected"
-                    ? copy.yourStatusSelected
-                    : userStatus.onSiteStatus === "remote"
-                      ? copy.yourStatusRemote
-                      : copy.yourStatusPending}
-                </p>
-              </div>
-            )}
-
-            {selection.selected.length > 0 ? (
-              <OnsiteAnnouncedList
-                labels={listLabels}
-                participants={selection.selected}
-                subtitle={copy.announcedSubtitle.replace(
-                  "{count}",
-                  String(selection.selected.length),
+            <OnsiteCollapsibleSection title={copy.announcedTitle} defaultOpen={false}>
+              <div className="px-5 py-5 sm:px-6 sm:py-6">
+                {userStatus && (
+                  <div
+                    className={`mb-6 rounded-2xl border px-5 py-4 ${
+                      userStatus.onSiteStatus === "selected"
+                        ? "border-[#aaff00]/30 bg-[#aaff00]/10 text-[#d8ff80]"
+                        : userStatus.onSiteStatus === "remote"
+                          ? "border-white/10 bg-white/[0.03] text-white/70"
+                          : "border-white/10 bg-white/[0.03] text-white/60"
+                    }`}
+                  >
+                    <p className="text-sm" style={{ fontFamily: outfit }}>
+                      {userStatus.onSiteStatus === "selected"
+                        ? copy.yourStatusSelected
+                        : userStatus.onSiteStatus === "remote"
+                          ? copy.yourStatusRemote
+                          : copy.yourStatusPending}
+                    </p>
+                  </div>
                 )}
-              />
-            ) : (
-              <p
-                className="text-sm text-white/45"
-                style={{ fontFamily: outfit }}
-              >
-                {copy.emptySelected}
-              </p>
-            )}
-          </motion.section>
+
+                {selection.selected.length > 0 ? (
+                  <OnsiteAnnouncedList
+                    labels={listLabels}
+                    participants={selection.selected}
+                    subtitle={copy.announcedSubtitle.replace(
+                      "{count}",
+                      String(selection.selected.length),
+                    )}
+                    embedded
+                  />
+                ) : (
+                  <p
+                    className="text-sm text-white/45"
+                    style={{ fontFamily: outfit }}
+                  >
+                    {copy.emptySelected}
+                  </p>
+                )}
+              </div>
+            </OnsiteCollapsibleSection>
+
+            <OnsiteCollapsibleSection
+              title={copy.remoteListTitle}
+              defaultOpen={false}
+              className="mt-6"
+            >
+              <div className="px-5 py-5 sm:px-6 sm:py-6">
+                {selection.remote.length > 0 ? (
+                  <OnsiteAnnouncedList
+                    labels={listLabels}
+                    participants={selection.remote}
+                    variant="remote"
+                    subtitle={copy.remoteListSubtitle.replace(
+                      "{count}",
+                      String(selection.remote.length),
+                    )}
+                    embedded
+                  />
+                ) : (
+                  <p
+                    className="text-sm text-white/45"
+                    style={{ fontFamily: outfit }}
+                  >
+                    {copy.emptyRemote}
+                  </p>
+                )}
+
+                <div className="mt-6 rounded-2xl border border-[#aaff00]/25 bg-[#aaff00]/[0.07] p-5 sm:p-6">
+                  <h3
+                    className="text-base font-black text-[#aaff00] sm:text-lg"
+                    style={{ fontFamily: montserrat }}
+                  >
+                    {copy.remoteDiscordVirtualTitle}
+                  </h3>
+                  <p
+                    className="mt-2 text-sm leading-relaxed text-white/60"
+                    style={{ fontFamily: outfit }}
+                  >
+                    {copy.remoteDiscordVirtualBody}
+                  </p>
+                  <a
+                    href={discordUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="mt-5 inline-flex items-center gap-2 rounded-full border border-[#aaff00]/45 bg-[#aaff00]/12 px-5 py-2.5 text-xs font-black tracking-[0.14em] text-[#aaff00] transition-all hover:border-[#aaff00]/70 hover:bg-[#aaff00]/18"
+                    style={{ fontFamily: montserrat }}
+                  >
+                    {copy.remoteDiscordCta}
+                    <ArrowUpRight size={14} />
+                  </a>
+                </div>
+              </div>
+            </OnsiteCollapsibleSection>
+
+            <OnsiteCollapsibleSection
+              title={copy.schedule.title}
+              defaultOpen={false}
+              className="mt-6"
+            >
+              <OnsiteSchedule />
+            </OnsiteCollapsibleSection>
+          </motion.div>
         )}
 
-        {announced && (
+        {selectionReady && announced && (
           <motion.section
             className="mt-12 rounded-3xl border border-white/10 bg-white/[0.03] p-6 sm:p-8"
             initial="hidden"
@@ -560,7 +637,7 @@ export function OnsiteSelectionPageClient() {
                   {copy.remoteClubCta}
                   <ArrowUpRight size={14} />
                 </Link>
-                {discordUrl && (
+                {discordUrl ? (
                   <a
                     href={discordUrl}
                     target="_blank"
@@ -571,7 +648,7 @@ export function OnsiteSelectionPageClient() {
                     {copy.remoteDiscordCta}
                     <ArrowUpRight size={14} />
                   </a>
-                )}
+                ) : null}
                 {whatsappUrl && (
                   <a
                     href={whatsappUrl}

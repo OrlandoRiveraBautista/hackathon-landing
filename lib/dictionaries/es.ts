@@ -1019,15 +1019,62 @@ const dictionary: Dictionary = {
       "No fuiste seleccionado para un cupo presencial esta vez — pero sigues siendo parte del hackathon en remoto.",
     yourStatusPending:
       "Tu estatus presencial aparecerá aquí cuando anunciemos los resultados.",
+    remoteListTitle: "Constructores en remoto",
+    remoteListSubtitle:
+      "Estas {count} personas hackearán en remoto. Únete a Discord para las salas virtuales y las actualizaciones en vivo.",
+    emptyRemote: "Aún no hay lista remota publicada.",
+    remoteDiscordVirtualTitle: "Salas virtuales en Discord",
+    remoteDiscordVirtualBody:
+      "Los participantes remotos se coordinan en Discord — canales de voz, formación de equipos y novedades del hackathon. Únete antes del inicio para no perderte nada.",
     remoteTitle: "Sigues construyendo con nosotros — en remoto",
     remoteBody:
       "El hackathon está abierto para todos en la lista de espera, presencial o remoto. La misma energía, la misma comunidad, la misma oportunidad de lanzar algo increíble.",
     remoteClubTitle: "Mantente al día",
     remoteClubBody:
-      "Únete a la plataforma de miembros, entra al Discord y al grupo de WhatsApp para no perderte actualizaciones, formación de equipos o demo day.",
+      "Únete a la plataforma de miembros, entra a Discord para las salas virtuales y al grupo de WhatsApp para no perderte actualizaciones, formación de equipos o demo day.",
     remoteClubCta: "Unirme a la plataforma",
     remoteDiscordCta: "Unirme a Discord",
     remoteWhatsappCta: "Unirme al grupo de WhatsApp",
+    schedule: {
+      title: "Horario",
+      buildingExitNote:
+        "Después de la 1:00 a.m. nadie puede salir del edificio.",
+      buildingExitLabel: "Importante",
+      tableTime: "Hora",
+      tableActivity: "Actividad",
+      saturday: {
+        dayLabel: "Sábado 25",
+        rows: [
+          { time: "10:00", activity: "Registro" },
+          { time: "10:30", activity: "Bienvenida" },
+          { time: "11:00", activity: "Presentación del reto" },
+          { time: "11:30", activity: "Networking y formación de equipos" },
+          { time: "12:00", activity: "Inicio oficial del Hackathon" },
+          { time: "2:00", activity: "Comida 1" },
+          { time: "5:00", activity: "Workshop Ricardo Rivera" },
+          { time: "6:00", activity: "Continuación del desarrollo" },
+          { time: "9:00", activity: "Cena" },
+          { time: "10:00", activity: "Night Stack" },
+          { time: "12:00 am", activity: "Checkpoint general" },
+        ],
+      },
+      sunday: {
+        dayLabel: "Domingo 26",
+        rows: [
+          { time: "8:00", activity: "Desayuno" },
+          { time: "9:00", activity: "Reinicio del trabajo" },
+          { time: "11:30", activity: "Último checkpoint" },
+          { time: "12:30", activity: "Entrega de proyectos" },
+          { time: "1:00", activity: "Preparación de pitches" },
+          { time: "2:00", activity: "Presentaciones" },
+          { time: "3:30", activity: "Evaluación" },
+          { time: "4:00", activity: "Clausura" },
+          { time: "4:30", activity: "Premiación" },
+          { time: "5:00", activity: "Networking y fotografías" },
+        ],
+      },
+    },
+    waitlistSectionTitle: "Lista de espera presencial",
     back: "← VOLVER",
     loading: "Cargando selección...",
     loadFailed: "No se pudo cargar la selección presencial. Intenta más tarde.",
